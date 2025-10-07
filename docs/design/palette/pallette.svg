@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" font-family="Inter, Arial, Helvetica, sans-serif">
+<style>text{font-size:14px} .hex{font-size:12px;opacity:0.85}</style>
+<rect x="24" y="24" width="220" height="120" fill="#7d5833" stroke="#000" stroke-opacity="0.15"/>
+<text x="34" y="46" fill="#FFFFFF">coyote</text>
+<text class="hex" x="34" y="66" fill="#FFFFFF">#7d5833</text>
+<rect x="268" y="24" width="220" height="120" fill="#3B0D09" stroke="#000" stroke-opacity="0.15"/>
+<text x="278" y="46" fill="#FFFFFF">black-bean</text>
+<text class="hex" x="278" y="66" fill="#FFFFFF">#3B0D09</text>
+<rect x="512" y="24" width="220" height="120" fill="#fefef6" stroke="#000" stroke-opacity="0.15"/>
+<text x="522" y="46" fill="#000000">baby-powder</text>
+<text class="hex" x="522" y="66" fill="#000000">#fefef6</text>
+<rect x="756" y="24" width="220" height="120" fill="#0c0000" stroke="#000" stroke-opacity="0.15"/>
+<text x="766" y="46" fill="#FFFFFF">licorice</text>
+<text class="hex" x="766" y="66" fill="#FFFFFF">#0c0000</text>
+<rect x="24" y="168" width="220" height="120" fill="#FFFFFF" stroke="#000" stroke-opacity="0.15"/>
+<text x="34" y="190" fill="#000000">white</text>
+<text class="hex" x="34" y="210" fill="#000000">#FFFFFF</text>
+<rect x="268" y="168" width="220" height="120" fill="#e5e3db" stroke="#000" stroke-opacity="0.15"/>
+<text x="278" y="190" fill="#000000">alabaster</text>
+<text class="hex" x="278" y="210" fill="#000000">#e5e3db</text>
+<rect x="512" y="168" width="220" height="120" fill="#442811" stroke="#000" stroke-opacity="0.15"/>
+<text x="522" y="190" fill="#FFFFFF">cafe-noir</text>
+<text class="hex" x="522" y="210" fill="#FFFFFF">#442811</text>
+<rect x="756" y="168" width="220" height="120" fill="#f7e0ae" stroke="#000" stroke-opacity="0.15"/>
+<text x="766" y="190" fill="#000000">peach-yellow</text>
+<text class="hex" x="766" y="210" fill="#000000">#f7e0ae</text>
+<rect x="24" y="312" width="220" height="120" fill="#fdf6e0" stroke="#000" stroke-opacity="0.15"/>
+<text x="34" y="334" fill="#000000">cosmic-latte</text>
+<text class="hex" x="34" y="354" fill="#000000">#fdf6e0</text>
+<rect x="268" y="312" width="220" height="120" fill="#5d3516" stroke="#000" stroke-opacity="0.15"/>
+<text x="278" y="334" fill="#FFFFFF">kobicha</text>
+<text class="hex" x="278" y="354" fill="#FFFFFF">#5d3516</text>
+<rect x="512" y="312" width="220" height="120" fill="#814423" stroke="#000" stroke-opacity="0.15"/>
+<text x="522" y="334" fill="#FFFFFF">russet</text>
+<text class="hex" x="522" y="354" fill="#FFFFFF">#814423</text>
+<rect x="756" y="312" width="220" height="120" fill="#5A3215" stroke="#000" stroke-opacity="0.15"/>
+<text x="766" y="334" fill="#FFFFFF">seal-brown</text>
+<text class="hex" x="766" y="354" fill="#FFFFFF">#5A3215</text>
+<rect x="24" y="456" width="220" height="120" fill="#e1aa48" stroke="#000" stroke-opacity="0.15"/>
+<text x="34" y="478" fill="#000000">hunyadi-yellow</text>
+<text class="hex" x="34" y="498" fill="#000000">#e1aa48</text>
+<rect x="268" y="456" width="220" height="120" fill="#d89235" stroke="#000" stroke-opacity="0.15"/>
+<text x="278" y="478" fill="#000000">butterscotch</text>
+<text class="hex" x="278" y="498" fill="#000000">#d89235</text>
+<rect x="512" y="456" width="220" height="120" fill="#BA7534" stroke="#000" stroke-opacity="0.15"/>
+<text x="522" y="478" fill="#FFFFFF">copper</text>
+<text class="hex" x="522" y="498" fill="#FFFFFF">#BA7534</text>
+</svg>

@@ -1,0 +1,89 @@
+/* CSS HEX */
+
+/* GENRE */
+--coyote: #7d5833ff;       /* Background color of genre */
+--black-bean: #3B0D09;     /* Border color of genre */
+
+/* Body */
+--baby-powder: #fefef6ff;  /* Background color for body and cards */
+--licorice: #0c0000ff;     /* Text color for body text */
+--white: #FFFFFF;          /* Text color for colored buttons */
+
+/* Cards */
+--alabaster: #e5e3dbff;    /* Border color for Cards and unselected buttons */
+--licorice: #0c0000ff;     /* Border color for book headline text */
+--cafe-noir: #442811;      /* Background color of book headline */
+
+/* Call to Login */
+--peach-yellow: #f7e0aeff; /* Border color of Call to Login */
+--cosmic-latte: #fdf6e0ff; /* Background color of Call to Login */
+--kobicha: #5d3516ff;      /* Border color of "Login" link button, inside of Call to Login */
+--russet: #814423ff;       /* Background color of "Login" link button inside of Call to Login */
+
+/* Large Login button */
+--black-bean: #3B0D09;     /* Border color of large Login button */
+--seal-brown: #5A3215;     /* Background color of large Login button */
+
+/* Rating stars */
+--hunyadi-yellow: #e1aa48; /* Background color of rating stars */
+--butterscotch: #d89235;   /* Border color of rating stars */
+
+/* SORTING */
+--copper: #BA7534;         /* Background color for "Apply" sorting and "Browse Books" buttons */
+
+
+/* SCSS RGB */
+$alabaster: rgba(229, 227, 219, 1);
+$peach-yellow: rgba(247, 224, 174, 1);
+$baby-powder: rgba(254, 254, 246, 1);
+$cosmic-latte: rgba(253, 246, 224, 1);
+$copper: rgba(186, 117, 52, 1);
+$russet: rgba(129, 68, 35, 1);
+$kobicha: rgba(93, 53, 22, 1);
+$coyote: rgba(125, 88, 51, 1);
+$cafe-noir: rgba(68, 40, 17, 1);
+$hunyadi-yellow: rgba(225, 170, 72, 1);
+$butterscotch: rgba(216, 146, 53, 1);
+$licorice: rgba(12, 0, 0, 1);
+$black-bean: rgba(59, 13, 9, 1);
+$seal-brown: rgba(90, 50, 21, 1);
+$white: rgba(255, 255, 255, 1);
+
+
+/* SCSS Gradient (only active palette colors) */
+$gradient-top: linear-gradient(
+  0deg,
+  #7d5833ff,
+  #3B0D09,
+  #fefef6ff,
+  #0c0000ff,
+  #ffffff,
+  #e5e3dbff,
+  #442811,
+  #f7e0aeff,
+  #fdf6e0ff,
+  #5d3516ff,
+  #814423ff,
+  #5A3215,
+  #e1aa48,
+  #d89235,
+  #BA7534
+);
+
+$gradient-radial: radial-gradient(
+  #7d5833ff,
+  #3B0D09,
+  #fefef6ff,
+  #0c0000ff,
+  #ffffff,
+  #e5e3dbff,
+  #442811,
+  #f7e0aeff,
+  #fdf6e0ff,
+  #5d3516ff,
+  #814423ff,
+  #5A3215,
+  #e1aa48,
+  #d89235,
+  #BA7534
+);

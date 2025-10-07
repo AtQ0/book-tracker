@@ -1,7 +1,19 @@
+"use client";
+import Button from "@/components/ui/Button";
+import bookshelf from "../../public/images/bookshelf.png";
+import { useRouter } from "next/navigation";
+
 export default function Home() {
+  const router = useRouter();
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      YEAH
-    </div>
+    <section
+      className="h-full bg-cover bg-center flex flex-col justify-center items-center gap-8"
+      style={{ backgroundImage: `url(${bookshelf.src})` }}
+    >
+      <h1 className="text-center">
+        Disover your <span className="block">great next read</span>
+      </h1>
+      <Button label="Browse books" onClick={() => router.push("/books")} />
+    </section>
   );
 }

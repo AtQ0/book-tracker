@@ -1,15 +1,33 @@
 @import "tailwindcss";
 
+/*Set custom variables*/
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /*=================*/
+  /*==== PALETTE ====*/
+  /*=================*/
+
+  --coyote: #7d5833ff; /* Background color of genre */
+  --black-bean: #3b0d09; /* Border color of genre and large Login button*/
+  --baby-powder: #fefef6ff; /* Background color for body and cards */
+  --licorice: #0c0000ff; /* Text color for body, and border of book title */
+  --white: #ffffff; /* Text color for colored buttons */
+  --alabaster: #e5e3dbff; /* Border color for Cards and unselected buttons */
+  --cafe-noir: #442811; /* Background color of book headline */
+  --peach-yellow: #f7e0aeff; /* Border color of Call to Login */
+  --cosmic-latte: #fdf6e0ff; /* Background color of Call to Login */
+  --kobicha: #5d3516ff; /* Border color of "Login" link button, inside of Call to Login */
+  --russet: #814423ff; /* Background color of "Login" link button inside of Call to Login */
+  --seal-brown: #5a3215; /* Background color of large Login button */
+  --hunyadi-yellow: #e1aa48; /* Background color of rating stars */
+  --butterscotch: #d89235; /* Border color of rating stars */
+  --copper: #ba7534; /* Background color for "Apply" sorting and "Browse Books" buttons */
+  --golden-brown: #99682f;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-}
-
+/*For darkmode only*/
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -17,8 +35,47 @@
   }
 }
 
+/*Map raw CSS variables into Tailwind “design tokens”.*/
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --font-merriweather: var(--font-merriweather); /*Import font from layout.tsx*/
+  --color-coyote: var(--coyote);
+  --color-black-bean: var(--black-bean);
+  --color-baby-powder: var(--baby-powder);
+  --color-licorice: var(--licorice);
+  --color-white: var(--white);
+  --color-alabaster: var(--alabaster);
+  --color-cafe-noir: var(--cafe-noir);
+  --color-peach-yellow: var(--peach-yellow);
+  --color-cosmic-latte: var(--cosmic-latte);
+  --color-kobicha: var(--kobicha);
+  --color-russet: var(--russet);
+  --color-seal-brown: var(--seal-brown);
+  --color-hunyadi-yellow: var(--hunyadi-yellow);
+  --color-butterscotch: var(--butterscotch);
+  --color-copper: var(--copper);
+  --color-golden-brown: var(--golden-brown);
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: bolder;
+  line-height: 3.5rem;
+}
+
+/*Apply variables to JSX*/
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-merriweather);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+main {
+  background-color: bisque;
+  flex: 1;
 }
