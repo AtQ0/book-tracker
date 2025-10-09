@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Sort option allowed in serchParams URL
+// Allowed ?sort= values; Zod enforces at runtime and infers the TS union
 export const SortKeyEnum = z.enum([
   "read",
   "want",
@@ -9,12 +9,12 @@ export const SortKeyEnum = z.enum([
   "name_desc",
 ]);
 
-/*== Query validation schema ==*/
+// URL query schema for /api/books; `sort` is optional and must be one of SortKeyEnum
 export const BookListQuerySchema = z.object({
   sort: SortKeyEnum.optional(),
 });
 
-// Shape of a single book
+// validates each book sent to the client matches this shape
 export const BookDTOSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -27,9 +27,10 @@ export const BookDTOSchema = z.object({
   wantToRead: z.number(),
 });
 
+// Infer TS type from the DTO schema
 export type BookDTO = z.infer<typeof BookDTOSchema>;
 
-// Map UI sort keys corresponding to BookDTO fields and sort directions
+// Map UI sort keys corresponding to BookDTO fields and sort directions used by Prisma
 export const sortFieldMap: Record<
   z.infer<typeof SortKeyEnum>,
   { field: keyof BookDTO | "createdAt"; direction: "asc" | "desc" }

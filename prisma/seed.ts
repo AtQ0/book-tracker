@@ -1,3 +1,136 @@
 import { PrismaClient } from "@prisma/client";
+import { faker } from "@faker-js/faker";
 
+// Set up temporary connection to DB
 const db = new PrismaClient();
+
+async function main() {
+  await db.book.deleteMany();
+
+  // === Semi-faker/manually generated books ==0
+  const manualBooks = [
+    {
+      name: "Applied Statistics",
+      description: faker.lorem.paragraphs(2),
+      genre: "Statistics",
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
+      averageRating: faker.number.float({
+        min: 2,
+        max: 5,
+        fractionDigits: 1,
+      }),
+      haveRead: faker.number.int({ min: 0, max: 40 }),
+      currentlyReading: faker.number.int({ min: 0, max: 10 }),
+      wantToRead: faker.number.int({ min: 0, max: 30 }),
+    },
+    {
+      name: "The Pragmatic Programmer",
+      description: faker.lorem.paragraphs(2),
+      genre: "Programming",
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
+      averageRating: faker.number.float({
+        min: 2,
+        max: 5,
+        fractionDigits: 1,
+      }),
+      haveRead: faker.number.int({ min: 0, max: 40 }),
+      currentlyReading: faker.number.int({ min: 0, max: 10 }),
+      wantToRead: faker.number.int({ min: 0, max: 30 }),
+    },
+    {
+      name: "The Origin of Wealth",
+      description: faker.lorem.paragraphs(2),
+      genre: "Economics",
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
+      averageRating: faker.number.float({
+        min: 2,
+        max: 5,
+        fractionDigits: 1,
+      }),
+      haveRead: faker.number.int({ min: 0, max: 40 }),
+      currentlyReading: faker.number.int({ min: 0, max: 10 }),
+      wantToRead: faker.number.int({ min: 0, max: 30 }),
+    },
+    {
+      name: "Clean Architecture",
+      description: faker.lorem.paragraphs(2),
+      genre: "Programming",
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
+      averageRating: faker.number.float({
+        min: 2,
+        max: 5,
+        fractionDigits: 1,
+      }),
+      haveRead: faker.number.int({ min: 0, max: 40 }),
+      currentlyReading: faker.number.int({ min: 0, max: 10 }),
+      wantToRead: faker.number.int({ min: 0, max: 30 }),
+    },
+    {
+      name: "Half a King",
+      description: faker.lorem.paragraphs(2),
+      genre: "Fantasy",
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
+      averageRating: faker.number.float({
+        min: 2,
+        max: 5,
+        fractionDigits: 1,
+      }),
+      haveRead: faker.number.int({ min: 0, max: 40 }),
+      currentlyReading: faker.number.int({ min: 0, max: 10 }),
+      wantToRead: faker.number.int({ min: 0, max: 30 }),
+    },
+    {
+      name: "Introduction to Algorithms",
+      description: faker.lorem.paragraphs(2),
+      genre: "Programming",
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
+      averageRating: faker.number.float({
+        min: 2,
+        max: 5,
+        fractionDigits: 1,
+      }),
+      haveRead: faker.number.int({ min: 0, max: 40 }),
+      currentlyReading: faker.number.int({ min: 0, max: 10 }),
+      wantToRead: faker.number.int({ min: 0, max: 30 }),
+    },
+  ];
+
+  // === Fully faker generated books ===
+  const randomBooks = Array.from({ length: 47 }).map(() => ({
+    name: faker.lorem.words(3),
+    description: faker.lorem.paragraphs(2),
+    genre: faker.helpers.arrayElement([
+      "Programming",
+      "Economics",
+      "Fantasy",
+      "Statistics",
+      "History",
+      "Science",
+    ]),
+    coverUrl: `https://picsum.photos/seed/${faker.string.alphanumeric(
+      8
+    )}/220/300`,
+    averageRating: faker.number.float({ min: 1, max: 5, fractionDigits: 1 }),
+    haveRead: faker.number.int({ min: 0, max: 50 }),
+    currentlyReading: faker.number.int({ min: 0, max: 10 }),
+    wantToRead: faker.number.int({ min: 0, max: 30 }),
+  }));
+
+  // Merge two book arrays
+  const allBooks = [...manualBooks, ...randomBooks];
+
+  // === Insert all books into DB
+  await db.book.createMany({ data: allBooks });
+
+  console.log(`✅ Seeded ${allBooks.length} books (6 manual and 47 random).`);
+}
+
+// run main function
+main()
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await db.$disconnect();
+  });

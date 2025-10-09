@@ -1,7 +1,30 @@
-export default function Books() {
+import BookListClient from "@/app/books/BookListClient";
+import { BookListQuerySchema, type BookDTO } from "@/lib/validations/book";
+import { getBooksFromDb } from "@/server/books";
+
+// Ensure this page is dynamic (no static cahcing)
+export const revalidate = 0;
+
+export default async function BooksPage({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}) {
+  // validate the ?sort= query parameter using Zod
+  const parsed = BookListQuerySchema.safeParse({
+    sort: typeof searchParams.sort === "string" ? searchParams.sort : undefined,
+  });
+
+  // if validation succeeds, use the parsed sort value; otherwise undefined
+  const sort = parsed.success ? parsed.data.sort : undefined;
+
+  // fetch books from the database using the selected or default sort order
+  const initialBooks: BookDTO[] = await getBooksFromDb(sort);
+
   return (
-    <section>
-      <p className="text-amber-950">YEAH YEAH</p>
+    <section className="p-6 space-y-6 text-amber-900">
+      <h1 className="text-2xl font-semibold">Books</h1>
+      <BookListClient initialBooks={initialBooks} initialSort={sort} />
     </section>
   );
 }
