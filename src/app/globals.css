@@ -2,13 +2,9 @@
 
 /*Set custom variables*/
 :root {
+  /*==== PALETTE ====*/
   --background: #ffffff;
   --foreground: #171717;
-
-  /*=================*/
-  /*==== PALETTE ====*/
-  /*=================*/
-
   --coyote: #7d5833ff; /* Background color of genre */
   --black-bean: #3b0d09; /* Border color of genre and large Login button*/
   --baby-powder: #fefef6ff; /* Background color for body and cards */
@@ -25,6 +21,18 @@
   --butterscotch: #d89235; /* Border color of rating stars */
   --copper: #ba7534; /* Background color for "Apply" sorting and "Browse Books" buttons */
   --golden-brown: #99682f;
+
+  /*===== FONTS =====*/
+  --font-size-h1: 3rem; /* 48px */
+  --font-size-h2: 2.25rem; /* 36px */
+  --font-size-h3: 1.75rem; /* 28px */
+  --font-size-h4: 1.5rem; /* 24px */
+  --font-size-body: 1rem; /* 16px */
+  --font-size-small: 0.875rem; /* 14px */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 }
 
 /*For darkmode only*/
@@ -37,10 +45,9 @@
 
 /*Map raw CSS variables into Tailwind “design tokens”.*/
 @theme inline {
+  /*==== PALETTE ====*/
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
-  --font-merriweather: var(--font-merriweather); /*Import font from layout.tsx*/
   --color-coyote: var(--coyote);
   --color-black-bean: var(--black-bean);
   --color-baby-powder: var(--baby-powder);
@@ -57,12 +64,9 @@
   --color-butterscotch: var(--butterscotch);
   --color-copper: var(--copper);
   --color-golden-brown: var(--golden-brown);
-}
 
-h1 {
-  font-size: 3rem;
-  font-weight: bolder;
-  line-height: 3.5rem;
+  /*===== FONTS =====*/
+  --font-merriweather: var(--font-merriweather); /*Import font from layout.tsx*/
 }
 
 /*Apply variables to JSX*/
@@ -78,4 +82,28 @@ body {
 main {
   background-color: bisque;
   flex: 1;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  line-height: 3.5rem;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-semibold);
+  line-height: 2.75rem;
+}
+
+h3 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-semibold);
+  line-height: 2.25rem;
+}
+
+h4 {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  line-height: 2rem;
 }

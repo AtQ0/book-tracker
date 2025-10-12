@@ -1,3 +1,4 @@
+import BookGrid from "@/components/books/BookGrid";
 import { BookDTO } from "@/lib/validations/book";
 
 interface BookListClientProps {
@@ -11,7 +12,7 @@ export default function BookListClient({
 }: BookListClientProps) {
   return (
     <section>
-      <p>YEAH YEAH</p>
+      <BookGrid initialBooks={initialBooks} />
     </section>
   );
 }
