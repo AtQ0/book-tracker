@@ -10,8 +10,8 @@ export default function Home() {
       className="h-full bg-cover bg-center flex flex-col justify-center items-center gap-8"
       style={{ backgroundImage: `url(${bookshelf.src})` }}
     >
-      <h1 className="text-center">
-        Disover your <span className="block">great next read</span>
+      <h1 className="text-center text-white">
+        Discover your <span className="block">great next read</span>
       </h1>
       <Button label="Browse books" onClick={() => router.push("/books")} />
     </section>

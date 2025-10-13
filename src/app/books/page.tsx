@@ -8,14 +8,14 @@ export const revalidate = 0;
 export default async function BooksPage({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   // Wait for searchParams to resolve
   const params = await searchParams;
 
   // validate the ?sort= query parameter using Zod
   const parsed = BookListQuerySchema.safeParse({
-    sort: typeof params.sort === "string" ? searchParams.sort : undefined,
+    sort: typeof params.sort === "string" ? params.sort : undefined,
   });
 
   // if validation succeeds, use the parsed sort value; otherwise undefined

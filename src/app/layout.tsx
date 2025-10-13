@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
-import { Merriweather } from "next/font/google";
+import { Merriweather, Merriweather_Sans } from "next/font/google";
 import "./globals.css";
 
 const merriweather = Merriweather({
   subsets: ["latin"],
-  variable: "--font-merriweather", // Expose variable name to global css file
+  weight: ["400", "600", "700"],
+  display: "swap",
+  variable: "--font-merriweather", // Expose to global css file
+});
+
+const merriweatherSans = Merriweather_Sans({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  display: "swap",
+  variable: "--font-merriweather-sans", // Expose to global css file
 });
 
 export const metadata: Metadata = {
@@ -18,7 +27,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={merriweather.variable}>
+    <html
+      lang="en"
+      className={`${merriweather.variable} ${merriweatherSans.variable}`}
+    >
       <body>
         <main>{children}</main>
       </body>

@@ -11,7 +11,7 @@ async function main() {
   const manualBooks = [
     {
       name: "Applied Statistics",
-      description: faker.lorem.paragraphs(2),
+      description: faker.lorem.words(80),
       genre: "Statistics",
       coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
       averageRating: faker.number.float({
@@ -25,7 +25,7 @@ async function main() {
     },
     {
       name: "The Pragmatic Programmer",
-      description: faker.lorem.paragraphs(2),
+      description: faker.lorem.words(80),
       genre: "Programming",
       coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
       averageRating: faker.number.float({
@@ -39,7 +39,7 @@ async function main() {
     },
     {
       name: "The Origin of Wealth",
-      description: faker.lorem.paragraphs(2),
+      description: faker.lorem.words(80),
       genre: "Economics",
       coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
       averageRating: faker.number.float({
@@ -53,7 +53,7 @@ async function main() {
     },
     {
       name: "Clean Architecture",
-      description: faker.lorem.paragraphs(2),
+      description: faker.lorem.words(80),
       genre: "Programming",
       coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
       averageRating: faker.number.float({
@@ -67,7 +67,7 @@ async function main() {
     },
     {
       name: "Half a King",
-      description: faker.lorem.paragraphs(2),
+      description: faker.lorem.words(80),
       genre: "Fantasy",
       coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
       averageRating: faker.number.float({
@@ -81,7 +81,7 @@ async function main() {
     },
     {
       name: "Introduction to Algorithms",
-      description: faker.lorem.paragraphs(2),
+      description: faker.lorem.words(80),
       genre: "Programming",
       coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/220/300`,
       averageRating: faker.number.float({
@@ -97,8 +97,13 @@ async function main() {
 
   // === Fully faker generated books ===
   const randomBooks = Array.from({ length: 47 }).map(() => ({
-    name: faker.lorem.words(3),
-    description: faker.lorem.paragraphs(2),
+    name: faker.lorem
+      .words(2)
+      .trim()
+      .split(/\s+/)
+      .map((w) => w[0].toUpperCase() + w.slice(1))
+      .join(" "),
+    description: faker.lorem.words(80),
     genre: faker.helpers.arrayElement([
       "Programming",
       "Economics",

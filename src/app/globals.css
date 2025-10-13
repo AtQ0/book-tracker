@@ -38,8 +38,8 @@
 /*For darkmode only*/
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--color-baby-powder);
+    --foreground: var(--licorice);
   }
 }
 
@@ -66,22 +66,30 @@
   --color-golden-brown: var(--golden-brown);
 
   /*===== FONTS =====*/
-  --font-merriweather: var(--font-merriweather); /*Import font from layout.tsx*/
+  --font-merriweather-sans: var(--font-merriweather-sans);
+  --font-merriweather: var(--font-merriweather); /*Import from layout.tsx*/
 }
 
 /*Apply variables to JSX*/
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-merriweather);
+  font-family: var(--font-merriweather-sans);
   display: flex;
   flex-direction: column;
   height: 100vh;
+  font-size: small;
 }
 
 main {
-  background-color: bisque;
+  background-color: var(--color-baby-powder);
   flex: 1;
+}
+
+h1,
+h3,
+h4 {
+  font-family: var(--font-merriweather);
 }
 
 h1 {
