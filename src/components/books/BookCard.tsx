@@ -40,11 +40,7 @@ export default function BookCard({ book }: BookCardProps) {
           Log in to add this book{" "}
           <span className="block">to your shelf or rate it</span>
         </p>
-        <Button
-          label="Log in"
-          className="bg-russet border-kobicha border-2 px-3 py-2 text-white"
-          onClick={() => router.push("/login")}
-        />
+        <Button onClick={() => router.push("/login")}>Log in</Button>
       </div>
     </article>
   );

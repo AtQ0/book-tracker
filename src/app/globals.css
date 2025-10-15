@@ -21,6 +21,7 @@
   --butterscotch: #d89235; /* Border color of rating stars */
   --copper: #ba7534; /* Background color for "Apply" sorting and "Browse Books" buttons */
   --golden-brown: #99682f;
+  --platinum: #d9d9d9;
 
   /*===== FONTS =====*/
   --font-size-h1: 3rem; /* 48px */
@@ -64,6 +65,7 @@
   --color-butterscotch: var(--butterscotch);
   --color-copper: var(--copper);
   --color-golden-brown: var(--golden-brown);
+  --color-platinum: var(--platinum);
 
   /*===== FONTS =====*/
   --font-merriweather-sans: var(--font-merriweather-sans);
@@ -102,6 +104,7 @@ h2 {
   font-size: var(--font-size-h2);
   font-weight: var(--font-weight-semibold);
   line-height: 2.75rem;
+  color: var(--kobicha);
 }
 
 h3 {
@@ -114,4 +117,8 @@ h4 {
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-semibold);
   line-height: 2rem;
+}
+
+input {
+  background-color: var(--color-platinum);
 }

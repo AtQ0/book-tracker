@@ -13,7 +13,13 @@ export default function Home() {
       <h1 className="text-center text-white">
         Discover your <span className="block">great next read</span>
       </h1>
-      <Button label="Browse books" onClick={() => router.push("/books")} />
+      <Button
+        className="font-merriweather"
+        onClick={() => router.push("/books")}
+        variant="secondary"
+      >
+        Browse Books
+      </Button>
     </section>
   );
 }
