@@ -1,9 +1,9 @@
 import { BookDTO } from "@/lib/validations/book";
 import BookCard from "./BookCard";
 
-interface BookGridProps {
+type BookGridProps = {
   initialBooks: BookDTO[];
-}
+};
 
 export default function BookGrid({ initialBooks }: BookGridProps) {
   return (

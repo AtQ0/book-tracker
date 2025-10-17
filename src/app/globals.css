@@ -101,7 +101,7 @@ h1 {
 }
 
 h2 {
-  font-size: var(--font-size-h2);
+  font-size: var(--font-size-h1);
   font-weight: var(--font-weight-semibold);
   line-height: 2.75rem;
   color: var(--kobicha);

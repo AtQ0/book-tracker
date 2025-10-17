@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 
 // All standard HTML <button> props & additional, but without the built-in ref
-export type ButtonProps = React.ComponentPropsWithoutRef<"button"> & {
+type ButtonProps = React.ComponentPropsWithoutRef<"button"> & {
   isLoading?: boolean;
   variant?: "primary" | "secondary" | "ghost";
 };

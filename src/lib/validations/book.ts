@@ -15,17 +15,20 @@ export const BookListQuerySchema = z.object({
 });
 
 // validates each book sent to the client matches this shape
-export const BookDTOSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  genre: z.string(),
-  coverUrl: z.string().url(),
-  averageRating: z.number(),
-  haveRead: z.number(),
-  currentlyReading: z.number(),
-  wantToRead: z.number(),
-});
+// book.ts
+export const BookDTOSchema = z
+  .object({
+    id: z.string().trim().min(1),
+    name: z.string().trim().min(1),
+    description: z.string().trim().min(1),
+    genre: z.string().trim().min(1),
+    coverUrl: z.string().url(),
+    averageRating: z.number().min(0).max(5), // ← enforce 0..5
+    haveRead: z.number().int().nonnegative(),
+    currentlyReading: z.number().int().nonnegative(),
+    wantToRead: z.number().int().nonnegative(),
+  })
+  .strict();
 
 // Infer TS type from the DTO schema
 export type BookDTO = z.infer<typeof BookDTOSchema>;

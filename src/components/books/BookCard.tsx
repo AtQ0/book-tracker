@@ -5,14 +5,14 @@ import Image from "next/image";
 import Button from "../ui/Button";
 import { useRouter } from "next/navigation";
 
-interface BookCardProps {
+type BookCardProps = {
   book: BookDTO;
-}
+};
 
 export default function BookCard({ book }: BookCardProps) {
   const router = useRouter();
   return (
-    <article className="w-[28rem] flex flex-col gap-5 rounded border-alabaster border-2 p-5 cursor-pointer select-none">
+    <article className="w-[28rem] flex flex-col gap-5 rounded-md border-alabaster border-2 p-5 cursor-pointer select-none">
       <div className="flex gap-2 h-[18rem]">
         <Image
           alt={book.name}
@@ -33,7 +33,7 @@ export default function BookCard({ book }: BookCardProps) {
       </div>
 
       <div
-        className="flex p-5 justify-between items-center cursor-auto bg-cosmic-latte border-2 border-peach-yellow rounded"
+        className="flex p-5 justify-between items-center cursor-auto bg-cosmic-latte border-2 border-peach-yellow rounded-md"
         onClick={(e) => e.stopPropagation()}
       >
         <p className="text-xl">
