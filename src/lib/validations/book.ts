@@ -1,21 +1,26 @@
 import { z } from "zod";
 
-// Allowed ?sort= values; Zod enforces at runtime and infers the TS union
-export const SortKeyEnum = z.enum([
+// Create a tuple (fixed array) of allowed sort keys
+export const SORT_KEYS = [
   "read",
   "want",
   "rating",
   "name_asc",
   "name_desc",
-]);
+] as const;
 
-// URL query schema for /api/books; `sort` is optional and must be one of SortKeyEnum
+// Build a Zod enum directly from the tuple for runtime validation
+export const SortKeyEnum = z.enum(SORT_KEYS);
+
+// Derive a TypeScript union type ("read" | "want" | ...) from the tuple
+export type SortKey = (typeof SORT_KEYS)[number];
+
+// URL query schema for /api/books; `sort` is optional but must match one of allowed keys
 export const BookListQuerySchema = z.object({
   sort: SortKeyEnum.optional(),
 });
 
 // validates each book sent to the client matches this shape
-// book.ts
 export const BookDTOSchema = z
   .object({
     id: z.string().trim().min(1),
@@ -23,7 +28,7 @@ export const BookDTOSchema = z
     description: z.string().trim().min(1),
     genre: z.string().trim().min(1),
     coverUrl: z.string().url(),
-    averageRating: z.number().min(0).max(5), // ← enforce 0..5
+    averageRating: z.number().min(0).max(5),
     haveRead: z.number().int().nonnegative(),
     currentlyReading: z.number().int().nonnegative(),
     wantToRead: z.number().int().nonnegative(),
