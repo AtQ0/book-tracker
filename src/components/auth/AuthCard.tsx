@@ -1,6 +1,6 @@
 import Button from "../ui/Button";
-import Field from "../ui/form/Field";
-import Input from "../ui/form/Input";
+import Field from "../form/Field";
+import Input from "../ui/Input";
 
 export default function AuthCard() {
   return (

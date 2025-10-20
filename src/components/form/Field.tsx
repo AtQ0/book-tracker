@@ -1,5 +1,5 @@
 import React from "react";
-import Label from "./Label";
+import Label from "../ui/Label";
 
 // Props that the child (e.g. <Input />) must support for accessibility injection
 type FieldChildProps = {

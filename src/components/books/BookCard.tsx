@@ -24,7 +24,7 @@ export default function BookCard({ book }: BookCardProps) {
         <div className="flex flex-col gap-1 flex-1 overflow-hidden">
           <h4>{book.name}</h4>
           <div className="flex flex-col gap-5 pt-1">
-            <p className="bg-coyote border-black-bean border-1 w-fit rounded-2xl px-2 text-white">
+            <p className="bg-coyote border-black-bean border-[1px] w-fit rounded-2xl px-2 text-white">
               {book.genre}
             </p>
             <p className="line-clamp-9">{book.description}</p>
