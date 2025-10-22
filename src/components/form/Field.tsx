@@ -34,7 +34,7 @@ export default function Field({
     <div className={className ?? "flex flex-col"}>
       <Label htmlFor={id}>{label}</Label>
 
-      {/* Clone child (e.g. <Input />) and inject a11y props */}
+      {/* Clone child (e.g. <Input />) and inject id and a11y props */}
       {React.cloneElement(children, {
         id,
         "aria-invalid": error ? true : undefined,
