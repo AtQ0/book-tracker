@@ -29,11 +29,11 @@ export default function AuthCard() {
         </Field>
         <Button type="submit">Log in</Button>
       </form>
-      <a href="">Forgot password?</a>
+      <a href="/forgot-password">Forgot password?</a>
       <div>
         <p className="text-[1rem]">
           Dont have an account:{" "}
-          <a href="signup/" className="underline hover:opacity-70">
+          <a href="/signup" className="underline hover:opacity-70">
             Sign up
           </a>
           !
