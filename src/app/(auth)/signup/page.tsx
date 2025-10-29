@@ -1,10 +1,9 @@
-import BackButton from "@/components/BackButton";
+import SignupCard from "@/components/auth/SignupCard";
 
 export default function Signup() {
   return (
-    <div>
-      <p>Signup page</p>
-      <BackButton />
-    </div>
+    <section className="flex justify-center items-center h-full">
+      <SignupCard />
+    </section>
   );
 }
