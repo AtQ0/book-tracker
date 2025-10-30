@@ -31,7 +31,7 @@ export default function AuthCard() {
       </form>
       <a href="/forgot-password">Forgot password?</a>
       <div>
-        <p className="text-[1rem]">
+        <p className="text-base">
           Dont have an account:{" "}
           <a href="/signup" className="underline hover:opacity-70">
             Sign up
