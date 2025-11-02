@@ -5,6 +5,12 @@ import "@testing-library/jest-dom";
 import Field from "@/components/form/Field";
 import Input from "@/components/ui/Input";
 
+// Helper: turn an element's aria-describedby into a Set of ids
+const describedBySet = (el: HTMLElement) =>
+  new Set(
+    (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean)
+  );
+
 describe("<Field />", () => {
   describe("happy path", () => {
     it("renders a label tied to the input by id/htmlFor", () => {
@@ -37,6 +43,7 @@ describe("<Field />", () => {
       expect(input).toHaveAttribute("id", "name");
       expect(input).not.toHaveAttribute("aria-invalid");
       expect(input).not.toHaveAttribute("aria-describedby");
+      expect(input).not.toHaveAttribute("aria-errormessage");
     });
 
     // Validate that Field can wrap any input-like child and still enforce its accessibility contract
@@ -55,6 +62,9 @@ describe("<Field />", () => {
       expect(el).toHaveAttribute("id", "c");
       // Check that Field passes down a11y attributes
       expect(el).toHaveAttribute("aria-describedby", "c-hint");
+      expect(el).not.toHaveAttribute("aria-errormessage");
+      // Also prove the label association resolves to the same element
+      expect(screen.getByLabelText("C")).toBe(el);
     });
 
     it("supports any child (e.g. <textarea>) that accepts the injected props", () => {
@@ -70,6 +80,7 @@ describe("<Field />", () => {
       const ta = screen.getByTestId("ta");
       expect(ta).toHaveAttribute("id", "bio");
       expect(ta).toHaveAttribute("aria-describedby", "bio-hint");
+      expect(ta).not.toHaveAttribute("aria-errormessage");
     });
   });
 
@@ -85,8 +96,21 @@ describe("<Field />", () => {
     });
   });
 
+  it("injects required onto the child control when Field.required is set", () => {
+    render(
+      <Field id="req" label="Required field" required>
+        <Input />
+      </Field>
+    );
+    const input = screen.getByLabelText("Required field");
+    // Jest-DOM convenience matcher
+    expect(input).toBeRequired();
+    // And explicitly:
+    expect(input).toHaveAttribute("required");
+  });
+
   describe("type & format validation", () => {
-    it("supports hint only, sets ari-adescribedby to hint id", () => {
+    it("supports hint only, sets aria-describedby to hint id", () => {
       render(
         <Field id="u" label="User" hint="This will be public">
           <Input />
@@ -96,8 +120,9 @@ describe("<Field />", () => {
       // Gets form control (e.g. <input>) associated with the "User" label
       const input = screen.getByLabelText("User");
 
-      // Check child (<input>) recieves key value (u-hint) for aria-describedby
+      // Check child (<input>) receives key value (u-hint) for aria-describedby
       expect(input).toHaveAttribute("aria-describedby", "u-hint");
+      expect(input).not.toHaveAttribute("aria-errormessage");
 
       // Check that hint message element has inherited u-hint as its id value
       expect(screen.getByText("This will be public")).toHaveAttribute(
@@ -106,7 +131,25 @@ describe("<Field />", () => {
       );
     });
 
-    it("supports error only, sets aria-invalid and aria-described to error id", () => {
+    it("prefers description over hint for helper text", () => {
+      render(
+        <Field id="d" label="Desc wins" description="Real desc" hint="Ignored">
+          <Input />
+        </Field>
+      );
+
+      const input = screen.getByLabelText("Desc wins");
+      // aria-describedby should point to d-hint
+      expect(input).toHaveAttribute("aria-describedby", "d-hint");
+
+      // The rendered helper should be the description, with the expected id
+      expect(screen.getByText("Real desc")).toHaveAttribute("id", "d-hint");
+
+      // And the hint text should not render at all when description is present
+      expect(screen.queryByText("Ignored")).toBeNull();
+    });
+
+    it("supports error only, sets aria-invalid and aria-describedby to error id", () => {
       render(
         <Field id="p" label="Password" error="Too short">
           <Input />
@@ -117,11 +160,13 @@ describe("<Field />", () => {
       const input = screen.getByLabelText("Password");
       expect(input).toHaveAttribute("aria-invalid", "true");
       expect(input).toHaveAttribute("aria-describedby", "p-error");
+      expect(input).toHaveAttribute("aria-errormessage", "p-error");
 
-      // Get the element displaying the error message via its ARIA role="alert"
-      const errorEl = screen.getByRole("alert");
+      // Get element to display the error message via its polite live region
+      const errorEl = screen.getByText("Too short");
       expect(errorEl).toHaveTextContent("Too short");
       expect(errorEl).toHaveAttribute("id", "p-error");
+      expect(errorEl).toHaveAttribute("aria-live", "polite");
     });
 
     it("supports both hint and error, aria-describedby contains both ids", () => {
@@ -133,14 +178,22 @@ describe("<Field />", () => {
 
       // Gets form control (e.g. <input>) associated with the "Bio" label
       const input = screen.getByLabelText("Bio");
-      const described = input.getAttribute("aria-describedby") || "";
+
       // Create array of two values (hint & error) by splitting described at space
-      const tokens = new Set(described.split(" "));
+      const tokens = describedBySet(input);
       expect(tokens.has("bio2-hint")).toBe(true);
       expect(tokens.has("bio2-error")).toBe(true);
+      expect(input).toHaveAttribute("aria-errormessage", "bio2-error");
+
+      // Assert actual element IDs match
+      expect(screen.getByText("Max 140 chars")).toHaveAttribute(
+        "id",
+        "bio2-hint"
+      );
+      expect(screen.getByText("Too long")).toHaveAttribute("id", "bio2-error");
     });
 
-    it("overrides child's pre-set aria props and id (Field is source of truth)", () => {
+    it("overrides id/invalid/errormessage but merges aria-describedby tokens", () => {
       render(
         <Field id="o" label="O" hint="H" error="E">
           <Input
@@ -154,12 +207,12 @@ describe("<Field />", () => {
       const input = screen.getByLabelText("O");
       expect(input).toHaveAttribute("id", "o");
 
-      const described = input.getAttribute("aria-describedby") || "";
-      const tokens = new Set(described.split(" "));
+      const tokens = describedBySet(input);
       expect(tokens.has("o-hint")).toBe(true);
       expect(tokens.has("o-error")).toBe(true);
-      expect(tokens.has("custom")).toBe(false);
+      expect(tokens.has("custom")).toBe(true);
       expect(input).toHaveAttribute("aria-invalid", "true");
+      expect(input).toHaveAttribute("aria-errormessage", "o-error");
     });
   });
 
@@ -171,8 +224,9 @@ describe("<Field />", () => {
         </Field>
       );
       const input = screen.getByLabelText("A");
-      expect(screen.queryByRole("alert")).toBeNull();
+      expect(screen.queryByText(/too short|bad|error/i)).toBeNull();
       expect(input).not.toHaveAttribute("aria-describedby");
+      expect(input).not.toHaveAttribute("aria-errormessage");
     });
 
     it("renders with default wrapper class when className not provided", () => {
@@ -220,11 +274,14 @@ describe("<Field />", () => {
       // after: error, attrs present
       input = screen.getByLabelText("T");
       expect(input).toHaveAttribute("aria-invalid", "true");
-      expect(input).toHaveAttribute("aria-describedby", "t-error");
+      const tokens = describedBySet(input);
+      expect(tokens.has("t-error")).toBe(true);
+      expect(input).toHaveAttribute("aria-errormessage", "t-error");
 
-      const errorEl = screen.getByRole("alert");
+      const errorEl = screen.getByText("Bad");
       expect(errorEl).toHaveTextContent("Bad");
       expect(errorEl).toHaveAttribute("id", "t-error");
+      expect(errorEl).toHaveAttribute("aria-live", "polite");
     });
 
     it("removes aria-invalid/aria-describedby and alert when error toggles off", () => {
@@ -239,7 +296,7 @@ describe("<Field />", () => {
         "t-error"
       );
 
-      expect(screen.getByRole("alert")).toBeInTheDocument();
+      expect(screen.getByText("Bad")).toBeInTheDocument();
 
       rerender(
         <Field id="t" label="T">
@@ -250,7 +307,8 @@ describe("<Field />", () => {
       const input = screen.getByLabelText("T");
       expect(input).not.toHaveAttribute("aria-invalid");
       expect(input).not.toHaveAttribute("aria-describedby");
-      expect(screen.queryByRole("alert")).toBeNull();
+      expect(input).not.toHaveAttribute("aria-errormessage");
+      expect(screen.queryByText("Bad")).toBeNull();
     });
 
     it("preserves existing child props like className and placeholder", () => {
