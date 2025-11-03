@@ -18,4 +18,35 @@ export async function runSignup(
   { ttlMs, argon2Opts, sendMail }: SignupDeps
 ) {
   // 1) reuse/unverified user or create
+  const existing = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, emailVerified: true },
+  });
+
+  // Block verified accounts
+  if (existing?.emailVerified) {
+    return {
+      kind: "conflict" as const,
+      field: "email",
+      message: "That email is already registered",
+    };
+  }
+
+  // Reuse unverified user or create new
+  const user =
+    existing ??
+    (await prisma.user.create({
+      data: { email, name },
+      select: { id: true },
+    }));
+
+  // 2) Replace any old verification codes/sessions with a fresh one (atomic)
+  const { code, token, expiresAt, codeId } = await prisma.$transaction(
+    async (tx) => {
+      await tx.verificationSession.deleteMany({ where: { userId: user.id } });
+      await tx.verificationCode.deleteMany({
+        where: { userId: user.id, purpose: "SIGNUP_VERIFY_EMAIL" },
+      });
+    }
+  );
 }

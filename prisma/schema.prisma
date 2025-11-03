@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,37 +8,58 @@ datasource db {
 }
 
 model Book {
-  id                String    @id @default(uuid())
-  name              String
-  description       String
-  genre             String
-  coverUrl          String
-  averageRating     Float     @default(0)
-  haveRead          Int       @default(0)
-  currentlyReading  Int       @default(0)
-  wantToRead        Int       @default(0)
-  createdAt         DateTime  @default(now())
+  id               String   @id @default(uuid())
+  name             String
+  description      String
+  genre            String
+  coverUrl         String
+  averageRating    Float    @default(0)
+  haveRead         Int      @default(0)
+  currentlyReading Int      @default(0)
+  wantToRead       Int      @default(0)
+  createdAt        DateTime @default(now())
 }
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  name           String?
-  passwordHash   String?
-  emailVerified  DateTime?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  passwordHash  String?
+  emailVerified DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  verificationCodes   VerificationCode[]
+  verificationCodes     VerificationCode[]
+  verificationSessions  VerificationSession[]
+}
+
+enum VerificationPurpose {
+  SIGNUP_VERIFY_EMAIL
+  RESET_PASSWORD
 }
 
 model VerificationCode {
-  id         String   @id @default(cuid())
-  user       User     @relation(fields: [userId], references: [id])
+  id         String                @id @default(cuid())
+  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
   codeHash   String
-  purpose    String
+  purpose    VerificationPurpose
   expiresAt  DateTime
   consumedAt DateTime?
-  createdAt  DateTime @default(now())
+  createdAt  DateTime              @default(now())
+
+  @@index([userId, purpose])       // speeds up where { userId, purpose }
+  @@index([expiresAt])             // speeds up cleanup of expired codes
+}
+
+model VerificationSession {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique         // at most one active session per user
+  token     String   @unique         // randomUUID used by the client
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])               // speeds up cleanup of expired sessions
 }
