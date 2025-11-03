@@ -15,7 +15,7 @@ export async function getBooksFromDb(
     orderBy = [{ [field]: direction }, { id: "asc" }]; // add id as a tie-breaker
   }
 
-  // Fetch books with the chosen sort and return data from only selected fields.
+  // Fetch books directly from DB (not via api) with the chosen sort and return data from only selected fields.
   const rows = await db.book.findMany({
     orderBy,
     select: {
