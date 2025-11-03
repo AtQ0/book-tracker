@@ -1,5 +1,5 @@
 import "server-only";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import type { Prisma } from "@prisma/client";
 import { sortFieldMap, type BookDTO } from "@/lib/validations/book";
 
@@ -16,7 +16,7 @@ export async function getBooksFromDb(
   }
 
   // Fetch books directly from DB (not via api) with the chosen sort and return data from only selected fields.
-  const rows = await db.book.findMany({
+  const rows = await prisma.book.findMany({
     orderBy,
     select: {
       id: true,

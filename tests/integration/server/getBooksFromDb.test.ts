@@ -15,7 +15,7 @@ jest.mock("@/lib/db", () => ({
   },
 }));
 
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { getBooksFromDb } from "@/server/books";
 
 afterEach(() => {
@@ -29,10 +29,10 @@ describe("getBooksFromDb => Prisma args", () => {
     await getBooksFromDb(undefined);
 
     // check that finMany has been called once
-    expect(db.book.findMany as jest.Mock).toHaveBeenCalledTimes(1);
+    expect(prisma.book.findMany as jest.Mock).toHaveBeenCalledTimes(1);
 
     // Retrieve first argument from the first call to the mocked findMany() function
-    const arg = (db.book.findMany as jest.Mock).mock.calls[0][0];
+    const arg = (prisma.book.findMany as jest.Mock).mock.calls[0][0];
 
     expect(arg.orderBy).toEqual([{ createdAt: "desc" }]);
     expect(arg.select).toEqual(
@@ -60,7 +60,7 @@ describe("getBooksFromDb => Prisma args", () => {
     "%s builds expected orderBy",
     async (_label, key, expectedOrder) => {
       await getBooksFromDb(key);
-      const arg = (db.book.findMany as jest.Mock).mock.calls[0][0];
+      const arg = (prisma.book.findMany as jest.Mock).mock.calls[0][0];
       expect(arg.orderBy).toEqual(expectedOrder);
     }
   );
