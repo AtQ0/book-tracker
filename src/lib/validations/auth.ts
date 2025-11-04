@@ -11,4 +11,4 @@ export const SignupSchema = z
 
 // ResetPasswordSchema
 
-// SignupInput
+// LoginSchema
