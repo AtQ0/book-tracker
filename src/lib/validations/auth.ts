@@ -6,3 +6,9 @@ export const SignupSchema = z
     name: z.string().trim().min(1).max(100),
   })
   .strict();
+
+// VerifySchema
+
+// ResetPasswordSchema
+
+// SignupInput

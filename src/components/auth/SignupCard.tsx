@@ -94,7 +94,7 @@ export default function SignupCard() {
       });
 
       if (res.ok) {
-        router.replace("verify");
+        router.replace("/verify");
         return;
       }
 

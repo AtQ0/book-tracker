@@ -4,6 +4,7 @@ import { randomInt } from "crypto";
 
 export type SignupDeps = {
   ttlMs: number;
+  cooldownMs?: number;
   argon2Opts: Parameters<typeof argon2.hash>[1];
   sendMail: (args: {
     to: string;
@@ -15,7 +16,7 @@ export type SignupDeps = {
 
 export async function runSignup(
   { email, name }: { email: string; name: string },
-  { ttlMs, argon2Opts, sendMail }: SignupDeps
+  { ttlMs, cooldownMs, argon2Opts, sendMail }: SignupDeps
 ) {
   // 1) reuse/unverified user or create
   const existing = await prisma.user.findUnique({
@@ -23,7 +24,7 @@ export async function runSignup(
     select: { id: true, emailVerified: true },
   });
 
-  // Block verified accounts
+  // Stop verified accounts
   if (existing?.emailVerified) {
     return {
       kind: "conflict" as const,
@@ -39,6 +40,21 @@ export async function runSignup(
       data: { email, name },
       select: { id: true },
     }));
+
+  // Cooldown, stop if a recent code was just created
+  if (cooldownMs && cooldownMs > 0) {
+    const recent = await prisma.verificationCode.findFirst({
+      where: {
+        userId: user.id,
+        purpose: "SIGNUP_VERIFY_EMAIL",
+        createdAt: { gte: new Date(Date.now() - cooldownMs) },
+      },
+      select: { id: true },
+    });
+    if (recent) {
+      return { kind: "cooldown" as const };
+    }
+  }
 
   // 2) Replace any old verification codes/sessions with a fresh one (atomic)
   const { code, expiresAt, codeId } = await prisma.$transaction(async (tx) => {
