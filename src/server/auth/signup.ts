@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import argon2 from "argon2";
-import { randomInt, randomUUID } from "crypto";
+import { randomInt } from "crypto";
 
 export type SignupDeps = {
   ttlMs: number;
@@ -41,12 +41,43 @@ export async function runSignup(
     }));
 
   // 2) Replace any old verification codes/sessions with a fresh one (atomic)
-  const { code, token, expiresAt, codeId } = await prisma.$transaction(
-    async (tx) => {
-      await tx.verificationSession.deleteMany({ where: { userId: user.id } });
-      await tx.verificationCode.deleteMany({
-        where: { userId: user.id, purpose: "SIGNUP_VERIFY_EMAIL" },
-      });
-    }
-  );
+  const { code, expiresAt, codeId } = await prisma.$transaction(async (tx) => {
+    await tx.verificationCode.deleteMany({
+      where: { userId: user.id, purpose: "SIGNUP_VERIFY_EMAIL" },
+    });
+
+    const fresh = String(randomInt(0, 1_000_000)).padStart(6, "0");
+    const hash = await argon2.hash(fresh, argon2Opts);
+    const expires = new Date(Date.now() + ttlMs);
+
+    // Send request to create a verification code, ask to get its id in return
+    const created = await tx.verificationCode.create({
+      data: {
+        userId: user.id,
+        codeHash: hash,
+        purpose: "SIGNUP_VERIFY_EMAIL",
+        expiresAt: expires,
+      },
+      select: { id: true },
+    });
+
+    return { code: fresh, expiresAt: expires, codeId: created.id };
+  });
+
+  //3 send mail (rollback on failure)
+  try {
+    await sendMail({
+      to: email,
+      name,
+      code,
+      ttlMin: Math.round(ttlMs / 60000),
+    });
+  } catch {
+    await prisma.verificationCode
+      .delete({ where: { id: codeId } })
+      .catch(() => {});
+    return { kind: "mail-failed" as const };
+  }
+
+  return { kind: "ok" as const, expiresAt };
 }

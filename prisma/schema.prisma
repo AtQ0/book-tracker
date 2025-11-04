@@ -1,3 +1,5 @@
+// prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -29,8 +31,7 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  verificationCodes     VerificationCode[]
-  verificationSessions  VerificationSession[]
+  verificationCodes VerificationCode[]
 }
 
 enum VerificationPurpose {
@@ -48,18 +49,9 @@ model VerificationCode {
   consumedAt DateTime?
   createdAt  DateTime              @default(now())
 
-  @@index([userId, purpose])       // speeds up where { userId, purpose }
-  @@index([expiresAt])             // speeds up cleanup of expired codes
-}
+  // For fast lookups of the newest active code per user/purpose
+  @@index([userId, purpose, consumedAt, expiresAt, createdAt])
 
-model VerificationSession {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @unique         // at most one active session per user
-  token     String   @unique         // randomUUID used by the client
-  expiresAt DateTime
-  createdAt DateTime  @default(now())
-
-  @@index([userId])
-  @@index([expiresAt])               // speeds up cleanup of expired sessions
+  // For efficient TTL cleanup jobs
+  @@index([expiresAt])
 }
