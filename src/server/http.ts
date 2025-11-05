@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-// Helper to send JSON responses with no caching
+// Helper, wraps obj in NextResponse & returns proper HTTP JSON response to send to Cli
 export function json(body: unknown, status: number) {
   const res = NextResponse.json(body, { status });
   res.headers.set("Cache-Control", "no-store");

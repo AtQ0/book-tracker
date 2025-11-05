@@ -7,7 +7,7 @@ type SendSignupEmailArgs = {
   ttlMin: number;
 };
 
-export async function SendSignupEmail({
+export async function sendSignupEmail({
   to,
   name,
   code,
@@ -23,8 +23,8 @@ export async function SendSignupEmail({
     from,
     to,
     subject: "Your Book-Tracker verification code",
-    text: `Hi ${
-      name || "there"
-    }, \n\nYour verification code is: ${code}\nIt expires in ${ttlMin} minutes.\n`,
+    text: `Hi ${name || "there"},
+    \n\nYour verification code is: ${code}
+    \nIt expires in ${ttlMin} minutes.\n`,
   });
 }

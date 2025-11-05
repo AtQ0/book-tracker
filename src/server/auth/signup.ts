@@ -14,17 +14,25 @@ export type SignupDeps = {
   }) => Promise<void>;
 };
 
+// runSignup return must be exactly one of these shapes
+export type SignupResult =
+  | { kind: "ok"; expiresAt: Date }
+  | { kind: "conflict"; field: "email"; message: string }
+  | { kind: "cooldown" }
+  | { kind: "mail-failed" };
+
 export async function runSignup(
   { email, name }: { email: string; name: string },
   { ttlMs, cooldownMs, argon2Opts, sendMail }: SignupDeps
-) {
+): //Bind the return with the shape SignupResult
+Promise<SignupResult> {
   // 1) reuse/unverified user or create
   const existing = await prisma.user.findUnique({
     where: { email },
     select: { id: true, emailVerified: true },
   });
 
-  // Stop verified accounts
+  // Stop verified accounts (409 Conflict)
   if (existing?.emailVerified) {
     return {
       kind: "conflict" as const,
@@ -41,7 +49,7 @@ export async function runSignup(
       select: { id: true },
     }));
 
-  // Cooldown, stop if a recent code was just created
+  // Cooldown check (429 Too Many Requests), stop if a recent code was just created
   if (cooldownMs && cooldownMs > 0) {
     const recent = await prisma.verificationCode.findFirst({
       where: {
@@ -80,13 +88,13 @@ export async function runSignup(
     return { code: fresh, expiresAt: expires, codeId: created.id };
   });
 
-  //3 send mail (rollback on failure)
+  //3 send mail: rollback on failure (502 Bad Gateway)
   try {
     await sendMail({
       to: email,
       name,
       code,
-      ttlMin: Math.round(ttlMs / 60000),
+      ttlMin: Math.floor(ttlMs / 60000), // convert ms to minutes
     });
   } catch {
     await prisma.verificationCode
@@ -95,5 +103,6 @@ export async function runSignup(
     return { kind: "mail-failed" as const };
   }
 
+  // Success (201 Created)
   return { kind: "ok" as const, expiresAt };
 }
