@@ -1,54 +1,58 @@
 @import "tailwindcss";
 
-/*Set custom variables*/
+/* ============== Design tokens ============== */
 :root {
   /*==== PALETTE ====*/
-  --background: #ffffff;
-  --foreground: #171717;
-  --coyote: #7d5833ff; /* Background color of genre */
-  --black-bean: #3b0d09; /* Border color of genre and large Login button*/
-  --baby-powder: #fefef6ff; /* Background color for body and cards */
-  --licorice: #0c0000ff; /* Text color for body, and border of book title */
-  --white: #ffffff; /* Text color for colored buttons */
-  --alabaster: #e5e3dbff; /* Border color for Cards and unselected buttons */
-  --cafe-noir: #442811; /* Background color of book headline */
-  --peach-yellow: #f7e0aeff; /* Border color of Call to Login */
-  --cosmic-latte: #fdf6e0ff; /* Background color of Call to Login */
-  --kobicha: #5d3516ff; /* Border color of "Login" link button, inside of Call to Login */
-  --russet: #814423ff; /* Background color of "Login" link button inside of Call to Login */
-  --seal-brown: #5a3215; /* Background color of large Login button */
-  --hunyadi-yellow: #e1aa48; /* Background color of rating stars */
-  --butterscotch: #d89235; /* Border color of rating stars */
-  --copper: #ba7534; /* Background color for "Apply" sorting and "Browse Books" buttons */
+  --coyote: #7d5833ff;
+  --black-bean: #3b0d09;
+  --baby-powder: #fefef6ff;
+  --licorice: #0c0000ff;
+  --white: #ffffff;
+  --alabaster: #e5e3dbff;
+  --cafe-noir: #442811;
+  --peach-yellow: #f7e0aeff;
+  --cosmic-latte: #fdf6e0ff;
+  --kobicha: #5d3516ff;
+  --russet: #814423ff;
+  --seal-brown: #5a3215;
+  --hunyadi-yellow: #e1aa48;
+  --butterscotch: #d89235;
+  --copper: #ba7534;
   --golden-brown: #99682f;
   --platinum: #d9d9d9;
 
-  /*===== FONTS =====*/
+  /*===== TYPE SCALE =====*/
   --font-size-h1: 3rem; /* 48px */
   --font-size-h2: 2.25rem; /* 36px */
   --font-size-h3: 1.75rem; /* 28px */
   --font-size-h4: 1.5rem; /* 24px */
   --font-size-body: 1rem; /* 16px */
   --font-size-small: 0.875rem; /* 14px */
+
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+
+  /*===== TYPE (mobile ≤499px) =====*/
+  --font-size-h1-sm: 2.25rem; /* 36px */
+  --font-size-h2-sm: 1.875rem; /* 30px */
+  --font-size-h3-sm: 1.375rem; /* 22px */
+  --font-size-h4-sm: 1rem; /* 16px */
+  --font-size-body-sm: 0.875rem; /* 14px */
+  --font-size-body-xs: 0.75rem; /* 12px */
+  --font-size-small-sm: 0.75rem; /* 12px */
 }
 
-/*For darkmode only*/
+/* Optional: dark mode token overrides (empty for now) */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: var(--color-baby-powder);
-    --foreground: var(--licorice);
+    /* e.g. --kobicha: var(--licorice); --baby-powder: ...; */
   }
 }
 
-/*Map raw CSS variables into Tailwind “design tokens”.*/
+/* Map CSS vars into Tailwind tokens (Tailwind v4) */
 @theme inline {
-  /*==== PALETTE ====*/
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --color-coyote: var(--coyote);
   --color-black-bean: var(--black-bean);
   --color-baby-powder: var(--baby-powder);
@@ -67,55 +71,99 @@
   --color-golden-brown: var(--golden-brown);
   --color-platinum: var(--platinum);
 
-  /*===== FONTS =====*/
+  /* pull through next/font vars so Tailwind utilities can reference them if needed */
   --font-merriweather-sans: var(--font-merriweather-sans);
-  --font-merriweather: var(--font-merriweather); /*Import from layout.tsx*/
+  --font-merriweather: var(--font-merriweather);
+
+  /* My phone breakpoint */
+  --breakpoint-xs: 31.1875rem; /* 499px */
 }
 
-/*Apply variables to JSX*/
+/* ============== Base element styles (no layout) ============== */
+
+/* Make Sans the default everywhere */
+html,
 body {
-  background: var(--background);
-  color: var(--kobicha);
-  font-family: var(--font-merriweather-sans);
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  font-size: small;
+  font-family: var(--font-merriweather-sans), system-ui, -apple-system, Segoe UI,
+    Roboto, sans-serif;
 }
 
-main {
-  background-color: var(--color-baby-powder);
-  flex: 1;
-}
-
-h1 {
-  font-family: var(--font-merriweather);
-  font-size: var(--font-size-h1);
-  font-weight: var(--font-weight-bold);
-  line-height: 3.5rem;
-}
-
-h2 {
-  font-size: var(--font-size-h1);
-  font-weight: var(--font-weight-semibold);
-  line-height: 2.75rem;
-  color: var(--kobicha);
-}
-
-h3 {
-  font-size: var(--font-size-h2);
-  font-weight: var(--font-weight-semibold);
-  line-height: 2.25rem;
-  color: var(--kobicha);
-}
-
-h4 {
-  font-size: var(--font-size-h4);
-  font-weight: var(--font-weight-semibold);
-  line-height: 2rem;
-  color: var(--kobicha);
+/* Keep your preferred default body size */
+body {
+  font-size: small; /* ~13px: paragraphs inherit this unless overridden */
 }
 
 input {
   background-color: var(--color-platinum);
+}
+
+/* Headings & text – utilities can still override cleanly */
+@layer base {
+  h1 {
+    font-family: var(--font-merriweather), Georgia, "Times New Roman", serif;
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.15;
+  }
+
+  h2 {
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.25;
+  }
+
+  h4 {
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.3;
+  }
+
+  p {
+    font-size: inherit; /* follows body (small) unless overridden */
+    line-height: 1.6;
+  }
+
+  small {
+    font-size: var(--font-size-small);
+    line-height: 1.4;
+  }
+}
+
+/* ============== Mobile scale (≤499px) ============== */
+@media (max-width: 499px) {
+  @layer base {
+    h1 {
+      font-size: var(--font-size-h1-sm);
+    }
+    h2 {
+      font-size: var(--font-size-h2-sm);
+    }
+    h3 {
+      font-size: var(--font-size-h3-sm);
+    }
+    h4 {
+      font-size: var(--font-size-h4-sm);
+    }
+    p {
+      font-size: var(--font-size-body-sm);
+    }
+    small {
+      font-size: var(--font-size-small-sm);
+    }
+  }
+}
+
+/* ============== Extra-small (≤399px) ============== */
+@media (max-width: 399px) {
+  @layer base {
+    p {
+      font-size: var(--font-size-body-xs);
+    }
+  }
 }

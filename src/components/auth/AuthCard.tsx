@@ -1,44 +1,24 @@
-import Button from "../ui/Button";
-import Field from "../form/Field";
-import Input from "../ui/Input";
+import { ReactNode } from "react";
 import BackButton from "../BackButton";
 
-export default function AuthCard() {
+type AuthCardProps = {
+  title?: string;
+  subtitle?: string;
+  children?: ReactNode;
+  footer?: ReactNode;
+  showBackButton?: boolean;
+};
+
+export default function AuthCard({
+  title,
+  subtitle,
+  children,
+  footer,
+  showBackButton = true,
+}: AuthCardProps) {
   return (
-    <div className="flex flex-col gap-10 justify-center items-center border-3 border-alabaster pt-20 py-10 px-13 rounded-md relative">
-      <BackButton />
-      <h2>Login</h2>
-      <form className="flex flex-col gap-8">
-        <Field id="email" label="Email">
-          <Input
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="you@example.com"
-            required
-          />
-        </Field>
-        <Field id="password" label="Password">
-          <Input
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            placeholder="**********"
-            required
-          />
-        </Field>
-        <Button type="submit">Log in</Button>
-      </form>
-      <a href="/forgot-password">Forgot password?</a>
-      <div>
-        <p className="text-base">
-          Dont have an account:{" "}
-          <a href="/signup" className="underline hover:opacity-70">
-            Sign up
-          </a>
-          !
-        </p>
-      </div>
+    <div className="flex felx-col w-[24rem] max-[500px]:w-[20rem] h-[36rem] p-5 border-3 border-alabaster rounded-xl relative">
+      {showBackButton && <BackButton />}
     </div>
   );
 }

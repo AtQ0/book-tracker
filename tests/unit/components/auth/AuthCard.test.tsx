@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-import AuthCard from "@/components/auth/AuthCard";
+import LoginCard from "@/components/auth/LoginCard";
 
 // Hoist router moch function for asserting behavior
 const mockBack = jest.fn();
@@ -28,7 +28,7 @@ const getBackButton = () => screen.getByRole("button", { name: /back/i });
 
 // Helper to render, get user, and expose container etc.
 function setup() {
-  const utils = render(<AuthCard />);
+  const utils = render(<LoginCard />);
   const user = userEvent.setup();
   return { user, ...utils };
 }
@@ -81,7 +81,7 @@ describe("<AuthCard />", () => {
     });
 
     it("is a valid React element with no required props", () => {
-      const _ok: React.ReactElement = <AuthCard />;
+      const _ok: React.ReactElement = <LoginCard />;
       void _ok;
     });
   });
@@ -128,7 +128,7 @@ describe("<AuthCard />", () => {
 
   describe("strictness", () => {
     it("Ensures AuthCard remains a closed, zero-prop component", () => {
-      const card = <AuthCard />;
+      const card = <LoginCard />;
       expect(card.props).toEqual({});
     });
   });

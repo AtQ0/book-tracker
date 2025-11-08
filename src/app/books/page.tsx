@@ -1,4 +1,6 @@
 import BookListClient from "@/app/books/BookListClient";
+import Container from "@/components/layout/Container";
+import Section from "@/components/layout/Section";
 import { BookListQuerySchema, type BookDTO } from "@/lib/validations/book";
 import { getBooksFromDb } from "@/server/books";
 
@@ -25,8 +27,10 @@ export default async function BooksPage({
   const initialBooks: BookDTO[] = await getBooksFromDb(sort);
 
   return (
-    <section className="p-6 space-y-6 text-amber-900">
-      <BookListClient initialBooks={initialBooks} initialSort={sort} />
-    </section>
+    <Section className="bg-amber-300">
+      <Container className="bg-pink-400">
+        <BookListClient initialBooks={initialBooks} />
+      </Container>
+    </Section>
   );
 }

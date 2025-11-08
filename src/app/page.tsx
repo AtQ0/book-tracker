@@ -7,7 +7,7 @@ export default function Home() {
   const router = useRouter();
   return (
     <section
-      className="h-full bg-cover bg-center flex flex-col justify-center items-center gap-8"
+      className="flex flex-col flex-1 bg-cover bg-center justify-center items-center gap-8"
       style={{ backgroundImage: `url(${bookshelf.src})` }}
     >
       <h1 className="text-center text-white">
