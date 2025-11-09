@@ -7,7 +7,7 @@ type BookGridProps = {
 
 export default function BookGrid({ initialBooks }: BookGridProps) {
   return (
-    <ul className="flex flex-col gap-8">
+    <ul className="grid gap-15 grid-cols-1 lg:grid-cols-2">
       {initialBooks.map((book) => (
         <li key={book.id}>
           <BookCard book={book} />

@@ -27,8 +27,8 @@ export default async function BooksPage({
   const initialBooks: BookDTO[] = await getBooksFromDb(sort);
 
   return (
-    <Section className="bg-amber-300">
-      <Container className="bg-pink-400">
+    <Section>
+      <Container>
         <BookListClient initialBooks={initialBooks} />
       </Container>
     </Section>

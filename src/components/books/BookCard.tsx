@@ -15,7 +15,10 @@ export default function BookCard({ book }: BookCardProps) {
   const router = useRouter();
 
   return (
-    <Card as="article" className="flex flex-col gap-5">
+    <Card
+      as="article"
+      className="flex flex-col gap-5 min-xs:w-[27rem]  mx-auto"
+    >
       {/* Image and text side-by-side */}
 
       <Link
@@ -27,11 +30,13 @@ export default function BookCard({ book }: BookCardProps) {
             src={book.coverUrl}
             alt={book.name}
             ratio="2:3"
-            className="w-45 max-xs:w-38 h-full"
+            className="w-30 max-xs:w-25 h-full"
           />
         </div>
-        <div>
-          <h3>{book.name}</h3>
+        <div className="flex-1 min-w-0 pr-2 max-w-[25rem]">
+          <h3 className="max-xs:text-lg font-semibold min-xs:truncate">
+            {book.name}
+          </h3>
           <BookGenrePill>{book.genre}</BookGenrePill>
           <p className="mt-3 line-clamp-8">{book.description}</p>
         </div>
