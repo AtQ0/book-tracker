@@ -8,17 +8,25 @@ type AsProp<T extends React.ElementType> = {
 
 // Custom props that belong only to Card (c)
 type CardOwnProps = {
-  padding?: "none" | "sm" | "md" | "lg";
+  padding?: "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
   variant?: "default" | "secondary" | "elevated" | "outline";
   showBackButton?: boolean;
   children?: React.ReactNode;
 };
+
+export type CardProps<T extends React.ElementType = "div"> = AsProp<T> &
+  CardOwnProps;
 
 const PAD = {
   none: "p-0",
   sm: "p-3",
   md: "p-5",
   lg: "p-7",
+  xl: "p-9",
+  "2xl": "p-11",
+  "3xl": "p-14",
+  "4xl": "p-16 max-xs:px-5 max-xs:pb-10",
+  "5xl": "p-20",
 } as const;
 
 const VAR = {
@@ -36,13 +44,13 @@ export default function Card<T extends React.ElementType = "div">({
   showBackButton,
   children,
   ...rest
-}: AsProp<T> & CardOwnProps) {
+}: CardProps<T>) {
   const Tag = (as || "div") as React.ElementType;
 
   return (
     <Tag
       className={twMerge(
-        "rounded-xl select-none",
+        "rounded-xl select-none relative",
         VAR[variant],
         PAD[padding],
         className
@@ -50,6 +58,7 @@ export default function Card<T extends React.ElementType = "div">({
       {...rest}
     >
       {showBackButton && <BackButton />}
+      {}
       {children}
     </Tag>
   );

@@ -1,13 +1,15 @@
-import Button from "../ui/Button";
-import Field from "../form/Field";
-import Input from "../ui/Input";
-import BackButton from "../BackButton";
+import Button from "../../../components/ui/Button";
+import Field from "../../../components/form/Field";
+import Input from "../../../components/ui/Input";
+import AuthCard from "../../../components/auth/AuthCard";
 
 export default function LoginCard() {
   return (
-    <div className="flex flex-col gap-10 justify-center items-center border-3 border-alabaster pt-20 py-10 px-13 rounded-md relative">
-      <BackButton />
-      <h2>Login</h2>
+    <AuthCard
+      showBackButton={true}
+      title="Login"
+      subtitle={"Log in to book-tracker to track,\nrate and discover books."}
+    >
       <form className="flex flex-col gap-8">
         <Field id="email" label="Email">
           <Input
@@ -29,8 +31,8 @@ export default function LoginCard() {
         </Field>
         <Button type="submit">Log in</Button>
       </form>
-      <a href="/forgot-password">Forgot password?</a>
-      <div>
+      <div className="mt-9 flex flex-col gap-5 justify-center items-center">
+        <a href="/forgot-password">Forgot password?</a>
         <p className="text-base">
           Dont have an account:{" "}
           <a href="/signup" className="underline hover:opacity-70">
@@ -39,6 +41,6 @@ export default function LoginCard() {
           !
         </p>
       </div>
-    </div>
+    </AuthCard>
   );
 }

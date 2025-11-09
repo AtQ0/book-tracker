@@ -1,24 +1,56 @@
-import { ReactNode } from "react";
-import BackButton from "../BackButton";
+import { twMerge } from "tailwind-merge";
+import Card, { CardProps } from "../ui/Card";
 
-type AuthCardProps = {
+type HeadingLevel = "h1" | "h2" | "h3" | "h4";
+
+type AuthCardOwnProps = {
   title?: string;
+  titleLevel?: HeadingLevel;
   subtitle?: string;
-  children?: ReactNode;
-  footer?: ReactNode;
-  showBackButton?: boolean;
 };
 
 export default function AuthCard({
   title,
+  titleLevel = "h2",
   subtitle,
+  className, // gotten from defaul HTMLElement (e.g. div)
+  // Card props and defaults
+  padding = "4xl",
+  variant,
+  showBackButton,
   children,
-  footer,
-  showBackButton = true,
-}: AuthCardProps) {
+  ...rest
+}: AuthCardOwnProps & CardProps) {
+  // uppercase identifiers are treated as variable names
+  const TitleTag = titleLevel;
+  const titleId = title ? "authcard-title" : undefined; // used for a11y
+
   return (
-    <div className="flex felx-col w-[24rem] max-[500px]:w-[20rem] h-[36rem] p-5 border-3 border-alabaster rounded-xl relative">
-      {showBackButton && <BackButton />}
-    </div>
+    <Card
+      padding={padding}
+      variant={variant}
+      showBackButton={showBackButton}
+      className={twMerge(
+        "flex flex-col justify-center items-center",
+        className
+      )}
+      aria-labelledby={titleId}
+      role="region"
+      {...rest}
+    >
+      {(title || subtitle) && (
+        <header className="mb-8">
+          {title && (
+            <TitleTag id={titleId} className="text-center mb-3">
+              {title}
+            </TitleTag>
+          )}
+          {subtitle && (
+            <p className="text-center whitespace-pre-line">{subtitle}</p>
+          )}
+        </header>
+      )}
+      {children}
+    </Card>
   );
 }

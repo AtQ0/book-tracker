@@ -31,7 +31,7 @@ export default function BookCard({ book }: BookCardProps) {
           />
         </div>
         <div>
-          <h4>{book.name}</h4>
+          <h3>{book.name}</h3>
           <BookGenrePill>{book.genre}</BookGenrePill>
           <p className="mt-3 line-clamp-8">{book.description}</p>
         </div>

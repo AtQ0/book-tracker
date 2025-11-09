@@ -1,9 +1,8 @@
 "use client";
 import { useRef, useState } from "react";
-import BackButton from "../BackButton";
-import Field from "../form/Field";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
+import Field from "../../../components/form/Field";
+import Button from "../../../components/ui/Button";
+import Input from "../../../components/ui/Input";
 import { useRouter } from "next/navigation";
 
 import {
@@ -14,6 +13,7 @@ import {
   normalizeName,
   type ErrorPayload,
 } from "@/lib/auth-helpers";
+import AuthCard from "../../../components/auth/AuthCard";
 
 export default function SignupCard() {
   const submittingRef = useRef(false);
@@ -155,66 +155,59 @@ export default function SignupCard() {
   }
 
   return (
-    <div className="flex flex-col gap-10 justify-center items-center border-3 border-alabaster pt-17 py-10 px-10 rounded-md relative text-base h-[35.55rem]">
-      <BackButton />
-      <div className="flex flex-col gap-10 justify-center items-center">
-        <div className="flex flex-col gap-6 justify-center items-center">
-          <div className="flex flex-col gap-4">
-            <h3>Create an account</h3>
-            <p className="text-center">
-              Join book-tracker to track, rate and
-              <span className="block">discover books.</span>
-            </p>
-          </div>
-
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-7"
-            noValidate
-            autoComplete="on"
-          >
-            <Field id="email" label="Email" required error={errors.email}>
-              <Input
-                name="email"
-                type="email"
-                maxLength={254}
-                placeholder="you@example.com"
-                autoCapitalize="none"
-                autoCorrect="off"
-                autoComplete="email"
-                spellCheck="false"
-                inputMode="email"
-                enterKeyHint="send"
-                onInput={clearError("email")}
-              />
-            </Field>
-            <Field id="name" label="Name" error={errors.name}>
-              <Input
-                name="name"
-                type="text"
-                maxLength={100}
-                placeholder="Your name"
-                autoComplete="name"
-                onInput={clearError("name")}
-              />
-            </Field>
-            {/* Form-level error region */}
-            <p
-              data-form-error
-              role="alert"
-              aria-live="assertive"
-              aria-atomic="true"
-              className="text-sm text-red-600"
-              hidden
-            >
-              {formError}
-            </p>
-
-            <Button type="submit" className="w-full" disabled={pending}>
-              {pending ? "Sending code..." : "Sign up"}
-            </Button>
-          </form>
-        </div>
+    <AuthCard
+      showBackButton
+      title="Create an account"
+      subtitle={"Join book-tracker to track, \nrate and discover books."}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-7"
+        noValidate
+        autoComplete="on"
+      >
+        {" "}
+        <Field id="email" label="Email" required error={errors.email}>
+          <Input
+            name="email"
+            type="email"
+            maxLength={254}
+            placeholder="you@example.com"
+            autoCapitalize="none"
+            autoCorrect="off"
+            autoComplete="email"
+            spellCheck="false"
+            inputMode="email"
+            enterKeyHint="send"
+            onInput={clearError("email")}
+          />
+        </Field>
+        <Field id="name" label="Name" error={errors.name}>
+          <Input
+            name="name"
+            type="text"
+            maxLength={100}
+            placeholder="Your name"
+            autoComplete="name"
+            onInput={clearError("name")}
+          />
+        </Field>
+        {/* Form-level error region*/}
+        <p
+          data-form-error
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          className="text-sm text-red-600"
+          hidden
+        >
+          {formError}
+        </p>
+        <Button type="submit" className="w-full" disabled={pending}>
+          {pending ? "Sending code..." : "Sign up"}
+        </Button>
+      </form>
+      <div className="mt-13">
         <p className="text-base">
           Already have an account?{" "}
           <a className="underline hover:opacity-70" href="/login">
@@ -222,6 +215,6 @@ export default function SignupCard() {
           </a>
         </p>
       </div>
-    </div>
+    </AuthCard>
   );
 }

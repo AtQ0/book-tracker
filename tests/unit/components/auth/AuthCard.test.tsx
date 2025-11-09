@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-import LoginCard from "@/components/auth/LoginCard";
+import LoginCard from "@/app/(auth)/login/LoginCard";
 
 // Hoist router moch function for asserting behavior
 const mockBack = jest.fn();

@@ -1,8 +1,8 @@
-import SignupCard from "@/components/auth/SignupCard";
+import SignupCard from "@/app/(auth)/signup/SignupCard";
 
 export default function Signup() {
   return (
-    <section className="flex justify-center items-center h-full">
+    <section>
       <SignupCard />
     </section>
   );

@@ -1,9 +1,5 @@
-import LoginCard from "@/components/auth/LoginCard";
+import LoginCard from "@/app/(auth)/login/LoginCard";
 
 export default function Login() {
-  return (
-    <section className="flex justify-center items-center h-full">
-      <LoginCard />
-    </section>
-  );
+  return <LoginCard />;
 }
