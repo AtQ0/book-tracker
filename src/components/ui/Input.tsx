@@ -16,8 +16,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       className={twMerge(
         clsx(
           "rounded-md border-kobicha border-[1px] px-2 bg-platinum h-[2.5rem] w-[18rem]",
+          "aria-[invalid=true]:border-red-600",
+          "aria-[invalid=true]:focus:ring-red-600",
+          "aria-[invalid=true]:focus:border-red-600",
           "focus:outline-none focus:ring-1 focus:ring-copper focus:border-copper",
-          "disabled:opacity-50",
+          "disabled:opacity-50 disabled:cursor-not-allowed",
           className
         )
       )}
