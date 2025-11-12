@@ -1,7 +1,5 @@
 "use client";
 import { useRouter } from "next/navigation";
-
-import { useRef, useState } from "react";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { signup } from "@/lib/api/auth";
@@ -11,13 +9,11 @@ export default function SignupCard() {
 
   return (
     <AuthCard
-      className="bg-pink-200"
       showBackButton
       title="Create an account"
       subtitle={"Join book-tracker to track, \nrate and discover books."}
     >
       <AuthForm
-        className="bg-amber-300 gap-8"
         fields={[
           {
             id: "email",
@@ -44,7 +40,7 @@ export default function SignupCard() {
         onSubmit={signup}
         onSuccess={() => router.replace("/verify")}
         footer={
-          <div className="mt-13 text-center">
+          <div className="mt-3 text-center">
             <p className="text-base">
               Already have an account?{" "}
               <a className="underline hover:opacity-70" href="/login">
