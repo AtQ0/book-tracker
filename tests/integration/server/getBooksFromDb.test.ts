@@ -7,7 +7,7 @@
 // Mock the Prisma client module (db.ts) to stub out real DB calls during tests
 jest.mock("@/lib/db", () => ({
   // Mock the Prisma client instance exporten from src/lib/db
-  db: {
+  prisma: {
     book: {
       // Mock findMany go act like Prisma, but without hitting a real DB
       findMany: jest.fn(async () => []),

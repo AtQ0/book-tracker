@@ -11,21 +11,52 @@ jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: pushMock }),
 }));
 
+type NextImageProps = Omit<
+  React.ImgHTMLAttributes<HTMLImageElement>,
+  "src" | "alt"
+> & {
+  src: string;
+  alt: string;
+  fill?: boolean;
+  priority?: boolean;
+  quality?: number;
+  loader?: unknown;
+  onLoadingComplete?: (img: HTMLImageElement) => void;
+};
+
 jest.mock("next/image", () => {
-  const MockedImage = (props: React.ComponentProps<"img">) => {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img alt={props.alt} src={props.src} {...props} />;
-  };
-  MockedImage.displayName = "NextImageMock";
-  return MockedImage;
+  const NextImageMock = React.forwardRef<HTMLImageElement, NextImageProps>(
+    (imgProps, ref) => {
+      const { alt, ...rest } = imgProps;
+
+      // clone then strip Next specific props without creating unused bindings
+      const domProps: Record<string, unknown> = { ...rest };
+      delete domProps.fill;
+      delete domProps.priority;
+      delete domProps.quality;
+      delete domProps.loader;
+      delete domProps.onLoadingComplete;
+
+      return (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          ref={ref}
+          alt={alt}
+          {...(domProps as React.ImgHTMLAttributes<HTMLImageElement>)}
+        />
+      );
+    }
+  );
+  NextImageMock.displayName = "NextImageMock";
+  return { __esModule: true, default: NextImageMock };
 });
 
 jest.mock("@/components/ui/Button", () => {
-  const MocketButton = (props: React.ComponentProps<"button">) => {
-    return <button onClick={props.onClick}>{props.children}</button>;
+  const MockedButton = (props: React.ComponentProps<"button">) => {
+    return <button {...props} />;
   };
-  MocketButton.displayName = "MockedButton";
-  return MocketButton;
+  MockedButton.displayName = "MockedButton";
+  return MockedButton;
 });
 
 // ---- Fixture ----
@@ -89,8 +120,8 @@ describe("<BookCard />", () => {
 
     it("renders empty description gracefully", () => {
       renderCard({ description: "" });
-      // Find <p> element that has a class called line-clamp-9
-      const desc = document.querySelector("p.line-clamp-9");
+      // Find <p> element that has a class called line-clamp
+      const desc = document.querySelector('p[class*="line-clamp-"]');
       expect(desc).toBeInTheDocument();
       expect(desc).toBeEmptyDOMElement();
     });

@@ -29,7 +29,7 @@ export default async function BooksPage({
   return (
     <Section>
       <Container>
-        <BookListClient initialBooks={initialBooks} />
+        <BookListClient initialBooks={initialBooks} initialSort={sort} />
       </Container>
     </Section>
   );
