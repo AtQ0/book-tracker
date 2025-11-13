@@ -48,9 +48,9 @@ const getBooksFromDb = BooksServer.getBooksFromDb as jest.Mock;
 
 // Helper to render the async server component BooksPage()
 async function renderPage(sort?: SortKey | "banana") {
-  const searchParams = Promise.resolve(
-    sort ? ({ sort } as Record<string, string>) : {}
-  );
+  const searchParams: Record<string, string | string[] | undefined> = sort
+    ? { sort }
+    : {};
 
   // BookPage is async (server component), so await it to get its JSX tree
   const ui = await BooksPage({ searchParams });

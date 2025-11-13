@@ -17,7 +17,7 @@ export type SortKey = (typeof SORT_KEYS)[number];
 
 // URL query schema for /api/books; `sort` is optional but must match one of allowed keys
 export const BookListQuerySchema = z.object({
-  sort: SortKeyEnum.optional(),
+  sort: SortKeyEnum.optional(), // optional allows undefined
 });
 
 // validates each book sent to the client matches this shape

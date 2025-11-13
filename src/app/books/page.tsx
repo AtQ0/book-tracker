@@ -4,16 +4,16 @@ import Section from "@/components/layout/Section";
 import { BookListQuerySchema, type BookDTO } from "@/lib/validations/book";
 import { getBooksFromDb } from "@/server/books";
 
-// Ensure this page is dynamic (no static cahcing)
+// Ensure this page is dynamic (meaning don't cache, always fetch fresh data)
 export const revalidate = 0;
 
 export default async function BooksPage({
   searchParams,
 }: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Record<string, string | string[] | undefined>;
 }) {
-  // Wait for searchParams to resolve
-  const params = await searchParams;
+  // Extract value (sting) from searchParams
+  const params = searchParams;
 
   // validate the ?sort= query parameter using Zod
   const parsed = BookListQuerySchema.safeParse({
