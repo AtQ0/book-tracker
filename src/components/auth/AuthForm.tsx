@@ -13,7 +13,7 @@ import {
   type ErrorPayload,
 } from "@/lib/auth-helpers";
 
-// Type for a function that has param as string and output as string
+// Type for custom optional normalizer, params string, return value string
 type Normalizer = (v: string) => string;
 
 // Description of one field in auth form
@@ -34,7 +34,7 @@ type AuthFormProps = {
   submitLabel: string;
   pendingLabel?: string;
   onSubmit: (
-    values: Record<string, string>, // object whose keys and values are strings
+    values: Record<string, string>,
     signal: AbortSignal
   ) => Promise<Response>; // returns a promise that contains a response
   onSuccess?: (res: Response) => void;
@@ -60,7 +60,7 @@ export default function AuthForm({
   // Per-field errors
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
-  // Clear field error if it's currently showing
+  // If error for that field exists, copy error object and Clear it (field: undefined)
   const clearError = (field: string) => () =>
     setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev));
 
@@ -76,22 +76,23 @@ export default function AuthForm({
     //  Move cursor to end of value
     if (el.value) {
       const len = el.value.length;
-      el.setSelectionRange?.(len, len);
+      el.setSelectionRange?.(len, len); // put cursor after last character
     }
     el.scrollIntoView?.({ block: "center", inline: "nearest" });
   };
 
+  // OnSubmit logic
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
 
-    // Global error outlet for screen readers
+    // Global error element
     const errorEl = form.querySelector<HTMLElement>("[data-form-error]");
 
     const showFormError = (msg: string) => {
-      setFormError(msg);
+      setFormError(msg); // update for sighted users
       if (errorEl) {
-        errorEl.textContent = msg;
+        errorEl.textContent = msg; // instant DOM update for a11y (screen readers)
         errorEl.removeAttribute("hidden");
       }
     };

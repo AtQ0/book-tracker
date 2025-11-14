@@ -37,16 +37,19 @@ describe("<Label />", () => {
           <Input id="phone" />
         </div>
       );
+      // Validate there is aconnection between the label and some form element (e.g. input, textarea, select etc.)
       expect(screen.getByLabelText("Phone")).toBeInTheDocument();
     });
 
     it("supports wrapping the input (discoverable without htmlFor)", () => {
       render(
         <Label>
-          Search
+          Search{" "}
+          {/* labels text should per default be inputs accessible name if not overridden by aria-label */}
           <Input aria-label="internal" />
         </Label>
       );
+      // validate that input element exists and its accessible name is overriden by aria-label
       expect(
         screen.getByRole("textbox", { name: "internal" })
       ).toBeInTheDocument();
@@ -71,6 +74,7 @@ describe("<Label />", () => {
     it("preserves non-conflicting classes alongside defaults", () => {
       render(<Label className="uppercase">Caps</Label>);
       const el = screen.getByText("Caps");
+      // Validate that custom and default styling live side by side
       expect(el).toHaveClass("uppercase", "text-sm", "text-licorice");
     });
   });

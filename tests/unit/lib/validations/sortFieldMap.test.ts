@@ -10,7 +10,7 @@ const ALLOWED_FIELDS = new Set([...DTO_FIELDS, "createdAt"]);
 
 describe("sortFieldMap", () => {
   describe("happy path", () => {
-    // Validate that every sort key (SORT_KEYS) has a corresponding mapping in sortFieldMap
+    // Validate that For every allowed sort key, that sortFieldMap actually contains a value for that key.
     it.each(SORT_KEYS)("has a mapping entry for '%s'", (key) => {
       const entry = (sortFieldMap as Record<string, unknown>)[key];
       expect(entry).toBeTruthy();

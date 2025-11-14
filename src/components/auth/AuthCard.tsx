@@ -1,5 +1,6 @@
 import { twMerge } from "tailwind-merge";
 import Card, { CardProps } from "../ui/Card";
+import React from "react";
 
 type HeadingLevel = "h1" | "h2" | "h3" | "h4";
 
@@ -23,7 +24,10 @@ export default function AuthCard({
 }: AuthCardOwnProps & CardProps) {
   // uppercase identifiers are treated as variable names
   const TitleTag = titleLevel;
-  const titleId = title ? "authcard-title" : undefined; // used for a11y
+
+  // create unique id for TitleTag in case u have >= 1 AuthCard on same page
+  const reactId = React.useId();
+  const titleId = title ? `authcard-title-${reactId}` : undefined; // used for a11y
 
   return (
     <Card

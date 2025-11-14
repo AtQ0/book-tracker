@@ -24,7 +24,7 @@ type FieldProps = {
 // Helper for merging multiple aria-describedBy ID tokens
 const mergeDescribedBy = (...parts: (string | undefined)[]) =>
   Array.from(
-    new Set(
+    new Set( //set removes duplicates
       parts
         .filter(Boolean) // remove undefined / empty strings
         .join(" ") // combine into one string
@@ -32,7 +32,7 @@ const mergeDescribedBy = (...parts: (string | undefined)[]) =>
         .split(/\s+/) // split into individual tokens
         .filter(Boolean) // remove any leftover empties
     )
-  ).join(" ") || undefined; // dedupe and rejoin
+  ).join(" ") || undefined; // rejoin index values into a string
 
 export default function Field({
   id,

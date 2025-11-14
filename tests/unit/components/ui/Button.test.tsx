@@ -33,7 +33,7 @@ describe("<Button />", () => {
 
   describe("required fields", () => {
     it("has no required props, compile-time only", () => {
-      // Type only check that ensures <Button /> is a valid React button element
+      // Type only, ensures <Button /> is a valid React button element
       const _ok: React.ReactElement = <Button />;
       void _ok;
     });

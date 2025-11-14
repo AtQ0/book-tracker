@@ -14,6 +14,7 @@ type CardOwnProps = {
   children?: React.ReactNode;
 };
 
+// Used by an external component
 export type CardProps<T extends React.ElementType = "div"> = AsProp<T> &
   CardOwnProps;
 

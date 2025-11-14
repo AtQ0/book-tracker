@@ -36,7 +36,7 @@ export default function LoginCard() {
         submitLabel="Log in"
         pendingLabel="Logging in..."
         onSubmit={login}
-        onSuccess={() => router.replace("/books/[]")}
+        onSuccess={() => router.replace("/books/[]")} // get this link straight
         className="flex flex-col gap-8"
         footer={
           <div className="mt-5 flex flex-col gap-8 justify-center items-center">

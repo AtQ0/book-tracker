@@ -99,6 +99,8 @@ describe("<Input />", () => {
       expect(node).toBeInstanceOf(HTMLInputElement);
 
       unmount();
+
+      // validate that node is null when element is unmounted
       expect(node).toBeNull();
     });
   });
@@ -118,7 +120,7 @@ describe("<Input />", () => {
       expect(el).toHaveValue("hello");
     });
 
-    it("uses the correct role for non-text types (number => spinbutton)", () => {
+    it("uses the correct role for non-text types ('spinbutton' is the ARIA accessibility role for <input type='number'>.)", () => {
       render(<Input type="number" aria-label="Qty" />);
       expect(
         screen.getByRole("spinbutton", { name: "Qty" })
