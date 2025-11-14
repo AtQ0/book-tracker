@@ -2,10 +2,18 @@ import { z } from "zod";
 
 export const SignupSchema = z
   .object({
-    email: z.string().trim().min(1).email().max(254),
-    name: z.string().trim().min(1).max(100),
+    email: z.string().email(),
+    name: z.string().min(1),
   })
-  .strict();
+  .superRefine((data, ctx) => {
+    if (data.email === data.name) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Email and name cannot be the same",
+        path: [], // empty path = form-level error
+      });
+    }
+  });
 
 // VerifySchema
 

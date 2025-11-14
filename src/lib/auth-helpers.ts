@@ -7,6 +7,7 @@ export type ErrorPayload =
       // 422 validation error shape (from Zod .flatten())
       message?: string;
       fieldErrors?: Partial<Record<FieldKey, string[]>>;
+      formErrors?: string[];
     }>
   | Readonly<{
       // Problem Details for other non-422 errors (e.g. 409/403/429/500)
@@ -29,12 +30,19 @@ export function normalizeName(raw: string): string {
   return raw.normalize("NFKC").trim().replace(/\s+/g, " ");
 }
 
-// Priority: (1) fieldErrors, (2) field, and (3) generic message
+// Priority: (1) fieldErrors, (2) formErrors, (3) field, (4) generic message
 export function extractFieldError(payload: ErrorPayload | null): {
   field?: FieldKey;
   message: string;
 } {
+  const formMsg =
+    payload &&
+    "formErrors" in payload &&
+    Array.isArray(payload.formErrors) &&
+    payload.formErrors[0];
+
   const fallback =
+    formMsg ||
     (payload && "detail" in payload && payload.detail) ||
     (payload && "message" in payload && payload.message) ||
     "Invalid data. Please check your inputs.";
