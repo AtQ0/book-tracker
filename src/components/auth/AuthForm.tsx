@@ -86,23 +86,12 @@ export default function AuthForm({
     e.preventDefault();
     const form = e.currentTarget;
 
-    // Global error element
-    const errorEl = form.querySelector<HTMLElement>("[data-form-error]");
-
     const showFormError = (msg: string) => {
       setFormError(msg); // update for sighted users
-      if (errorEl) {
-        errorEl.textContent = msg; // instant DOM update for a11y (screen readers)
-        errorEl.removeAttribute("hidden");
-      }
     };
 
     const clearFormError = () => {
       setFormError("");
-      if (errorEl) {
-        errorEl.textContent = "";
-        errorEl.setAttribute("hidden", "");
-      }
     };
 
     // Prevent double submission
@@ -239,7 +228,7 @@ export default function AuthForm({
         aria-live="assertive"
         aria-atomic="true"
         className="text-sm text-red-600"
-        hidden
+        hidden={!formError}
       >
         {formError}
       </p>

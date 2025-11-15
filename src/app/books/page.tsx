@@ -13,7 +13,7 @@ export default async function BooksPage({
   searchParams: Record<string, string | string[] | undefined>;
 }) {
   // Extract value (sting) from searchParams
-  const params = searchParams;
+  const params = await searchParams;
 
   // validate the ?sort= query parameter using Zod
   const parsed = BookListQuerySchema.safeParse({
