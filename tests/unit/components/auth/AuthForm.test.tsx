@@ -96,13 +96,14 @@ describe("AuthForm", () => {
       expect(signal).toBeInstanceOf(AbortSignal);
       expect(signal.aborted).toBe(false);
 
-      // Validate that onSuccess was called with a res args
+      // Validate that onSuccess was called with payload + Response
       await waitFor(() => {
         expect(onSuccess).toHaveBeenCalledTimes(1);
-        expect(onSuccess).toHaveBeenCalledWith(
-          expect.objectContaining({ ok: true, status: 200 })
-        );
       });
+
+      const [payload, res] = onSuccess.mock.calls[0];
+      expect(payload).toBeNull(); // json() in makeOkResponse returns null
+      expect(res).toEqual(expect.objectContaining({ ok: true, status: 200 }));
     });
   });
 

@@ -2,12 +2,10 @@
  * @jest-environment jsdom
  */
 
-import React, { ReactElement } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Card from "@/components/ui/Card";
 import type { CardProps } from "@/components/ui/Card";
-import { ReactJsxRuntime } from "next/dist/server/route-modules/app-page/vendored/rsc/entrypoints";
 
 // shared mock for router.back
 const backMock = jest.fn();

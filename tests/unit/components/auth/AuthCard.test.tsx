@@ -22,7 +22,7 @@ const getPasswordInput = () =>
   screen.getByLabelText(/password/i) as HTMLInputElement;
 const getSubmitButton = () => screen.getByRole("button", { name: /log in/i });
 const getForgotPasswordLink = () =>
-  screen.getByRole("link", { name: /forgot password\?/i });
+  screen.getByRole("link", { name: /forgot password/i });
 const getSignUpLink = () => screen.getByRole("link", { name: /sign up/i });
 const getBackButton = () => screen.getByRole("button", { name: /back/i });
 
