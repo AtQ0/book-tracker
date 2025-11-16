@@ -10,4 +10,4 @@ export const ARGON2_OPTS = {
 
 // Durations (ms)
 export const CODE_TTL_MS = 10 * 60 * 1000; // 10 min
-export const RESEND_COOLDOWN_MS = 60 * 1000; // 60
+export const RESEND_COOLDOWN_MS = 60 * 1000; // 60 sec

@@ -1,6 +1,6 @@
 import SignupCard from "@/app/(auth)/signup/SignupCard";
 
-export default function Signup() {
+export default function SignupPage() {
   return (
     <section>
       <SignupCard />

@@ -1,5 +1,5 @@
 import LoginCard from "@/app/(auth)/login/LoginCard";
 
-export default function Login() {
+export default function LoginPage() {
   return <LoginCard />;
 }

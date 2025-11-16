@@ -51,7 +51,11 @@ export async function POST(req: Request) {
         return problem(502, "Bad Gateway", "Could not send email. Try again.");
       case "ok":
         return json(
-          { ok: true, expiresAt: result.expiresAt.toISOString() },
+          {
+            ok: true,
+            expiresAt: result.expiresAt.toISOString(),
+            session: result.session,
+          },
           201
         );
       default: {

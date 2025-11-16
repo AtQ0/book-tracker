@@ -15,7 +15,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       ref={ref}
       className={twMerge(
         clsx(
-          "rounded-md border-kobicha border-[1px] px-2 bg-platinum h-[2.5rem] w-[18rem]",
+          "rounded-md border-kobicha border-[1px] px-2 bg-platinum h-[2.5rem] min-w-[18rem]",
           "aria-[invalid=true]:border-red-600",
           "aria-[invalid=true]:focus:ring-red-600",
           "aria-[invalid=true]:focus:border-red-600",

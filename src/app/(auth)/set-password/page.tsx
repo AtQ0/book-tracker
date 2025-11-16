@@ -1,4 +1,4 @@
-export default function SetPassword() {
+export default function SetPasswordPage() {
   return (
     <div>
       <p>this is where you set your password</p>

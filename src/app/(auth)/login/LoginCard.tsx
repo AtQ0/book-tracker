@@ -40,15 +40,22 @@ export default function LoginCard() {
         className="flex flex-col gap-8"
         footer={
           <div className="mt-5 flex flex-col gap-8 justify-center items-center">
-            <a href="/forgot-password" className="underline hover:opacity-70">
-              Forgot password?
-            </a>
+            <p>
+              {" "}
+              <a href="/forgot-password" className="underline hover:opacity-70">
+                Forgot password
+              </a>
+              ?
+            </p>
+
             <p className="text-base">
               Do not have an account?{" "}
-              <a href="/signup" className="underline hover:opacity-70">
+              <a
+                href="/signup"
+                className="font-semibold underline decoration-[0.0777rem] hover:opacity-70"
+              >
                 Sign up
               </a>
-              .
             </p>
           </div>
         }

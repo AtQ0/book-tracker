@@ -13,7 +13,11 @@ export default function SignupCard() {
       title="Create an account"
       subtitle={"Join book-tracker to track, \nrate and discover books."}
     >
-      <AuthForm
+      <AuthForm<{
+        ok: true;
+        expiresAt: string;
+        session: string;
+      }>
         fields={[
           {
             id: "email",
@@ -38,7 +42,15 @@ export default function SignupCard() {
         submitLabel="Sign up"
         pendingLabel="Sending data..."
         onSubmit={signup}
-        onSuccess={() => router.replace("/verify")}
+        onSuccess={(data) => {
+          const session = data.session;
+
+          if (session) {
+            router.replace(`/verify?session=${encodeURIComponent(session)}`);
+          } else {
+            router.replace("/verify");
+          }
+        }}
         footer={
           <div className="mt-3 text-center">
             <p className="text-base">
@@ -49,7 +61,7 @@ export default function SignupCard() {
             </p>
           </div>
         }
-      ></AuthForm>
+      />
     </AuthCard>
   );
 }

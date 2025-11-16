@@ -11,12 +11,13 @@ export type SignupDeps = {
     name: string;
     code: string;
     ttlMin: number;
+    codeId: string;
   }) => Promise<void>;
 };
 
 // runSignup return must be exactly one of these shapes
 export type SignupResult =
-  | { kind: "ok"; expiresAt: Date }
+  | { kind: "ok"; expiresAt: Date; session: string }
   | { kind: "conflict"; field: "email"; message: string }
   | { kind: "cooldown" }
   | { kind: "mail-failed" };
@@ -66,6 +67,7 @@ Promise<SignupResult> {
 
   // 2) Replace any old verification codes/sessions with a fresh one (atomic)
   const { code, expiresAt, codeId } = await prisma.$transaction(async (tx) => {
+    // Remove old verification code for a specific user
     await tx.verificationCode.deleteMany({
       where: { userId: user.id, purpose: "SIGNUP_VERIFY_EMAIL" },
     });
@@ -95,6 +97,7 @@ Promise<SignupResult> {
       name,
       code,
       ttlMin: Math.floor(ttlMs / 60000), // convert ms to minutes
+      codeId, // pass through session code so mail can build verify link
     });
   } catch {
     await prisma.verificationCode
@@ -104,5 +107,5 @@ Promise<SignupResult> {
   }
 
   // Success (201 Created)
-  return { kind: "ok" as const, expiresAt };
+  return { kind: "ok" as const, expiresAt, session: codeId };
 }

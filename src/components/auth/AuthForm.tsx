@@ -29,20 +29,20 @@ type FieldSpec = {
   normalize?: Normalizer;
 };
 
-type AuthFormProps = {
+type AuthFormProps<Data = unknown> = {
   fields: FieldSpec[];
   submitLabel: string;
   pendingLabel?: string;
   onSubmit: (
     values: Record<string, string>,
     signal: AbortSignal
-  ) => Promise<Response>; // returns a promise that contains a response
-  onSuccess?: (res: Response) => void;
+  ) => Promise<Response>;
+  onSuccess?: (data: Data, res: Response) => void;
   className?: string;
   footer?: React.ReactNode;
 };
 
-export default function AuthForm({
+export default function AuthForm<Data = unknown>({
   fields,
   submitLabel,
   pendingLabel = "Working...",
@@ -50,7 +50,7 @@ export default function AuthForm({
   onSuccess,
   className,
   footer,
-}: AuthFormProps) {
+}: AuthFormProps<Data>) {
   const submittingRef = useRef(false);
   const [pending, setPending] = useState(false);
 
@@ -135,7 +135,8 @@ export default function AuthForm({
 
       // If successful request, invoke onSuccess callback with res
       if (res.ok) {
-        onSuccess?.(res);
+        const payload = await parseJsonIfAny(res);
+        onSuccess?.(payload as Data, res);
         return;
       }
 
@@ -221,13 +222,12 @@ export default function AuthForm({
           />
         </Field>
       ))}
-
       <p
         data-form-error
         role="alert"
         aria-live="assertive"
         aria-atomic="true"
-        className="text-sm text-red-600"
+        className="text-xs text-center text-red-600"
         hidden={!formError}
       >
         {formError}
