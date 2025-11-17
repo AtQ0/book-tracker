@@ -4,18 +4,18 @@ import Section from "@/components/layout/Section";
 import { BookListQuerySchema, type BookDTO } from "@/lib/validations/book";
 import { getBooksFromDb } from "@/server/books";
 
-// Ensure this page is dynamic (meaning don't cache, always fetch fresh data)
+// Mark page as being dynamic, meaning don't cache but always fetch fresh data
 export const revalidate = 0;
 
 export default async function BooksPage({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  // Extract value (sting) from searchParams
+  // Resolve async searchParams into a normal variable
   const params = await searchParams;
 
-  // validate the ?sort= query parameter using Zod
+  // Runtime defensive validation of the ?sort= query parameter using Zod
   const parsed = BookListQuerySchema.safeParse({
     sort: typeof params.sort === "string" ? params.sort : undefined,
   });

@@ -44,7 +44,12 @@ export default function BookCard({ book }: BookCardProps) {
 
       {/* Bottom: actions */}
       <Card padding="md" variant="secondary" className="max-xs:p-3">
-        <BookActions onLogin={() => router.push("/login")} />
+        <BookActions
+          onLogin={() => {
+            sessionStorage.setItem("redirectTo", `/books/${book.id}`);
+            router.push("/login");
+          }}
+        />
       </Card>
     </Card>
   );
@@ -86,6 +91,7 @@ function BookCover({ src, alt, ratio = "2:3", className }: BookCoverProps) {
   );
 }
 
+// Helps with rendering the book genre pill
 function BookGenrePill({ children }: { children: React.ReactNode }) {
   return (
     <p className="mt-1 w-fit rounded-2xl px-2 border border-black-bean bg-coyote text-white">
@@ -94,10 +100,12 @@ function BookGenrePill({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Strip div from its ref and add additional props in form of a onLogin function
 type BookActionsProps = React.ComponentPropsWithoutRef<"div"> & {
-  onLogin: () => void;
+  onLogin: () => void; // type the incoming function as an anonymous function that takes no args and returns nothing
 };
 
+// Helps with rendering books action
 function BookActions({ onLogin, className, ...rest }: BookActionsProps) {
   return (
     <div className={twMerge("flex justify-between", className)} {...rest}>

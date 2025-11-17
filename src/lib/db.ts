@@ -1,15 +1,15 @@
 // Prisma client singleton
 import { PrismaClient } from "@prisma/client";
 
-// Type-annotate the `prisma` key on existing global object for storing a PrismaClient instance
+// Extend javascripts global object with the prisma property containing the PrismaClient
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-// reuse existing prisma client or create new one
+// store prisma client in an additional constant to ensure we use same instance, without creating duplicates
 export const prisma =
   globalForPrisma.prisma ||
   new PrismaClient({
     log: ["error", "warn"], // log in console any wrongs during connection, queries, disconnection
   });
 
-// Cache the PrismaClient instance globally in dev/runtime to prevent new instances on hot reload
+// Safeguard to update the global object prisma property with PrismaClient, in case we had to craete new instance
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

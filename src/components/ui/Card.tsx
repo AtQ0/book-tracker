@@ -1,12 +1,12 @@
 import { twMerge } from "tailwind-merge";
 import BackButton from "../BackButton";
 
-// Generic prop type allowing polymorphic "as" (div, article, section, etc.)
+// Polymorphic props for any React.ElementType (div, article, section, etc.), minus ref and any existing `as`
 type AsProp<T extends React.ElementType> = {
   as?: T;
 } & Omit<React.ComponentPropsWithoutRef<T>, "as">;
 
-// Custom props that belong only to Card (c)
+// Custom props that belong only to Card
 type CardOwnProps = {
   padding?: "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
   variant?: "default" | "secondary" | "elevated" | "outline";
@@ -14,7 +14,7 @@ type CardOwnProps = {
   children?: React.ReactNode;
 };
 
-// Used by an external component
+// Combine polymorphic element props with Card’s own custom props
 export type CardProps<T extends React.ElementType = "div"> = AsProp<T> &
   CardOwnProps;
 

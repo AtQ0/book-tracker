@@ -5,6 +5,8 @@ type SectionProps = React.ComponentPropsWithoutRef<"section"> & {
   variant?: "default" | "dense" | "loose" | "bleed";
 };
 
+// No forwardRef needed since this layout component doesn’t expose or manipulate the underlying DOM node
+
 const VARIANTS = {
   default: "py-8 md:py-10",
   dense: "py-6 md:py-8",

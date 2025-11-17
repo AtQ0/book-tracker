@@ -6,12 +6,15 @@ import { sortFieldMap, type BookDTO } from "@/lib/validations/book";
 export async function getBooksFromDb(
   sort?: keyof typeof sortFieldMap
 ): Promise<BookDTO[]> {
-  // if no valid ?sort= is provided in the query, order books by newest first
+  // Default order: if no valid ?sort= is provided in the query, order books by newest first
   let orderBy: Prisma.BookOrderByWithRelationInput[] = [{ createdAt: "desc" }];
 
   // Override default order if sort is present in the query
   if (sort) {
+    // index sortFieldMap object with sort and destructure the keys belonging to that specific sort key
     const { field, direction } = sortFieldMap[sort];
+
+    //replace orderby value with field (sort), direction (sort value) and the id
     orderBy = [{ [field]: direction }, { id: "asc" }]; // add id as a tie-breaker
   }
 

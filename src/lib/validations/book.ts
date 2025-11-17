@@ -15,12 +15,12 @@ export const SortKeyEnum = z.enum(SORT_KEYS);
 // Derive a TypeScript union type ("read" | "want" | ...) from the tuple
 export type SortKey = (typeof SORT_KEYS)[number];
 
-// URL query schema for /api/books; `sort` is optional but must match one of allowed keys
+// URL query schema where `sort` is optional, if existing its value must match one of allowed sort keys
 export const BookListQuerySchema = z.object({
   sort: SortKeyEnum.optional(), // optional allows undefined
 });
 
-// validates each book sent to the client matches this shape
+// Validates in RUNTIME that each book sent to the client matches this shape
 export const BookDTOSchema = z
   .object({
     id: z.string().trim().min(1),
@@ -35,10 +35,10 @@ export const BookDTOSchema = z
   })
   .strict();
 
-// Infer TS type from the DTO schema
+// Infer TS type from the DTO schema, used in compiletime/dev-time
 export type BookDTO = z.infer<typeof BookDTOSchema>;
 
-// Map UI sort keys corresponding to BookDTO fields and sort directions used by Prisma
+// Runtime Lookup table (object) converting validated sort keys into Prisma orderBy instructions
 export const sortFieldMap: Record<
   z.infer<typeof SortKeyEnum>,
   { field: keyof BookDTO | "createdAt"; direction: "asc" | "desc" }
