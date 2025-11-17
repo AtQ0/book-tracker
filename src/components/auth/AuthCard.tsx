@@ -14,15 +14,15 @@ export default function AuthCard({
   title,
   titleLevel = "h2",
   subtitle,
-  className, // gotten from defaul HTMLElement (e.g. div)
   // Card props and defaults
+  className, // gotten from defaul HTMLElement (e.g. div)
   padding = "4xl",
   variant,
   showBackButton,
   children,
   ...rest
 }: AuthCardOwnProps & CardProps) {
-  // uppercase identifiers are treated as variable names
+  // Park titleLevel value in an uppercase variable as JSX reads them as variables
   const TitleTag = titleLevel;
 
   // create unique id for TitleTag in case u have >= 1 AuthCard on same page

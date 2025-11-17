@@ -46,6 +46,7 @@ export default function Card<T extends React.ElementType = "div">({
   children,
   ...rest
 }: CardProps<T>) {
+  // Park as value or div in an uppercase variable as JSX reads them as variables
   const Tag = (as || "div") as React.ElementType;
 
   return (
