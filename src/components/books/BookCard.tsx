@@ -100,7 +100,7 @@ function BookGenrePill({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Strip div from its ref and add additional props in form of a onLogin function
+// All standard HTML <div> props & additional, but without the built-in ref
 type BookActionsProps = React.ComponentPropsWithoutRef<"div"> & {
   onLogin: () => void; // type the incoming function as an anonymous function that takes no args and returns nothing
 };

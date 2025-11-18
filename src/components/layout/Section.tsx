@@ -1,6 +1,7 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 
+// All standard HTML <section> props & additional, but without the built-in ref
 type SectionProps = React.ComponentPropsWithoutRef<"section"> & {
   variant?: "default" | "dense" | "loose" | "bleed";
 };

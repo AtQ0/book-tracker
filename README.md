@@ -1,4 +1,4 @@
-Book tracker is a fullstack Next.js project that uses React in the frontend and Node.js in the backend. The application uses Docker Compose to run a virtual PostgreSQL instance for development, together with a Maildev container that captures all outgoing emails in a local inbox for easy testing. It relies on Prisma for database access, PostgreSQL for data storage, Tailwind for styling, and Zod for runtime validation. The project also includes Jest and Testing Library for both unit testing and component testing, as well as Nodemailer for email verification in the authentication flow. Argon2 is used for secure password hashing and Faker is used for generating development data.
+Book tracker is a fullstack TypeScript project built with the Next.js framework, using React for the frontend and Node.js for the backend. The application uses Docker Compose to run a virtual PostgreSQL instance for development, together with a Maildev container that captures all outgoing emails in a local inbox for easy testing. It relies on Prisma for database access, PostgreSQL for data storage, Tailwind for styling, and Zod for runtime validation. The project also includes Jest and Testing Library for both unit testing and component testing, as well as Nodemailer for email verification in the authentication flow. Argon2 is used for secure password hashing and Faker is used for generating development data.
 
 ## Getting Started
 
@@ -9,7 +9,7 @@ git clone https://github.com/AtQ0/book-tracker.git
 cd book-tracker
 ```
 
-or simply downloading it from:
+or simply by downloading it from:
 https://github.com/AtQ0/book-tracker
 
 Second, set up environment files by creating copies from .env.example by typing the below in the terminal:
@@ -34,25 +34,25 @@ POSTGRES_DB=booktracker_dev
 DATABASE_URL="postgresql://booktracker:secret@localhost:5433/booktracker_dev?schema=public"
 ```
 
-Third, start the Docker services that create the PostgreSQL and the Maildev containers by typing the below in the terminal:
+Third, make sure Docker Desktop is running, then start the Docker services that create the PostgreSQL and Maildev containers by typing the command below in the terminal:
 
 ```bash
 docker compose up -d
 ```
 
-Fourth, run Prisma migration so that it applyes the database schema to the running PostgreSQL instance by typing the below in terminal:
+Fourth, run the Prisma migration so that it applies the database schema to the running PostgreSQL instance by typing the command below in the terminal:
 
 ```bash
 npx prisma migrate dev
 ```
 
-Fifth, seed the database so its populated with initial data, by typing the below in the terminal:
+Fifth, seed the database so it is populated with initial data by typing the command below in the terminal:
 
 ```bash
 npx prisma db seed
 ```
 
-Sixth and lastly, run the development server by typing the below in the terminal:
+Sixth and lastly, run the development server by typing the command below in the terminal:
 
 ```bash
 npm run dev
@@ -61,7 +61,7 @@ npm run dev
 Open http://localhost:3000
 in your browser to see the development server.
 Open http://localhost:1080
-to view the Maildev client and inspect captured emails.
+in your browser to view the Maildev client and inspect captured emails.
 
 ## Section X
 
