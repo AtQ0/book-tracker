@@ -10,7 +10,7 @@ export const SignupSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Email and name cannot be the same",
-        path: [], // empty path = form-level error
+        path: [], // empty path = classify error as a form-level error
       });
     }
   });

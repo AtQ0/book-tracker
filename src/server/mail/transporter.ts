@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 let _transporter: nodemailer.Transporter | null = null;
 
 export function getTransporter() {
+  // If a transporter has already been created, return the cached one
   if (_transporter) return _transporter;
 
   // Parse SMTP port or fall back to MailDev default (1025)

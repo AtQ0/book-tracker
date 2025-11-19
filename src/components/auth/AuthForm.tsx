@@ -51,20 +51,21 @@ export default function AuthForm<Data = unknown>({
   className,
   footer,
 }: AuthFormProps<Data>) {
+  // Syncronous/instant flag used for preventing double form submission
   const submittingRef = useRef(false);
-  const [pending, setPending] = useState(false);
 
+  const [pending, setPending] = useState(false);
   // Global form-level error message
   const [formError, setFormError] = useState("");
 
   // Per-field errors
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
-  // If error for that field exists, copy error object and Clear it (field: undefined)
+  // If error for that field exists, copy error object and clear it (field: undefined)
   const clearError = (field: string) => () =>
     setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev));
 
-  // Focus helper
+  // Focus helper, for focuing on e.g. a <input /> element
   const focusField = (form: HTMLFormElement, name?: string) => {
     if (!name) return;
     const el = form.elements.namedItem(name) as HTMLInputElement | null;
@@ -84,7 +85,9 @@ export default function AuthForm<Data = unknown>({
   // OnSubmit logic
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = e.currentTarget;
+
+    // Create reference to the dom-element responsible for generating the event
+    const form = e.currentTarget; // gives us access to form.checkValidity() and form.reportValidity()
 
     const showFormError = (msg: string) => {
       setFormError(msg); // update for sighted users
@@ -109,6 +112,7 @@ export default function AuthForm<Data = unknown>({
     submittingRef.current = true;
     setPending(true);
 
+    // Extract current input values from the form into a structured FormData object
     const fd = new FormData(e.currentTarget);
 
     // central default normalizers by name
@@ -131,6 +135,7 @@ export default function AuthForm<Data = unknown>({
     const { signal, cancel } = timeoutSignal(12_000);
 
     try {
+      // Conduct a callback to login  function, passed down by LoginCard, via onSubmit prop
       const res = await onSubmit(values, signal);
 
       // If successful request, invoke onSuccess callback with res

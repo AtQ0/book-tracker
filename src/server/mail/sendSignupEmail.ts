@@ -15,10 +15,12 @@ export async function sendSignupEmail({
   ttlMin,
   codeId,
 }: SendSignupEmailArgs) {
+  // Pick MAIL_FROM if it exists and has content after trimming, otherwise fall back to the default address
   const from =
     (process.env.MAIL_FROM ?? "no-reply@book-tracker.local").trim() ||
     "no-reply@book-tracker.local";
 
+  // Get the cached Nodemailer transporter
   const transporter = getTransporter();
 
   // Build verify link using the same session id that frontend will use

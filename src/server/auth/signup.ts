@@ -30,6 +30,7 @@ Promise<SignupResult> {
   // 1) reuse/unverified user or create
   const existing = await prisma.user.findUnique({
     where: { email },
+    // if email exists include these fields in the result
     select: { id: true, emailVerified: true },
   });
 

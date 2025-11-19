@@ -9,19 +9,23 @@ import {
 } from "@/server/auth/config";
 import { json, problem } from "@/server/http";
 
+// Force route to be run in a full Node.js environemnt instead of the default Edge runtime
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => ({})); // Parse json to .js
-    const parsed = SignupSchema.safeParse(body); // Validate via Zod
+    // Parse request body to JS object (fallback to {} if JSON is invalid)
+    const body = await req.json().catch(() => ({}));
+    // Validate via Zod
+    const parsed = SignupSchema.safeParse(body); // safeParse returns errors instead of throwing
 
-    // If input fails schema check return a 422 response
+    // If input fails signupSchema check, return a 422 response
     if (!parsed.success) {
       const { fieldErrors } = parsed.error.flatten();
       return json({ message: "Invalid data", fieldErrors }, 422);
     }
 
+    // Normalize email and data
     const email = normalizeEmail(parsed.data.email);
     const name = normalizeName(parsed.data.name);
 
