@@ -36,7 +36,7 @@ type AuthFormProps<Data = unknown> = {
   onSubmit: (
     values: Record<string, string>,
     signal: AbortSignal
-  ) => Promise<Response>;
+  ) => Promise<Response>; // this is what a fetch always returns
   onSuccess?: (data: Data, res: Response) => void;
   className?: string;
   footer?: React.ReactNode;
@@ -102,6 +102,7 @@ export default function AuthForm<Data = unknown>({
 
     // Run HTML5 validation on inputted data
     if (!form.checkValidity()) {
+      //trigger native browser behavior (e.g. field gets focused, red outline etc.)
       form.reportValidity();
       return;
     }
@@ -124,14 +125,15 @@ export default function AuthForm<Data = unknown>({
     // Use normalizers on input
     const values: Record<string, string> = {};
     for (const spec of fields) {
+      // get input value from that specific field
       const raw = String(fd.get(spec.name) ?? "");
       const normalize = spec.normalize ?? defaults[spec.name];
 
-      // store normalized input data under a key matching the field name (spec.name)
+      // store normalized input data in the values object under a key matching the field name (spec.name)
       values[spec.name] = normalize ? normalize(raw) : raw;
     }
 
-    // create an AbortSignal that auto-cancels after 12 seconds
+    // create an AbortSignal and a timer that aborts the fetch after XX seconds
     const { signal, cancel } = timeoutSignal(12_000);
 
     try {
