@@ -1,20 +1,22 @@
 import { NextResponse } from "next/server";
 
-// Return a standard JSON response with the given body and status (cache disabled)
+// Helper that returns a normal JSON response (success or client error) with cache disabled
 export function json(body: unknown, status: number) {
   const res = NextResponse.json(body, { status });
   res.headers.set("Cache-Control", "no-store");
   return res;
 }
 
-// Helper, wraps obj in NextResponse & returns proper HTTP JSON response to send to Cli
+// Helper that returns a standardized RFC 7807 error response with cache disabled
 export function problem(
   status: number,
   title: string,
   detail?: string,
   extra?: Record<string, unknown>
 ) {
+  // Create a new NextResponse manually
   const res = new NextResponse(
+    // Build the body of the response
     JSON.stringify({
       type: "about:blank",
       title,
