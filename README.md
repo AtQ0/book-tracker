@@ -20,10 +20,10 @@ cp .env.example .env.local
 ```
 
 Then open .env and .env.local and set values for:<br>
-POSTGRES_USER<br>
-POSTGRES_PASSWORD<br>
-POSTGRES_DB<br>
-DATABASE_URL
+*POSTGRES_USER<br>
+*POSTGRES_PASSWORD<br>
+*POSTGRES_DB<br>
+*DATABASE_URL
 
 Example:
 
