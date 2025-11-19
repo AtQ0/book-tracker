@@ -9,7 +9,7 @@ git clone https://github.com/AtQ0/book-tracker.git
 cd book-tracker
 ```
 
-or simply by downloading it from:
+or simply by downloading it from:<br>
 https://github.com/AtQ0/book-tracker
 
 Second, set up environment files by creating copies from .env.example by typing the below in the terminal:
@@ -19,8 +19,7 @@ cp .env.example .env
 cp .env.example .env.local
 ```
 
-Then open .env and .env.local and set values for:
-
+Then open .env and .env.local and set values for:<br>
 POSTGRES_USER<br>
 POSTGRES_PASSWORD<br>
 POSTGRES_DB<br>
@@ -60,7 +59,7 @@ npm run dev
 ```
 
 Open http://localhost:3000
-in your browser to see the development server.
+in your browser to see the development server.<br>
 Open http://localhost:1080
 in your browser to view the Maildev client and inspect captured emails.
 
