@@ -21,8 +21,11 @@ export async function POST(req: Request) {
 
     // If input fails signupSchema check, return a 422 response
     if (!parsed.success) {
-      const { fieldErrors } = parsed.error.flatten();
-      return json({ message: "Invalid data", fieldErrors }, 422);
+      const { fieldErrors, formErrors } = parsed.error.flatten();
+      return json(
+        { message: formErrors[0] ?? "Invalid data", fieldErrors },
+        422
+      );
     }
 
     // Normalize email and data

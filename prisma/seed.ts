@@ -134,7 +134,7 @@ async function main() {
 main()
   .catch((err) => {
     console.error(err);
-    process.exit(1);
+    process.exit(1); // Its good practice to exit the Node process with code 1 to signal that the seed failed
   })
   .finally(async () => {
     await db.$disconnect();

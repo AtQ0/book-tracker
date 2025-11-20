@@ -19,18 +19,7 @@ export type ErrorPayload =
       message?: string;
     }>;
 
-/** Lower-case FULL address for canonical equality. */
-export function normalizeEmail(raw: string): string {
-  const cleaned = raw.normalize("NFKC").trim().replace(/\s+/g, "");
-  return cleaned.toLowerCase();
-}
-
-/** Trim + collapse internal whitespace to single spaces. */
-export function normalizeName(raw: string): string {
-  return raw.normalize("NFKC").trim().replace(/\s+/g, " ");
-}
-
-// Priority: (1) fieldErrors, (2) formErrors, (3) field, (4) generic message
+// Convert server error payload into { field, message } for UI display
 export function extractFieldError(payload: ErrorPayload | null): {
   field?: FieldKey;
   message: string;
@@ -58,6 +47,17 @@ export function extractFieldError(payload: ErrorPayload | null): {
 
   const field = payload && "field" in payload ? payload.field : undefined;
   return { field, message: fallback };
+}
+
+/** Lower-case FULL address for canonical equality. */
+export function normalizeEmail(raw: string): string {
+  const cleaned = raw.normalize("NFKC").trim().replace(/\s+/g, "");
+  return cleaned.toLowerCase();
+}
+
+/** Trim + collapse internal whitespace to single spaces. */
+export function normalizeName(raw: string): string {
+  return raw.normalize("NFKC").trim().replace(/\s+/g, " ");
 }
 
 // Helper for aborting async operations after a period of time

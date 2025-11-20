@@ -21,10 +21,10 @@ cp .env.example .env.local
 
 Then open .env and .env.local and set values for:
 
-- POSTGRES_USER
-- POSTGRES_PASSWORD
-- POSTGRES_DB
-- DATABASE_URL
+- POSTGRES_USER:
+- POSTGRES_PASSWORD:
+- POSTGRES_DB:
+- DATABASE_URL:
 
 Example:
 
