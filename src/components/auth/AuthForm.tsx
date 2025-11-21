@@ -20,7 +20,7 @@ type Normalizer = (v: string) => string;
 type FieldSpec = {
   id: string;
   label: string;
-  type: React.ComponentPropsWithoutRef<"input">["type"];
+  type: React.ComponentPropsWithoutRef<"input">["type"]; // reuse rich union type of inputs type property
   name: string;
   autoComplete?: string;
   placeholder?: string;
@@ -140,7 +140,7 @@ export default function AuthForm<Data = unknown>({
       // Conduct a callback to login  function, passed down by LoginCard, via onSubmit prop
       const res = await onSubmit(values, signal);
 
-      // If successful request, invoke onSuccess callback with res
+      // If successful, parse JSON payload and call onSuccess with (data, res)
       if (res.ok) {
         const payload = await parseJsonIfAny(res);
         onSuccess?.(payload as Data, res);

@@ -18,7 +18,7 @@ export async function sendSignupEmail({
   // Pick MAIL_FROM if it exists and has content after trimming, otherwise fall back to the default address
   const from =
     (process.env.MAIL_FROM ?? "no-reply@book-tracker.local").trim() ||
-    "no-reply@book-tracker.local";
+    "no-reply@book-tracker.local"; // empty string is falsy after trim
 
   // Get the cached Nodemailer transporter
   const transporter = getTransporter();

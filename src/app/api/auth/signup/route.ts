@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     if (!parsed.success) {
       const { fieldErrors, formErrors } = parsed.error.flatten();
       return json(
-        { message: formErrors[0] ?? "Invalid data", fieldErrors },
+        { message: formErrors[0] ?? "Invalid data", fieldErrors }, //custom error message for formErrors and generic ("invalid data") for fieldErrors
         422
       );
     }
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
         );
       default: {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const _exhaustive: never = result;
+        const _exhaustive: never = result; //Ensure all SignupResult cases are handled
 
         return problem(
           500,
