@@ -46,8 +46,8 @@ export default function BookCard({ book }: BookCardProps) {
       <Card padding="md" variant="secondary" className="max-xs:p-3">
         <BookActions
           onLogin={() => {
-            sessionStorage.setItem("redirectTo", `/books/${book.id}`);
-            router.push("/login");
+            const next = `/books/${book.id}`;
+            router.push(`/login?next=${encodeURIComponent(next)}`);
           }}
         />
       </Card>

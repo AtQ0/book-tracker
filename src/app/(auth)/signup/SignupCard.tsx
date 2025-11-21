@@ -1,11 +1,13 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { signup } from "@/lib/api/auth";
 
 export default function SignupCard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next");
 
   return (
     <AuthCard
@@ -45,17 +47,28 @@ export default function SignupCard() {
         onSuccess={(data) => {
           const session = data.session;
 
+          const params = new URLSearchParams();
+
           if (session) {
-            router.replace(`/verify?session=${encodeURIComponent(session)}`);
-          } else {
-            router.replace("/verify");
+            params.set("session", session);
           }
+          if (next && next.startsWith("/")) {
+            params.set("next", next);
+          }
+
+          const query = params.toString();
+          router.replace(query ? `/verify?${query}` : "/verify");
         }}
         footer={
           <div className="mt-3 text-center">
             <p className="text-base">
               Already have an account?{" "}
-              <a className="underline hover:opacity-70" href="/login">
+              <a
+                className="underline hover:opacity-70"
+                href={
+                  next ? `/login?next=${encodeURIComponent(next)}` : "/login"
+                }
+              >
                 Log in
               </a>
             </p>

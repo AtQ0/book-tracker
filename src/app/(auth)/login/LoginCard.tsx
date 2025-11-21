@@ -1,11 +1,14 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { login } from "@/lib/api/auth";
 
 export default function LoginCard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next");
+
   return (
     <AuthCard
       showBackButton
@@ -36,7 +39,13 @@ export default function LoginCard() {
         submitLabel="Log in"
         pendingLabel="Logging in..."
         onSubmit={login}
-        onSuccess={() => router.replace("/books/[]")} // get this link straight
+        onSuccess={() => {
+          if (next && next.startsWith("/")) {
+            router.replace(next);
+          } else {
+            router.replace("/myshelf"); // get this link straight
+          }
+        }}
         className="flex flex-col gap-8"
         footer={
           <div className="mt-5 flex flex-col gap-8 justify-center items-center">
@@ -51,7 +60,9 @@ export default function LoginCard() {
             <p className="text-base">
               Do not have an account?{" "}
               <a
-                href="/signup"
+                href={
+                  next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"
+                }
                 className="font-semibold underline decoration-[0.0777rem] hover:opacity-70"
               >
                 Sign up

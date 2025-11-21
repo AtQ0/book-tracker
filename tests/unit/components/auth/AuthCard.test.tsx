@@ -13,6 +13,9 @@ jest.mock("next/navigation", () => ({
     back: mockBack,
     push: jest.fn(),
   }),
+  useSearchParams: () => ({
+    get: () => null,
+  }),
 }));
 
 // Help queries

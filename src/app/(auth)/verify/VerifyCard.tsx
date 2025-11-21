@@ -2,14 +2,19 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import AuthForm from "@/components/auth/AuthForm";
-import AuthCard from "../../../components/auth/AuthCard";
+import AuthCard from "@/components/auth/AuthCard";
 import { verifySignup } from "@/lib/api/auth";
 
 export default function VerifyCard() {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const source = searchParams.get("source");
-  const fromEmail = source == "email";
+  const fromEmail = source === "email";
+
+  const session = searchParams.get("session") ?? "";
+  const next = searchParams.get("next");
+
   return (
     <AuthCard
       className="gap-3"
@@ -33,8 +38,16 @@ export default function VerifyCard() {
         ]}
         submitLabel="Verify"
         pendingLabel="Checking data..."
-        onSubmit={verifySignup}
-        onSuccess={() => router.replace("/login")}
+        onSubmit={(values, signal) =>
+          verifySignup({ ...values, session }, signal)
+        }
+        onSuccess={() => {
+          if (next && next.startsWith("/")) {
+            router.replace(`/login?next=${encodeURIComponent(next)}`);
+          } else {
+            router.replace("/login");
+          }
+        }}
         footer={
           <div className="text-center mt-4">
             <p className="text-base">
@@ -42,7 +55,7 @@ export default function VerifyCard() {
               <span className="block">
                 Check your spam folder or{" "}
                 <a
-                  href=""
+                  href="" // to-be-implemented resend endpoint
                   className="font-semibold underline decoration-[0.0777rem] hover:opacity-70"
                 >
                   Resend Code

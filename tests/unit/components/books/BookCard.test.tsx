@@ -140,7 +140,9 @@ describe("<BookCard />", () => {
       renderCard();
       const btn = screen.getByRole("button", { name: /log in/i });
       fireEvent.click(btn);
-      expect(pushMock).toHaveBeenCalledWith("/login");
+      expect(pushMock).toHaveBeenCalledWith(
+        `/login?next=${encodeURIComponent("/books/book-1")}`
+      );
     });
 
     it("CTA container stops click propagation", () => {
