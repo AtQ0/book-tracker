@@ -8,17 +8,17 @@ export type SignupDeps = {
   argon2Opts: Parameters<typeof argon2.hash>[1];
   sendMail: (args: {
     to: string;
-    name: string;
-    code: string;
+    recipientName: string;
+    verificationCode: string;
     ttlMin: number;
-    codeId: string;
+    verificationCodeId: string;
   }) => Promise<void>;
 };
 
 // runSignup return must be exactly one of these shapes
 export type SignupResult =
-  | { kind: "ok"; expiresAt: Date; session: string }
-  | { kind: "conflict"; field: "email"; message: string }
+  | { kind: "ok"; expiresAt: Date; verificationCodeId: string }
+  | { kind: "conflict"; field: "email"; verificationCodeId: string }
   | { kind: "cooldown" }
   | { kind: "mail-failed" };
 
@@ -39,7 +39,7 @@ Promise<SignupResult> {
     return {
       kind: "conflict" as const,
       field: "email",
-      message: "That email is already registered",
+      verificationCodeId: "That email is already registered",
     };
   }
 
@@ -66,47 +66,56 @@ Promise<SignupResult> {
     }
   }
 
-  // 2) Replace any old verification codes/sessions with a fresh one (atomic)
-  const { code, expiresAt, codeId } = await prisma.$transaction(async (tx) => {
-    // Remove old verification code for a specific user
-    await tx.verificationCode.deleteMany({
-      where: { userId: user.id, purpose: "SIGNUP_VERIFY_EMAIL" },
-    });
+  // 2) Replace any old verification codes/verificationCodesId's with a fresh one (atomic)
+  const { verificationCode, expiresAt, verificationCodeId } =
+    await prisma.$transaction(async (tx) => {
+      // Remove old verification code for a specific user
+      await tx.verificationCode.deleteMany({
+        where: { userId: user.id, purpose: "SIGNUP_VERIFY_EMAIL" },
+      });
 
-    const fresh = String(randomInt(0, 1_000_000)).padStart(6, "0");
-    const hash = await argon2.hash(fresh, argon2Opts);
-    const expires = new Date(Date.now() + ttlMs);
+      const fresh = String(randomInt(0, 1_000_000)).padStart(6, "0");
+      const hash = await argon2.hash(fresh, argon2Opts);
+      const expires = new Date(Date.now() + ttlMs);
 
-    // Send request to create a verification code, ask to get its id in return
-    const created = await tx.verificationCode.create({
-      data: {
-        userId: user.id,
-        codeHash: hash,
-        purpose: "SIGNUP_VERIFY_EMAIL",
+      // Send request to create a verification code, ask to get its id in return
+      const created = await tx.verificationCode.create({
+        data: {
+          userId: user.id,
+          codeHash: hash,
+          purpose: "SIGNUP_VERIFY_EMAIL",
+          expiresAt: expires,
+        },
+        select: { id: true },
+      });
+
+      return {
+        verificationCode: fresh,
         expiresAt: expires,
-      },
-      select: { id: true },
+        verificationCodeId: created.id,
+      };
     });
-
-    return { code: fresh, expiresAt: expires, codeId: created.id };
-  });
 
   //3 send mail: rollback on failure (502 Bad Gateway)
   try {
     await sendMail({
       to: email,
-      name,
-      code,
+      recipientName: name,
+      verificationCode: verificationCode,
       ttlMin: Math.floor(ttlMs / 60000), // convert ms to minutes
-      codeId, // pass through session code so mail can build verify link
+      verificationCodeId: verificationCodeId, // pass through verificationCodeId so mail can build verify link
     });
   } catch {
     await prisma.verificationCode
-      .delete({ where: { id: codeId } })
+      .delete({ where: { id: verificationCodeId } })
       .catch(() => {});
     return { kind: "mail-failed" as const };
   }
 
   // Success (201 Created)
-  return { kind: "ok" as const, expiresAt, session: codeId };
+  return {
+    kind: "ok" as const,
+    expiresAt,
+    verificationCodeId: verificationCodeId,
+  };
 }

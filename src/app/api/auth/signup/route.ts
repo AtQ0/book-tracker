@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     // Handle every possible signup outcome, based on the union type
     switch (result.kind) {
       case "conflict":
-        return problem(409, "Conflict", result.message, {
+        return problem(409, "Conflict", result.verificationCodeId, {
           field: result.field,
         });
       case "cooldown":
@@ -61,13 +61,13 @@ export async function POST(req: Request) {
           {
             ok: true,
             expiresAt: result.expiresAt.toISOString(),
-            session: result.session,
+            verificationCodeId: result.verificationCodeId,
           },
           201
         );
       default: {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const _exhaustive: never = result; //Ensure all SignupResult cases are handled
+        const _exhaustive: never = result; //Ensures all SignupResult cases are handled, else TS cries
 
         return problem(
           500,

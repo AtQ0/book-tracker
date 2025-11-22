@@ -17,11 +17,11 @@ export const SignupSchema = z
 
 // VerifySchema
 export const VerifySignupSchema = z.object({
-  code: z
+  verificationCode: z
     .string()
     .trim()
     .regex(/^\d{6}$/, "Code must be a 6 digit number"),
-  session: z.string().min(1, "Verification session is missing"),
+  verificationCodeId: z.string().min(1, "Verification Code ID is missing"),
 });
 
 // LoginSchema

@@ -18,7 +18,7 @@ export default function SignupCard() {
       <AuthForm<{
         ok: true;
         expiresAt: string;
-        session: string;
+        verificationCodeId: string;
       }>
         fields={[
           {
@@ -45,12 +45,12 @@ export default function SignupCard() {
         pendingLabel="Sending data..."
         onSubmit={signup}
         onSuccess={(data) => {
-          const session = data.session;
+          const verificationCodeId = data.verificationCodeId;
 
           const params = new URLSearchParams();
 
-          if (session) {
-            params.set("session", session);
+          if (verificationCodeId) {
+            params.set("verificationCodeId", verificationCodeId);
           }
           if (next && next.startsWith("/")) {
             params.set("next", next);

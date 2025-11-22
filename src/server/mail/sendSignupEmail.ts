@@ -2,18 +2,18 @@ import { getTransporter } from "./transporter";
 
 type SendSignupEmailArgs = {
   to: string;
-  name: string;
-  code: string;
+  recipientName: string;
+  verificationCode: string;
   ttlMin: number;
-  codeId: string;
+  verificationCodeId: string;
 };
 
 export async function sendSignupEmail({
   to,
-  name,
-  code,
+  recipientName: name,
+  verificationCode: verificationCode,
   ttlMin,
-  codeId,
+  verificationCodeId: verificationCodeId,
 }: SendSignupEmailArgs) {
   // Pick MAIL_FROM if it exists and has content after trimming, otherwise fall back to the default address
   const from =
@@ -23,7 +23,7 @@ export async function sendSignupEmail({
   // Get the cached Nodemailer transporter
   const transporter = getTransporter();
 
-  // Build verify link using the same session id that frontend will use
+  // Build verify link using the same verification code id that frontend will use
   const appUrl =
     process.env.APP_URL ||
     process.env.NEXT_PUBLIC_APP_URL ||
@@ -31,8 +31,8 @@ export async function sendSignupEmail({
 
   // create full url by applying /verify on the base
   const url = new URL("/verify", appUrl);
-  // amend full url by adding ?session=some-code and &source=email
-  url.searchParams.set("session", codeId);
+  // amend full url by adding ?verificationCodeId=some-code and &source=email
+  url.searchParams.set("verificationCodeId", verificationCodeId);
   url.searchParams.set("source", "email");
   const verifyUrl = url.toString();
 
@@ -41,7 +41,7 @@ export async function sendSignupEmail({
     to,
     subject: "Your Book-Tracker verification code",
     text: `Hi ${name || "there"},
-    \nYour verification code is: ${code}
+    \nYour verification code is: ${verificationCode}
     \nIt expires in ${ttlMin} minutes.
     \nOpen the verification page with this link:\n${verifyUrl}
     \nThen enter your code on that page to verify your email.
@@ -50,7 +50,7 @@ export async function sendSignupEmail({
     html: `
     <p>Hi ${name || "there"},</p>
 
-    <p>Your verification code is: <strong>${code}</strong></p>
+    <p>Your verification code is: <strong>${verificationCode}</strong></p>
 
     <p>It expires in ${ttlMin} minutes.</p>
 

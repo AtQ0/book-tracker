@@ -12,7 +12,7 @@ export default function VerifyCard() {
   const source = searchParams.get("source");
   const fromEmail = source === "email";
 
-  const session = searchParams.get("session") ?? "";
+  const verificationCodeId = searchParams.get("verificationCodeId") ?? "";
   const next = searchParams.get("next");
 
   return (
@@ -26,10 +26,10 @@ export default function VerifyCard() {
         className="gap-9"
         fields={[
           {
-            id: "code",
+            id: "verificationCode",
             label: "Verification code",
             type: "text",
-            name: "code",
+            name: "verificationCode",
             autoComplete: "one-time-code",
             placeholder: "123456",
             maxLength: 6,
@@ -39,14 +39,15 @@ export default function VerifyCard() {
         submitLabel="Verify"
         pendingLabel="Checking data..."
         onSubmit={(values, signal) =>
-          verifySignup({ ...values, session }, signal)
+          verifySignup({ ...values, verificationCodeId }, signal)
         }
         onSuccess={() => {
+          const params = new URLSearchParams();
+          params.set("verificationCodeId", verificationCodeId);
           if (next && next.startsWith("/")) {
-            router.replace(`/login?next=${encodeURIComponent(next)}`);
-          } else {
-            router.replace("/login");
+            params.set("next", next);
           }
+          router.replace(`/set-password?${params.toString()}`);
         }}
         footer={
           <div className="text-center mt-4">
