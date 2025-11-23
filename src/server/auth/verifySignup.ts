@@ -58,6 +58,7 @@ export async function verifySignupCode(params: {
   // Atomically mark the user as verified and this code as consumed
   await prisma.$transaction(async (tx) => {
     await tx.user.update({
+      // wait tx.user.update returns a response like a fetch and throws if it fails
       where: { id: record.user.id },
       data: { emailVerified: new Date() },
     });
