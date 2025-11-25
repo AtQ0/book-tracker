@@ -1,4 +1,11 @@
+# Book-tracker
+
 Book tracker is a fullstack TypeScript project built with the Next.js framework, using React for the frontend and Node.js for the backend. The application uses Docker Compose to run a virtual PostgreSQL instance for development, together with a Maildev container that captures all outgoing emails in a local inbox for easy testing. It relies on Prisma for database access, PostgreSQL for data storage, Tailwind for styling, and Zod for runtime validation. The project also includes Jest and Testing Library for both unit testing and component testing, as well as Nodemailer for email verification in the authentication flow. Argon2 is used for secure password hashing and Faker is used for generating development data.
+
+## Design and Architecture
+
+Figma wireframes and the implemented relational database schema
+https://www.figma.com/design/RwQQN7Vz8cjhkKqltFxikb/book-tracker?node-id=0-1
 
 ## Getting Started
 
