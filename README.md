@@ -49,6 +49,8 @@ This project serves as both a real application and a portfolio example of modern
 
 ## Folder Structure
 
+<details> <summary><strong>Click to view project structure</strong></summary>
+
 ```bash
 book-tracker/
 ├── .next/
@@ -235,6 +237,8 @@ book-tracker/
 ├── tsconfig.json
 └── tsconfig.tsbuildinfo
 ```
+
+</details>
 
 ## Design and Architecture
 
