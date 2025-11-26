@@ -34,7 +34,7 @@ Then open .env and .env.local and set values for:
 - DATABASE_URL:
 - NEXTAUTH_SECRET:
 
-You can leave all other variables as they already contain safe defaults for local development (including the MailDev SMTP settings).
+All other variables in `.env.example` already contain safe defaults for local development and do not need to be changed.
 
 Example:
 
