@@ -22,6 +22,11 @@ export function getTransporter() {
             pass: process.env.SMTP_PASS.trim(),
           }
         : undefined, // skip auth if not set (e.g. MailDev)
+
+    // Safety timeouts (in ms)
+    connectionTimeout: 8000, // wait max 8s to connect
+    greetingTimeout: 8000, // wait max 8s for server greeting
+    socketTimeout: 8000, // overall inactivity timeout
   });
 
   // Cache and return the initialized transporter
