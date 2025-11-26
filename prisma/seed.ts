@@ -13,7 +13,7 @@ async function main() {
       name: "Applied Statistics",
       description: faker.lorem.words(80),
       genre: "Statistics",
-      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/900/1350`,
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/300/450`,
       averageRating: faker.number.float({
         min: 2,
         max: 5,
@@ -27,7 +27,7 @@ async function main() {
       name: "The Pragmatic Programmer",
       description: faker.lorem.words(80),
       genre: "Programming",
-      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/900/1350`,
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/300/450`,
       averageRating: faker.number.float({
         min: 2,
         max: 5,
@@ -41,7 +41,7 @@ async function main() {
       name: "The Origin of Wealth",
       description: faker.lorem.words(80),
       genre: "Economics",
-      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/900/1350`,
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/300/450`,
       averageRating: faker.number.float({
         min: 2,
         max: 5,
@@ -55,7 +55,7 @@ async function main() {
       name: "Clean Architecture",
       description: faker.lorem.words(80),
       genre: "Programming",
-      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/900/1350`,
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/300/450`,
       averageRating: faker.number.float({
         min: 2,
         max: 5,
@@ -69,7 +69,7 @@ async function main() {
       name: "Half a King",
       description: faker.lorem.words(80),
       genre: "Fantasy",
-      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/900/1350`,
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/300/450`,
       averageRating: faker.number.float({
         min: 2,
         max: 5,
@@ -83,7 +83,7 @@ async function main() {
       name: "Introduction to Algorithms",
       description: faker.lorem.words(80),
       genre: "Programming",
-      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/900/1350`,
+      coverUrl: `https://picsum.photos/seed/${faker.word.noun()}/300/450`,
       averageRating: faker.number.float({
         min: 2,
         max: 5,
@@ -114,7 +114,7 @@ async function main() {
     ]),
     coverUrl: `https://picsum.photos/seed/${faker.string.alphanumeric(
       8
-    )}/900/1350`,
+    )}/300/450`,
     averageRating: faker.number.float({ min: 1, max: 5, fractionDigits: 1 }),
     haveRead: faker.number.int({ min: 0, max: 50 }),
     currentlyReading: faker.number.int({ min: 0, max: 10 }),

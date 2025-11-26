@@ -85,7 +85,7 @@ function BookCover({ src, alt, ratio = "2:3", className }: BookCoverProps) {
          (min-width: 768px) 200px,
          160px"
         className="object-cover"
-        priority={true}
+        //priority={true}
       />
     </div>
   );
