@@ -32,14 +32,33 @@ Then open .env and .env.local and set values for:
 - POSTGRES_PASSWORD:
 - POSTGRES_DB:
 - DATABASE_URL:
+- NEXTAUTH_SECRET:
+
+You can leave all other variables as they already contain safe defaults for local development (including the MailDev SMTP settings).
 
 Example:
 
 ```bash
+# Database settings
 POSTGRES_USER=booktracker
 POSTGRES_PASSWORD=secret
 POSTGRES_DB=booktracker_dev
 DATABASE_URL="postgresql://booktracker:secret@localhost:5433/booktracker_dev?schema=public"
+
+# NextAuth settings
+NEXTAUTH_SECRET="b2a3d4e6f8910c12d34e56f78901ab23456cd7890ef12345abcd67890ef12345"
+```
+
+To generate your own secure NEXTAUTH_SECRET, run one of the two commands below in your terminal:
+
+```bash
+openssl rand -hex 32
+```
+
+or
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 Third, make sure Docker Desktop is running, then start the Docker services that create the PostgreSQL and Maildev containers by typing the command below in the terminal:
