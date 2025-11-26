@@ -1,6 +1,215 @@
 # Book-tracker
 
+![Typescript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=fff)
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=fff)
+![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=000)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=fff)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=flat&logo=prisma&logoColor=fff)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=fff)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=fff)
+
 Book tracker is a fullstack TypeScript project built with the Next.js framework, using React for the frontend and Node.js for the backend. The application uses Docker Compose to run a virtual PostgreSQL instance for development, together with a Maildev container that captures all outgoing emails in a local inbox for easy testing. It relies on Prisma for database access, PostgreSQL for data storage, Tailwind for styling, and Zod for runtime validation. The project also includes Jest and Testing Library for both unit testing and component testing, as well as Nodemailer for email verification in the authentication flow. Argon2 is used for secure password hashing and Faker is used for generating development data.
+
+## Purpose
+
+Book-Tracker is a personal reading management app where users can track books they have read, are currently reading, or want to read.
+The purpose of the project is twofold:
+
+1. To provide a functional and user friendly book tracking tool
+2. To demonstrate a complete fullstack architecture, including authentication with email verification, a relational PostgreSQL schema, Docker-based development setup, and clean modular React components
+
+This project serves as both a real application and a portfolio example of modern web development practices.
+
+## Features
+
+- User signup with email verification
+- Secure authentication (NextAuth + Argon2)
+- Track books by:
+  - Have read
+  - Currently reading
+  - Want to read
+- Responsive UI built with TailwindCSS
+- Relational database modeling with Prisma + PostgreSQL
+- Local development environment containerized with Docker
+- MailDev inbox for inspecting outgoing emails
+- Fully typed end to end (TypeScript everywhere)
+- Automated tests using Jest and Testing Library
+- Clean modular component structure
+
+## Tech Stack
+
+**Frontend:** React, Next.js, TypeScript, TailwindCSS
+**Backend:** Node.js, Next.js API routes
+**Database:** PostgreSQL + Prisma ORM
+**Auth:** NextAuth (email verification flow)
+**Email:** Nodemailer + MailDev (dev), SMTP provider (prod)
+**Validation:** Zod
+**Hashing:** Argon2
+**Dev Tools:** Docker Compose, Jest, Testing Library, Faker
+
+## Folder Structure
+
+```bash
+book-tracker/
+├── prisma/
+│   ├── schema.prisma
+│   ├── migrations/
+│   └── seed.ts
+│
+├── src/
+│   ├── app/
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   │
+│   │   ├── (auth)/
+│   │   │   ├── layout.tsx
+│   │   │   │
+│   │   │   ├── login/
+│   │   │   │   ├── LoginCard.tsx
+│   │   │   │   └── page.tsx
+│   │   │   │
+│   │   │   ├── set-password/
+│   │   │   │   ├── SetPasswordCard.tsx
+│   │   │   │   └── page.tsx
+│   │   │   │
+│   │   │   ├── signup/
+│   │   │   │   ├── SignupCard.tsx
+│   │   │   │   └── page.tsx
+│   │   │   │
+│   │   │   └── verify/
+│   │   │       ├── VerifyCard.tsx
+│   │   │       └── page.tsx
+│   │   │
+│   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   │   ├── login/
+│   │   │   │   ├── resend/
+│   │   │   │   ├── set-password/
+│   │   │   │   ├── signup/
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── verify/
+│   │   │   │       └── route.ts
+│   │   │   │
+│   │   │   └── books/
+│   │   │       └── route.ts
+│   │   │
+│   │   ├── books/
+│   │   │   ├── BookListClient.tsx
+│   │   │   └── page.tsx
+│   │   │
+│   │   └── books/[id]/
+│   │       └── page.tsx
+│   │
+│   └── my/
+│       └── shelf/
+│
+├── components/
+│   ├── BackButton.tsx
+│   │
+│   ├── auth/
+│   │   ├── AuthCard.tsx
+│   │   ├── AuthForm.tsx
+│   │   └── SessionProviderClient.tsx
+│   │
+│   ├── books/
+│   │   ├── BookCard.tsx
+│   │   ├── BookGrid.tsx
+│   │   └── BookSortBar.tsx
+│   │
+│   ├── form/
+│   │   └── Field.tsx
+│   │
+│   ├── layout/
+│   │   ├── Container.tsx
+│   │   └── Section.tsx
+│   │
+│   └── ui/
+│       ├── Button.tsx
+│       ├── Card.tsx
+│       ├── Input.tsx
+│       └── Label.tsx
+│
+├── hooks/
+│
+├── lib/
+│   ├── auth-helpers.ts
+│   ├── db.ts
+│   │
+│   ├── api/
+│   │   └── auth.ts
+│   │
+│   └── validations/
+│       ├── auth.ts
+│       └── book.ts
+│
+├── server/
+│   ├── auth.ts
+│   ├── books.ts
+│   ├── http.ts
+│   │
+│   ├── auth/
+│   │   ├── config.ts
+│   │   ├── reset-password.ts
+│   │   ├── signup.ts
+│   │   └── verifySignup.ts
+│   │
+│   └── mail/
+│       ├── sendSignupEmail.ts
+│       └── transporter.ts
+│
+├── types/
+│
+└── tests/
+    ├── e2e/
+    │
+    ├── integration/
+    │   ├── api/
+    │   │   ├── auth.verify.route.test.ts
+    │   │   └── books.route.test.ts
+    │   │
+    │   ├── pages/
+    │   │   └── books.page.test.tsx
+    │   │
+    │   └── server/
+    │       ├── getBooksFromDb.test.ts
+    │       └── verifySignup.test.ts
+    │
+    ├── setup/
+    │   └── jest.setup.ts
+    │
+    └── unit/
+        ├── components/
+        │   ├── auth/
+        │   │   ├── AuthCard.test.tsx
+        │   │   └── AuthForm.test.tsx
+        │   │
+        │   ├── books/
+        │   │   ├── BookCard.test.tsx
+        │   │   └── BookGrid.test.tsx
+        │   │
+        │   ├── form/
+        │   │   └── Field.test.tsx
+        │   │
+        │   ├── layout/
+        │   │   ├── Container.test.tsx
+        │   │   └── Section.test.tsx
+        │   │
+        │   └── ui/
+        │       ├── Button.test.tsx
+        │       ├── Card.test.tsx
+        │       ├── Input.test.tsx
+        │       └── Label.test.tsx
+        │
+        ├── hooks/
+        │
+        └── lib/
+            └── validations/
+                ├── book.dto.schema.test.ts
+                ├── book.query.schema.test.ts
+                └── sortFieldMap.test.ts
+
+```
 
 ## Design and Architecture
 
