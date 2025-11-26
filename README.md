@@ -8,7 +8,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=fff)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=fff)
 
-Book Tracker is a fullstack TypeScript project built with the Next.js framework, using React for the frontend and Node.js for the backend. The application uses Docker Compose to run a virtual PostgreSQL instance for development, together with a Maildev container that captures all outgoing emails in a local inbox for easy testing. It relies on Prisma for database access, PostgreSQL for data storage, Tailwind for styling, and Zod for runtime validation. The project also includes Jest and Testing Library for both unit testing and component testing, as well as Nodemailer for email verification in the authentication flow. Argon2 is used for secure password hashing and Faker is used for generating development data.
+Book Tracker is a fullstack TypeScript project built on Next.js, using React on the frontend and server-side API routes running on Node.js. It uses Docker Compose to run a local PostgreSQL database along with a MailDev container that captures all outgoing emails during development. For production, Nodemailer is configured to deliver emails through SendGrid. Prisma handles database access, PostgreSQL stores the application data, Tailwind provides styling, and Zod ensures runtime validation. The project includes Jest and Testing Library for unit and component tests, Argon2 for secure password hashing, and Faker for generating development seed data.
 
 ## Purpose
 
@@ -31,7 +31,8 @@ This project serves as both a real application and a portfolio example of modern
 - Responsive UI built with TailwindCSS
 - Relational database modeling with Prisma + PostgreSQL
 - Local development environment containerized with Docker
-- MailDev inbox for inspecting outgoing emails
+- MailDev inbox for inspecting outgoing emails during development
+- SendGrid email delivery in production
 - Fully typed end to end (TypeScript everywhere)
 - Automated tests using Jest and Testing Library
 - Clean modular component structure
@@ -42,7 +43,7 @@ This project serves as both a real application and a portfolio example of modern
 **Backend:** Node.js, Next.js API routes
 **Database:** PostgreSQL + Prisma ORM
 **Auth:** NextAuth (email verification flow)
-**Email:** Nodemailer + MailDev (dev), SMTP provider (prod)
+**Email:** Nodemailer (MailDev in development, SendGrid in production)
 **Validation:** Zod
 **Hashing:** Argon2
 **Dev Tools:** Docker Compose, Jest, Testing Library, Faker
@@ -289,7 +290,7 @@ Then open .env and .env.local and set values for:
 - DATABASE_URL:
 - NEXTAUTH_SECRET:
 
-All other variables in `.env.example` already contain safe defaults for local development and do not need to be changed.
+All other variables in `.env.example` already contain safe defaults for local development and do not need to be changed. For production, override the `SMTP_*` variables (and `MAIL_FROM`) in `.env.production` with your SendGrid settings.
 
 Example:
 
@@ -316,7 +317,7 @@ or
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-Third, make sure Docker Desktop is running, then start the Docker services that create the PostgreSQL and Maildev containers by typing the command below in the terminal:
+Third, make sure Docker Desktop is running, then start the Docker services that create the PostgreSQL and MailDev containers by typing the command below in the terminal:
 
 ```bash
 docker compose up -d
@@ -343,7 +344,7 @@ npm run dev
 Open http://localhost:3000
 in your browser to see the development server.<br>
 Open http://localhost:1080
-in your browser to view the Maildev client and inspect captured emails.
+in your browser to view the MailDev client and inspect captured emails.
 
 ## Section X
 
