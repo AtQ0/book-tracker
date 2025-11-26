@@ -45,7 +45,7 @@ export async function sendSignupEmail({
   url.searchParams.set("source", "email");
   const verifyUrl = url.toString();
 
-  const subject = "Your Book-Tracker verification code";
+  const subject = "Your Book Tracker verification code";
 
   const rawText = `
   Hi ${name || "there"},
@@ -59,7 +59,7 @@ export async function sendSignupEmail({
   Then enter your code on that page to verify your email.
 
   Regards,
-  Book-tracker
+  Book Tracker
 `;
 
   const text = rawText.replace(/^\s+/gm, "").trimStart();
@@ -76,7 +76,7 @@ export async function sendSignupEmail({
     <a href="${verifyUrl}">${verifyUrl}</a>
   </p>
 
-  <p>Regards,<br>Book-tracker</p>
+  <p>Regards,<br>Book Tracker</p>
 `;
 
   if (provider === "sendgrid") {
