@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
@@ -15,7 +15,8 @@
     "db:nuke": "docker compose down -v",
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate || true"
   },
   "dependencies": {
     "@faker-js/faker": "^10.0.0",
@@ -51,6 +52,9 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": "20.x"
   },
   "prisma": {
     "_note": "Let Prisma CLI know where to find seed file for seeding the database with tsx",
