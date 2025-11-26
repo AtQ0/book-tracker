@@ -49,6 +49,28 @@ This project serves as both a real application and a portfolio example of modern
 
 ## Folder Structure
 
+```bash
+book-tracker/
+├── .next/
+├── .swc/
+├── .vscode/
+├── docs/
+├── node_modules/
+├── prisma/
+│   ├── schema.prisma
+│   ├── migrations/
+│   └── seed.ts
+│
+├── public/
+│   └── images/
+│
+├── src/
+│   ├── app/
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+```
+
 <details> <summary><strong>Click to view project structure</strong></summary>
 
 ```bash
