@@ -1,3 +1,4 @@
+import sgMail from "@sendgrid/mail";
 import { getTransporter } from "./transporter";
 
 type SendSignupEmailArgs = {
@@ -8,20 +9,28 @@ type SendSignupEmailArgs = {
   verificationCodeId: string;
 };
 
+const provider = process.env.EMAIL_PROVIDER ?? "maildev";
+const sendgridApiKey = process.env.SENDGRID_API_KEY;
+
+if (provider === "sendgrid") {
+  if (!sendgridApiKey) {
+    throw new Error("EMAIL_PROVIDER=sendgrid but SENDGRID_API_KEY is not set");
+  }
+
+  sgMail.setApiKey(sendgridApiKey);
+}
+
 export async function sendSignupEmail({
   to,
   recipientName: name,
-  verificationCode: verificationCode,
+  verificationCode,
   ttlMin,
-  verificationCodeId: verificationCodeId,
+  verificationCodeId,
 }: SendSignupEmailArgs) {
   // Pick MAIL_FROM if it exists and has content after trimming, otherwise fall back to the default address
   const from =
     (process.env.MAIL_FROM ?? "no-reply@book-tracker.local").trim() ||
     "no-reply@book-tracker.local"; // empty string is falsy after trim
-
-  // Get the cached Nodemailer transporter
-  const transporter = getTransporter();
 
   // Build verify link using the same verification code id that frontend will use
   const appUrl =
@@ -36,30 +45,59 @@ export async function sendSignupEmail({
   url.searchParams.set("source", "email");
   const verifyUrl = url.toString();
 
+  const subject = "Your Book-Tracker verification code";
+
+  const rawText = `
+  Hi ${name || "there"},
+
+  Your verification code is: ${verificationCode}
+  It expires in ${ttlMin} minutes.
+
+  Open the verification page with this link:
+  ${verifyUrl}
+
+  Then enter your code on that page to verify your email.
+
+  Regards,
+  Book-tracker
+`;
+
+  const text = rawText.replace(/^\s+/gm, "").trimStart();
+
+  const html = `
+  <p>Hi ${name || "there"},</p>
+
+  <p>Your verification code is: <strong>${verificationCode}</strong></p>
+
+  <p>It expires in ${ttlMin} minutes.</p>
+
+  <p>
+    Click here to verify your email:<br>
+    <a href="${verifyUrl}">${verifyUrl}</a>
+  </p>
+
+  <p>Regards,<br>Book-tracker</p>
+`;
+
+  if (provider === "sendgrid") {
+    // Send via SendGrid HTTP API
+    await sgMail.send({
+      to,
+      from,
+      subject,
+      text,
+      html,
+    });
+    return;
+  }
+
+  // Default: Maildev via Nodemailer SMTP
+  const transporter = getTransporter();
   await transporter.sendMail({
     from,
     to,
-    subject: "Your Book-Tracker verification code",
-    text: `Hi ${name || "there"},
-    \nYour verification code is: ${verificationCode}
-    \nIt expires in ${ttlMin} minutes.
-    \nOpen the verification page with this link:\n${verifyUrl}
-    \nThen enter your code on that page to verify your email.
-    \nRegards,\nBook-tracker
-    `,
-    html: `
-    <p>Hi ${name || "there"},</p>
-
-    <p>Your verification code is: <strong>${verificationCode}</strong></p>
-
-    <p>It expires in ${ttlMin} minutes.</p>
-
-    <p>
-      Click here to verify your email:<br>
-      <a href="${verifyUrl}">${verifyUrl}</a>
-    </p>
-
-    <p>Regards,<br>Book-tracker</p>
-  `,
+    subject,
+    text,
+    html,
   });
 }
