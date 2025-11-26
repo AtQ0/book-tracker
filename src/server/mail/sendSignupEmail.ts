@@ -15,6 +15,11 @@ export async function sendSignupEmail({
   ttlMin,
   verificationCodeId: verificationCodeId,
 }: SendSignupEmailArgs) {
+  if (process.env.NODE_ENV === "production") {
+    // On Render, just pretend it worked (for now)
+    return;
+  }
+
   // Pick MAIL_FROM if it exists and has content after trimming, otherwise fall back to the default address
   const from =
     (process.env.MAIL_FROM ?? "no-reply@book-tracker.local").trim() ||
