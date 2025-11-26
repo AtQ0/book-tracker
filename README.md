@@ -51,10 +51,18 @@ This project serves as both a real application and a portfolio example of modern
 
 ```bash
 book-tracker/
+├── .next/
+├── .swc/
+├── .vscode/
+├── docs/
+├── node_modules/
 ├── prisma/
 │   ├── schema.prisma
 │   ├── migrations/
 │   └── seed.ts
+│
+├── public/
+│   └── images/
 │
 ├── src/
 │   ├── app/
@@ -160,55 +168,72 @@ book-tracker/
 │
 ├── types/
 │
-└── tests/
-    ├── e2e/
-    │
-    ├── integration/
-    │   ├── api/
-    │   │   ├── auth.verify.route.test.ts
-    │   │   └── books.route.test.ts
-    │   │
-    │   ├── pages/
-    │   │   └── books.page.test.tsx
-    │   │
-    │   └── server/
-    │       ├── getBooksFromDb.test.ts
-    │       └── verifySignup.test.ts
-    │
-    ├── setup/
-    │   └── jest.setup.ts
-    │
-    └── unit/
-        ├── components/
-        │   ├── auth/
-        │   │   ├── AuthCard.test.tsx
-        │   │   └── AuthForm.test.tsx
-        │   │
-        │   ├── books/
-        │   │   ├── BookCard.test.tsx
-        │   │   └── BookGrid.test.tsx
-        │   │
-        │   ├── form/
-        │   │   └── Field.test.tsx
-        │   │
-        │   ├── layout/
-        │   │   ├── Container.test.tsx
-        │   │   └── Section.test.tsx
-        │   │
-        │   └── ui/
-        │       ├── Button.test.tsx
-        │       ├── Card.test.tsx
-        │       ├── Input.test.tsx
-        │       └── Label.test.tsx
-        │
-        ├── hooks/
-        │
-        └── lib/
-            └── validations/
-                ├── book.dto.schema.test.ts
-                ├── book.query.schema.test.ts
-                └── sortFieldMap.test.ts
-
+├── tests/
+│   ├── e2e/
+│   │
+│   ├── integration/
+│   │   ├── api/
+│   │   │   ├── auth.verify.route.test.ts
+│   │   │   └── books.route.test.ts
+│   │   │
+│   │   ├── pages/
+│   │   │   └── books.page.test.tsx
+│   │   │
+│   │   └── server/
+│   │       ├── getBooksFromDb.test.ts
+│   │       └── verifySignup.test.ts
+│   │
+│   ├── setup/
+│   │   └── jest.setup.ts
+│   │
+│   └── unit/
+│       ├── components/
+│       │   ├── auth/
+│       │   │   ├── AuthCard.test.tsx
+│       │   │   └── AuthForm.test.tsx
+│       │   │
+│       │   ├── books/
+│       │   │   ├── BookCard.test.tsx
+│       │   │   └── BookGrid.test.tsx
+│       │   │
+│       │   ├── form/
+│       │   │   └── Field.test.tsx
+│       │   │
+│       │   ├── layout/
+│       │   │   ├── Container.test.tsx
+│       │   │   └── Section.test.tsx
+│       │   │
+│       │   └── ui/
+│       │       ├── Button.test.tsx
+│       │       ├── Card.test.tsx
+│       │       ├── Input.test.tsx
+│       │       └── Label.test.tsx
+│       │
+│       ├── hooks/
+│       │
+│       └── lib/
+│           └── validations/
+│               ├── book.dto.schema.test.ts
+│               ├── book.query.schema.test.ts
+│               └── sortFieldMap.test.ts
+│
+├── .env
+├── .env.example
+├── .env.local
+├── .env.production
+├── .gitignore
+├── docker
+├── docker-compose.yml
+├── eslint.config.mjs
+├── jest.config.ts
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── README.md
+├── tsconfig.json
+└── tsconfig.tsbuildinfo
 ```
 
 ## Design and Architecture
