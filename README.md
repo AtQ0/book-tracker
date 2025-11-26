@@ -8,11 +8,11 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=fff)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=fff)
 
-Book tracker is a fullstack TypeScript project built with the Next.js framework, using React for the frontend and Node.js for the backend. The application uses Docker Compose to run a virtual PostgreSQL instance for development, together with a Maildev container that captures all outgoing emails in a local inbox for easy testing. It relies on Prisma for database access, PostgreSQL for data storage, Tailwind for styling, and Zod for runtime validation. The project also includes Jest and Testing Library for both unit testing and component testing, as well as Nodemailer for email verification in the authentication flow. Argon2 is used for secure password hashing and Faker is used for generating development data.
+Book Tracker is a fullstack TypeScript project built with the Next.js framework, using React for the frontend and Node.js for the backend. The application uses Docker Compose to run a virtual PostgreSQL instance for development, together with a Maildev container that captures all outgoing emails in a local inbox for easy testing. It relies on Prisma for database access, PostgreSQL for data storage, Tailwind for styling, and Zod for runtime validation. The project also includes Jest and Testing Library for both unit testing and component testing, as well as Nodemailer for email verification in the authentication flow. Argon2 is used for secure password hashing and Faker is used for generating development data.
 
 ## Purpose
 
-Book-Tracker is a personal reading management app where users can track books they have read, are currently reading, or want to read.
+Book Tracker is a personal reading management app where users can track books they have read, are currently reading, or want to read.
 The purpose of the project is twofold:
 
 1. To provide a functional and user friendly book tracking tool
@@ -49,29 +49,25 @@ This project serves as both a real application and a portfolio example of modern
 
 ## Folder Structure
 
+Here is a short preview of the main structure. Expand the section below to view the full tree.
+
 ```bash
 book-tracker/
-├── .next/
-├── .swc/
-├── .vscode/
-├── docs/
-├── node_modules/
 ├── prisma/
-│   ├── schema.prisma
-│   ├── migrations/
-│   └── seed.ts
-│
 ├── public/
-│   └── images/
-│
 ├── src/
-│   ├── app/
-│   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
+├── components/
+├── lib/
+├── server/
+├── tests/
+├── types/
+├── .env.example
+├── docker-compose.yml
+├── package.json
+└── tsconfig.json
 ```
 
-<details> <summary><strong>Click to view project structure</strong></summary>
+<details> <summary><strong>Click to view full project structure</strong></summary>
 
 ```bash
 book-tracker/
@@ -246,7 +242,6 @@ book-tracker/
 ├── .env.local
 ├── .env.production
 ├── .gitignore
-├── docker
 ├── docker-compose.yml
 ├── eslint.config.mjs
 ├── jest.config.ts
