@@ -10,12 +10,10 @@ What must be included is a page where you can see all books and choose sorting (
 
 After that, you can add one or more of the following:
 • A “My books” page where you can see which books you’ve read, want to read, or have reviewed.
-  This page is only available if you’re logged in.
+This page is only available if you’re logged in.
 • A sign-up page
 • Tests at some level
 • Search functionality — search by name with a genre filter
-
-
 
 #================================#
 #===== BACKEND REQUIREMENTS =====#
