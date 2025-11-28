@@ -8,8 +8,8 @@ export const signup = (values: Record<string, string>, signal: AbortSignal) =>
     credentials: "same-origin",
   });
 
-export const login = (values: Record<string, string>, signal: AbortSignal) =>
-  fetch("/api/auth/login", {
+export const signin = (values: Record<string, string>, signal: AbortSignal) =>
+  fetch("/api/auth/signin", {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify(values),

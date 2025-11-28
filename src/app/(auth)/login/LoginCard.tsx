@@ -2,7 +2,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
-import { login } from "@/lib/api/auth";
+import { signin } from "@/lib/api/auth";
 
 export default function LoginCard() {
   const router = useRouter();
@@ -38,7 +38,7 @@ export default function LoginCard() {
         ]}
         submitLabel="Log in"
         pendingLabel="Logging in..."
-        onSubmit={login}
+        onSubmit={signin}
         onSuccess={() => {
           if (next && next.startsWith("/")) {
             router.replace(next);
