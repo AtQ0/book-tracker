@@ -64,7 +64,7 @@ export default function SignupCard() {
             <p className="text-base">
               Already have an account?{" "}
               <a
-                className="underline hover:opacity-70"
+                className="font-semibold underline decoration-[0.0777rem] hover:opacity-70"
                 href={
                   next ? `/login?next=${encodeURIComponent(next)}` : "/login"
                 }
