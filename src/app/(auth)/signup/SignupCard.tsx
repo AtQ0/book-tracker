@@ -66,10 +66,10 @@ export default function SignupCard() {
               <a
                 className="font-semibold underline decoration-[0.0777rem] hover:opacity-70"
                 href={
-                  next ? `/login?next=${encodeURIComponent(next)}` : "/login"
+                  next ? `/signin?next=${encodeURIComponent(next)}` : "/signin"
                 }
               >
-                Log in
+                Sign in
               </a>
             </p>
           </div>

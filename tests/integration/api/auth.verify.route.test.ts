@@ -167,15 +167,36 @@ describe("POST / api/auth/verify", () => {
     });
 
     it("returns 500 when verifySignupCode throws and exposes a generic error", async () => {
+      // Spy on console.error and silence its output during this test
+      const consoleErrorSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      // Make verifySignupCode throw an error once
       mockedVerify.mockRejectedValueOnce(new Error("ka-boom"));
 
+      // Execute the route handler with a valid request body
       const res = await makeRequest(validBody);
 
+      // Expect the route to return HTTP 500
       expect(res.status).toBe(500);
+
+      // Parse JSON response body
       const data = (await res.json()) as ProblemDetailBody;
+
+      // Ensure the returned error message contains the expected text
       expect(String(data.detail).toLowerCase()).toContain(
         "could not verify your account"
       );
+
+      // Ensure console.error logged the correct message and an Error object
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "verify error",
+        expect.any(Error)
+      );
+
+      // Restore the original console.error implementation
+      consoleErrorSpy.mockRestore();
     });
   });
 

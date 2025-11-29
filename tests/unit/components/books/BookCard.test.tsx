@@ -88,11 +88,11 @@ describe("<BookCard />", () => {
       expect(screen.getByAltText("Dune")).toBeInTheDocument();
     });
 
-    it("shows login CTA text and button", () => {
+    it("shows Sign in CTA text and button", () => {
       renderCard();
-      expect(screen.getByText(/Log in to add this book/i)).toBeInTheDocument();
+      expect(screen.getByText(/Sign in to add this book/i)).toBeInTheDocument();
       expect(
-        screen.getByRole("button", { name: /Log in/i })
+        screen.getByRole("button", { name: /Sign in/i })
       ).toBeInTheDocument();
     });
   });
@@ -136,18 +136,18 @@ describe("<BookCard />", () => {
   });
 
   describe("interaction", () => {
-    it("clicking the Log in button navigates to /login", () => {
+    it("clicking the Sign-in button navigates to /signin", () => {
       renderCard();
-      const btn = screen.getByRole("button", { name: /log in/i });
+      const btn = screen.getByRole("button", { name: /sign in/i });
       fireEvent.click(btn);
       expect(pushMock).toHaveBeenCalledWith(
-        `/login?next=${encodeURIComponent("/books/book-1")}`
+        `/signin?next=${encodeURIComponent("/books/book-1")}`
       );
     });
 
     it("CTA container stops click propagation", () => {
       renderCard();
-      const cta = screen.getByText(/Log in to add this book/i).closest("div");
+      const cta = screen.getByText(/Sign in to add this book/i).closest("div");
       expect(cta).toBeTruthy();
     });
   });

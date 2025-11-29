@@ -6,7 +6,7 @@ We’re going to build a site where we collect books we’ve read or want to rea
 
 The backend team has had a head start, so the backend is already deployed — now only the frontend is missing.
 
-What must be included is a page where you can see all books and choose sorting (most read, most wanted to read, highest rating, and name). There should be a page for viewing a specific book where you can see its info. On the book page, if you’re logged in, you should be able to mark the book as read, currently reading, or want to read, and rate it. There must also be a login page.
+What must be included is a page where you can see all books and choose sorting (most read, most wanted to read, highest rating, and name). There should be a page for viewing a specific book where you can see its info. On the book page, if you’re logged in, you should be able to mark the book as read, currently reading, or want to read, and rate it. There must also be a signin page.
 
 After that, you can add one or more of the following:
 • A “My books” page where you can see which books you’ve read, want to read, or have reviewed.

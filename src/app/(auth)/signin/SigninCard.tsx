@@ -4,7 +4,7 @@ import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { signin } from "@/lib/api/auth";
 
-export default function LoginCard() {
+export default function SigninCard() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next");
@@ -12,8 +12,8 @@ export default function LoginCard() {
   return (
     <AuthCard
       showBackButton
-      title="Login"
-      subtitle={"Log in to book-tracker to track,\nrate and discover books."}
+      title="Sign in"
+      subtitle={"Sign in to book-tracker to track,\nrate and discover books."}
     >
       <AuthForm
         fields={[
@@ -36,8 +36,8 @@ export default function LoginCard() {
             required: true,
           },
         ]}
-        submitLabel="Log in"
-        pendingLabel="Logging in..."
+        submitLabel="Sign in"
+        pendingLabel="Signing in..."
         onSubmit={signin}
         onSuccess={() => {
           if (next && next.startsWith("/")) {

@@ -137,7 +137,7 @@ export default function AuthForm<Data = unknown>({
     const { signal, cancel } = timeoutSignal(12_000);
 
     try {
-      // Conduct a callback to login  function, passed down by LoginCard, via onSubmit prop
+      // Conduct a callback to signin function, passed down by SigninCard, via onSubmit prop
       const res = await onSubmit(values, signal);
 
       // If successful, parse JSON payload and call onSuccess with (data, res)

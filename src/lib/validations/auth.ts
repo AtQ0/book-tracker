@@ -24,6 +24,6 @@ export const VerifySignupSchema = z.object({
   verificationCodeId: z.string().min(1, "Verification Code ID is missing"),
 });
 
-// LoginSchema
+// SigninSchema
 
 // ResetPasswordSchema

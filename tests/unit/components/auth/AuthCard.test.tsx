@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-import LoginCard from "@/app/(auth)/login/LoginCard";
+import SigninCard from "@/app/(auth)/signin/SigninCard";
 
 // Hoist router moch function for asserting behavior
 const mockBack = jest.fn();
@@ -19,11 +19,11 @@ jest.mock("next/navigation", () => ({
 }));
 
 // Help queries
-const getHeading = () => screen.getByRole("heading", { name: /login/i });
+const getHeading = () => screen.getByRole("heading", { name: /sign in/i });
 const getEmailInput = () => screen.getByLabelText(/email/i) as HTMLInputElement;
 const getPasswordInput = () =>
   screen.getByLabelText(/password/i) as HTMLInputElement;
-const getSubmitButton = () => screen.getByRole("button", { name: /log in/i });
+const getSubmitButton = () => screen.getByRole("button", { name: /sign in/i });
 const getForgotPasswordLink = () =>
   screen.getByRole("link", { name: /forgot password/i });
 const getSignUpLink = () => screen.getByRole("link", { name: /sign up/i });
@@ -31,14 +31,14 @@ const getBackButton = () => screen.getByRole("button", { name: /back/i });
 
 // Helper to render, get user, and expose container etc.
 function setup() {
-  const utils = render(<LoginCard />);
+  const utils = render(<SigninCard />);
   const user = userEvent.setup();
   return { user, ...utils };
 }
 
 describe("<AuthCard />", () => {
   describe("happy path", () => {
-    it("renders the login card with heading, fields, actions, and navigation afforances", () => {
+    it("renders the signin card with heading, fields, actions, and navigation afforances", () => {
       setup();
 
       // Title
@@ -84,7 +84,7 @@ describe("<AuthCard />", () => {
     });
 
     it("is a valid React element with no required props", () => {
-      const _ok: React.ReactElement = <LoginCard />;
+      const _ok: React.ReactElement = <SigninCard />;
       void _ok;
     });
   });
@@ -115,7 +115,7 @@ describe("<AuthCard />", () => {
       expect(getSignUpLink()).toHaveAttribute("href", "/signup");
     });
 
-    it("keeps the submit button isde the <form> so Enter works for login", () => {
+    it("keeps the submit button isde the <form> so Enter works for signing in", () => {
       const { container } = setup(); // the actual DOM element
       const form = container.querySelector("form");
       expect(form).not.toBeNull();
@@ -131,7 +131,7 @@ describe("<AuthCard />", () => {
 
   describe("strictness", () => {
     it("Ensures AuthCard remains a closed, zero-prop component", () => {
-      const card = <LoginCard />;
+      const card = <SigninCard />;
       expect(card.props).toEqual({});
     });
   });

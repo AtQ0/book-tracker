@@ -22,8 +22,8 @@ book-tracker/
 │   │   ├── (auth)/
 │   │   │   ├── layout.tsx
 │   │   │   │
-│   │   │   ├── login/
-│   │   │   │   ├── LoginCard.tsx
+│   │   │   ├── signin/
+│   │   │   │   ├── SigninCard.tsx
 │   │   │   │   └── page.tsx
 │   │   │   │
 │   │   │   ├── set-password/
@@ -40,7 +40,7 @@ book-tracker/
 │   │   │
 │   │   ├── api/
 │   │   │   ├── auth/
-│   │   │   │   ├── login/
+│   │   │   │   ├── signin/
 │   │   │   │   ├── resend/
 │   │   │   │   ├── set-password/
 │   │   │   │   ├── signup/

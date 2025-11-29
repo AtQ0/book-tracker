@@ -14,15 +14,15 @@
 --licorice: #0c0000ff;     /* Border color for book headline text */
 --cafe-noir: #442811;      /* Background color of book headline */
 
-/* Call to Login */
---peach-yellow: #f7e0aeff; /* Border color of Call to Login */
---cosmic-latte: #fdf6e0ff; /* Background color of Call to Login */
---kobicha: #5d3516ff;      /* Border color of "Login" link button, inside of Call to Login */
---russet: #814423ff;       /* Background color of "Login" link button inside of Call to Login */
+/* Call to Sign-in */
+--peach-yellow: #f7e0aeff; /* Border color of Call to Sign-in */
+--cosmic-latte: #fdf6e0ff; /* Background color of Call to Sign-in */
+--kobicha: #5d3516ff;      /* Border color of "Sign-in" link button, inside of Call to Sign-in */
+--russet: #814423ff;       /* Background color of "Sign-in" link button inside of Call to Sign-in */
 
-/* Large Login button */
---black-bean: #3B0D09;     /* Border color of large Login button */
---seal-brown: #5A3215;     /* Background color of large Login button */
+/* Large Sign-in button */
+--black-bean: #3B0D09;     /* Border color of large Sign-in button */
+--seal-brown: #5A3215;     /* Background color of large Sign-in button */
 
 /* Rating stars */
 --hunyadi-yellow: #e1aa48; /* Background color of rating stars */

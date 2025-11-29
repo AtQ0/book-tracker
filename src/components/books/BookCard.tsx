@@ -45,9 +45,9 @@ export default function BookCard({ book }: BookCardProps) {
       {/* Bottom: actions */}
       <Card padding="md" variant="secondary" className="max-xs:p-3">
         <BookActions
-          onLogin={() => {
+          onSignin={() => {
             const next = `/books/${book.id}`;
-            router.push(`/login?next=${encodeURIComponent(next)}`);
+            router.push(`/signin?next=${encodeURIComponent(next)}`);
           }}
         />
       </Card>
@@ -102,27 +102,27 @@ function BookGenrePill({ children }: { children: React.ReactNode }) {
 
 // All standard HTML <div> props & additional, but without the built-in ref
 type BookActionsProps = React.ComponentPropsWithoutRef<"div"> & {
-  onLogin: () => void; // type the incoming function as an anonymous function that takes no args and returns nothing
+  onSignin: () => void; // type the incoming function as an anonymous function that takes no args and returns nothing
 };
 
 // Helps with rendering books action
-function BookActions({ onLogin, className, ...rest }: BookActionsProps) {
+function BookActions({ onSignin, className, ...rest }: BookActionsProps) {
   return (
     <div className={twMerge("flex justify-between", className)} {...rest}>
       <div>
         <p className="text-xl font-light max-xs:hidden">
-          Log in to add this book
+          Sign in to add this book
           <span className="block">to your shelf or rate it</span>
         </p>
         <p className="hidden text-[0.9rem] max-xs:block">
-          Log in to add this
+          Sign in to add this
           <span className="block">book to your shelf</span>
           or rate it
         </p>
       </div>
       <div className="flex justify-center items-center">
-        <Button type="button" className="max-xs:text-lg" onClick={onLogin}>
-          Log in
+        <Button type="button" className="max-xs:text-lg" onClick={onSignin}>
+          Sign in
         </Button>
       </div>
     </div>
