@@ -70,7 +70,7 @@ function BookCover({ src, alt, ratio = "2:3", className }: BookCoverProps) {
   return (
     <div
       className={twMerge(
-        "relative overflow-hidden rounded-xl p-2",
+        "relative overflow-hidden rounded-xl",
         ratioClass,
         className
       )}
@@ -81,6 +81,9 @@ function BookCover({ src, alt, ratio = "2:3", className }: BookCoverProps) {
         fill
         sizes="(max-width: 475px) 100px, 120px"
         className="object-cover"
+        unoptimized
+        placeholder="blur"
+        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMiIgaGVpZ2h0PSIzIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciLz4="
         //priority={true}
       />
     </div>
