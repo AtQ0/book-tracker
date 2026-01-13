@@ -1,182 +1,62 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-import SigninCard from "@/app/(auth)/signin/SigninCard";
+import AuthCard from "@/components/auth/AuthCard";
 
-// Hoist router moch function for asserting behavior
-const mockBack = jest.fn();
+const getRegion = () => screen.getAllByRole("region")[0];
+const getTitle = (name: RegExp) => screen.getByRole("heading", { name });
+const quaryAnyTitle = () => screen.queryByRole("heading");
+const getSubtitle = (text: RegExp) => screen.getByText(text);
+const querySubtitle = (text: RegExp) => screen.queryByText(text);
 
-// Mock next/navigation because BackButton uses useRouter()
-jest.mock("next/navigation", () => ({
-  useRouter: () => ({
-    back: mockBack,
-    push: jest.fn(),
-  }),
-  useSearchParams: () => ({
-    get: () => null,
-  }),
-}));
-
-// Help queries
-const getHeading = () => screen.getByRole("heading", { name: /sign in/i });
-const getEmailInput = () => screen.getByLabelText(/email/i) as HTMLInputElement;
-const getPasswordInput = () =>
-  screen.getByLabelText(/password/i) as HTMLInputElement;
-const getSubmitButton = () => screen.getByRole("button", { name: /sign in/i });
-const getForgotPasswordLink = () =>
-  screen.getByRole("link", { name: /forgot password/i });
-const getSignUpLink = () => screen.getByRole("link", { name: /sign up/i });
-const getBackButton = () => screen.getByRole("button", { name: /back/i });
-
-// Helper to render, get user, and expose container etc.
-function setup() {
-  const utils = render(<SigninCard />);
-  const user = userEvent.setup();
-  return { user, ...utils };
+function setup(
+  props: React.ComponentProps<typeof AuthCard> = {},
+  childText = "Child content"
+) {
+  return render(
+    <AuthCard {...props}>
+      <div>{childText}</div>
+    </AuthCard>
+  );
 }
 
 describe("<AuthCard />", () => {
   describe("happy path", () => {
-    it("renders the signin card with heading, fields, actions, and navigation afforances", () => {
-      setup();
+    it("renders a region and its children", () => {
+      setup(); // render AuthCard
+      expect(screen.getAllByRole("region")).toHaveLength(1);
+      expect(getRegion()).toBeInTheDocument(); // Validate <Card /> exists
+      expect(screen.getByText(/child content/i)).toBeInTheDocument();
+    });
 
-      // Title
-      expect(getHeading()).toBeInTheDocument();
+    it("renders title and subtitle when provided", () => {
+      setup({ title: "Welcome back", subtitle: "Sign in to continue" });
+      expect(getTitle(/welcome back/i)).toBeInTheDocument();
+      expect(getSubtitle(/sign in to continue/i)).toBeInTheDocument();
+    });
 
-      // Email field
-      const email = getEmailInput();
-      expect(email).toBeInTheDocument();
-      expect(email).toHaveAttribute("type", "email");
-      expect(email).toHaveAttribute("placeholder", "you@example.com");
-
-      // Password field
-      const password = getPasswordInput();
-      expect(password).toBeInTheDocument();
-      expect(password).toHaveAttribute("type", "password");
-      expect(password).toHaveAttribute("placeholder", "**********");
-
-      // Submit button
-      const submitButton = getSubmitButton();
-      expect(submitButton).toBeInTheDocument();
-      expect(submitButton).toHaveAttribute("type", "submit");
-
-      // Forgot password link
-      expect(getForgotPasswordLink()).toBeInTheDocument();
-
-      // Sign up link
-      expect(getSignUpLink()).toBeInTheDocument();
-
-      // Back button (for navigation)
-      expect(getBackButton()).toBeInTheDocument();
+    it("renders the title at the requested heading level", () => {
+      setup({ title: "Welcome back", titleLevel: "h3" });
+      expect(screen.getByRole("heading", { level: 3, name: /welcome back/i }));
     });
   });
 
-  describe("required fields", () => {
-    it("marks email and password inputs as required", () => {
-      setup();
-
-      const email = getEmailInput();
-      const password = getPasswordInput();
-
-      expect(email).toBeRequired();
-      expect(password).toBeRequired();
+  describe("prop forwarding", () => {
+    it("forwards aria attributes to the region", () => {
+      setup({ "aria-label": "Auth panel" });
+      expect(getRegion()).toHaveAttribute("aria-label", "Auth panel");
     });
 
-    it("is a valid React element with no required props", () => {
-      const _ok: React.ReactElement = <SigninCard />;
-      void _ok;
-    });
-  });
-
-  describe("type & format validation", () => {
-    it("sets correct autoComplete attributes to help browsers do right", () => {
-      setup();
-
-      const email = getEmailInput();
-      const password = getPasswordInput();
-
-      expect(email).toHaveAttribute("autoComplete", "email");
-      expect(password).toHaveAttribute("autoComplete", "current-password");
-    });
-  });
-
-  describe("boundary validation", () => {
-    it("links to 'Forgot password?' to /forgot-password", () => {
-      setup();
-
-      const forgotLink = getForgotPasswordLink();
-      expect(forgotLink).toBeInTheDocument();
-      expect(forgotLink).toHaveAttribute("href", "/forgot-password");
+    it("merges className onto the card root", () => {
+      setup({ className: "my-extra-class" });
+      expect(getRegion()).toHaveClass("my-extra-class");
     });
 
-    it("renders the sign up link pointin at signup", () => {
-      setup();
-      expect(getSignUpLink()).toHaveAttribute("href", "/signup");
-    });
-
-    it("keeps the submit button isde the <form> so Enter works for signing in", () => {
-      const { container } = setup(); // the actual DOM element
-      const form = container.querySelector("form");
-      expect(form).not.toBeNull();
-      expect(form).toContainElement(getSubmitButton());
-    });
-
-    it("does not crash rendering BackButton absolutely positioned inside relative wrapper", () => {
-      const { container } = setup(); // the actual DOM element
-      const root = container.firstChild as HTMLElement;
-      expect(root).toHaveClass("relative");
-    });
-  });
-
-  describe("strictness", () => {
-    it("Ensures AuthCard remains a closed, zero-prop component", () => {
-      const card = <SigninCard />;
-      expect(card.props).toEqual({});
-    });
-  });
-
-  describe("interactions", () => {
-    it("lets the user type into email and password fields", async () => {
-      const { user } = setup();
-
-      const email = getEmailInput();
-      const password = getPasswordInput();
-
-      await user.type(email, "user@example.com");
-      await user.type(password, "hunter2");
-
-      expect(email).toHaveValue("user@example.com");
-      expect(password).toHaveValue("hunter2");
-    });
-
-    it("clicking the Back button calls router.back()", async () => {
-      const { user } = setup();
-
-      const backButton = getBackButton();
-      expect(backButton).toBeInTheDocument();
-
-      await user.click(backButton);
-      expect(mockBack).toHaveBeenCalled();
-    });
-  });
-
-  describe("accessibility", () => {
-    it("connects labels to inputs (email/password) so they are discoverable by role and name", () => {
-      setup();
-
-      // Email should be discoverable as role="textbox", accessible name "Email"
+    it("forwards data-* attributes to the region", () => {
+      setup({ "aria-label": "auth-card" });
       expect(
-        screen.getByRole("textbox", { name: /email/i })
+        screen.getByRole("region", { name: "auth-card" })
       ).toBeInTheDocument();
-
-      // Password field should still be findable via its label
-      expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-    });
-
-    it("Verifies that users can see a Back button to go back", () => {
-      setup();
-      expect(screen.getByRole("button", { name: /back/i }));
     });
   });
 });

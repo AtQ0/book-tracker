@@ -10,6 +10,8 @@ type AuthCardOwnProps = {
   subtitle?: string;
 };
 
+type AuthCardProps = AuthCardOwnProps & CardProps<"div">;
+
 export default function AuthCard({
   title,
   titleLevel = "h2",
@@ -21,7 +23,7 @@ export default function AuthCard({
   showBackButton,
   children,
   ...rest
-}: AuthCardOwnProps & CardProps) {
+}: AuthCardProps) {
   // Park titleLevel value in an uppercase variable as JSX reads them as variables
   const TitleTag = titleLevel;
 

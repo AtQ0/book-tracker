@@ -79,11 +79,7 @@ function BookCover({ src, alt, ratio = "2:3", className }: BookCoverProps) {
         alt={alt}
         src={src}
         fill
-        sizes="(min-width: 1536px) 320px,
-         (min-width: 1280px) 280px,
-         (min-width: 1024px) 240px,
-         (min-width: 768px) 200px,
-         160px"
+        sizes="(max-width: 475px) 100px, 120px"
         className="object-cover"
         //priority={true}
       />
