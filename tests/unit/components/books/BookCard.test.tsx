@@ -29,13 +29,17 @@ jest.mock("next/image", () => {
     (imgProps, ref) => {
       const { alt, ...rest } = imgProps;
 
-      // clone then strip Next specific props without creating unused bindings
       const domProps: Record<string, unknown> = { ...rest };
       delete domProps.fill;
       delete domProps.priority;
       delete domProps.quality;
       delete domProps.loader;
       delete domProps.onLoadingComplete;
+
+      delete domProps.unoptimized;
+      delete domProps.placeholder;
+      delete domProps.blurDataURL;
+      delete domProps.sizes;
 
       return (
         // eslint-disable-next-line @next/next/no-img-element
@@ -45,8 +49,9 @@ jest.mock("next/image", () => {
           {...(domProps as React.ImgHTMLAttributes<HTMLImageElement>)}
         />
       );
-    }
+    },
   );
+
   NextImageMock.displayName = "NextImageMock";
   return { __esModule: true, default: NextImageMock };
 });
@@ -92,7 +97,7 @@ describe("<BookCard />", () => {
       renderCard();
       expect(screen.getByText(/Sign in to add this book/i)).toBeInTheDocument();
       expect(
-        screen.getByRole("button", { name: /Sign in/i })
+        screen.getByRole("button", { name: /Sign in/i }),
       ).toBeInTheDocument();
     });
   });
@@ -141,7 +146,7 @@ describe("<BookCard />", () => {
       const btn = screen.getByRole("button", { name: /sign in/i });
       fireEvent.click(btn);
       expect(pushMock).toHaveBeenCalledWith(
-        `/signin?next=${encodeURIComponent("/books/book-1")}`
+        `/signin?next=${encodeURIComponent("/books/book-1")}`,
       );
     });
 

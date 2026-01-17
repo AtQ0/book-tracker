@@ -5,18 +5,18 @@ import AuthCard from "@/components/auth/AuthCard";
 
 const getRegion = () => screen.getAllByRole("region")[0];
 const getTitle = (name: RegExp) => screen.getByRole("heading", { name });
-const quaryAnyTitle = () => screen.queryByRole("heading");
+const queryAnyTitle = () => screen.queryByRole("heading");
 const getSubtitle = (text: RegExp) => screen.getByText(text);
 const querySubtitle = (text: RegExp) => screen.queryByText(text);
 
 function setup(
   props: React.ComponentProps<typeof AuthCard> = {},
-  childText = "Child content"
+  childText = "Child content",
 ) {
   return render(
     <AuthCard {...props}>
       <div>{childText}</div>
-    </AuthCard>
+    </AuthCard>,
   );
 }
 
@@ -52,11 +52,48 @@ describe("<AuthCard />", () => {
       expect(getRegion()).toHaveClass("my-extra-class");
     });
 
-    it("forwards data-* attributes to the region", () => {
-      setup({ "aria-label": "auth-card" });
-      expect(
-        screen.getByRole("region", { name: "auth-card" })
-      ).toBeInTheDocument();
+    it("forwards standard HTML attributes to the region", () => {
+      setup({ id: "probe" });
+      expect(getRegion()).toHaveAttribute("id", "probe");
+    });
+  });
+
+  describe("accessibility", () => {
+    it("wires aria-labelledby to the title id when a title exists", () => {
+      setup({ title: "Welcome back" });
+
+      const region = getRegion();
+      const heading = getTitle(/welcome back/i);
+
+      const id = heading.getAttribute("id");
+      expect(id).toBeTruthy();
+      expect(region).toHaveAttribute("aria-labelledby", id!);
+    });
+
+    it("does not set aria-labelledby when there is no title", () => {
+      setup({ subtitle: "Only subtitle" });
+
+      const region = getRegion();
+      expect(region).not.toHaveAttribute("aria-labelledby");
+      expect(queryAnyTitle()).not.toBeInTheDocument();
+      expect(getSubtitle(/only subtitle/i)).toBeInTheDocument();
+    });
+
+    it("still renders as a region even with no title/subtitle", () => {
+      setup({ title: undefined, subtitle: undefined });
+
+      const region = getRegion();
+      expect(region).toBeInTheDocument();
+      expect(region).not.toHaveAttribute("aria-labelledby");
+      expect(queryAnyTitle()).not.toBeInTheDocument();
+      expect(querySubtitle(/only subtitle/i)).not.toBeInTheDocument();
+    });
+  });
+
+  describe("type safety", () => {
+    it("is a valid React element with no required props", () => {
+      const _ok: React.ReactElement = <AuthCard />;
+      void _ok;
     });
   });
 });
