@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-// Used by Renders cron job to check "health" every 10min and avoid cold start
+// Used by external monitor (UptimeRobot) to prevent Render cold starts
 export async function GET() {
   return NextResponse.json({ status: "ok" });
 }
