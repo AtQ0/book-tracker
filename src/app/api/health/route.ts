@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-// Endpoint used by renders cron job to check "health" and thus avoid cold start
+// Used by Renders cron job to check "health" every 10min and avoid cold start
 export async function GET() {
   return NextResponse.json({ status: "ok" });
 }
