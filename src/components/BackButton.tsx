@@ -21,7 +21,7 @@ export default function BackButton({
       type="button"
       onClick={() => router.back()}
       className={twMerge(
-        "flex items-center gap-2 transition cursor-pointer text-kobicha hover:opacity-70 text-xl",
+        "flex items-center gap-1 transition cursor-pointer text-kobicha hover:opacity-70 text-xl",
         className,
       )}
     >

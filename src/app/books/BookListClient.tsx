@@ -1,4 +1,5 @@
 import BookGrid from "@/components/books/BookGrid";
+import BookSortBar from "@/components/books/BookSortBar";
 import { BookDTO } from "@/lib/validations/book";
 
 type BookListClientProps = {
@@ -11,11 +12,14 @@ export default function BookListClient({
   initialSort,
 }: BookListClientProps) {
   return (
-    <section>
-      {/* render BookSortBar here */}
-      {/* pass initialSort (UI sync prop) so BookSortBar knows the latest */}
-      {/* <BookSortBar value={initialSort} /> */}
-      <BookGrid initialBooks={initialBooks} />
+    <section className="px-3.5">
+      <div className="mx-auto w-full max-w-[56rem]">
+        <div className="my-4 mx-auto w-full max-w-[27rem] lg:max-w-none">
+          <BookSortBar value={initialSort} />
+        </div>
+
+        <BookGrid initialBooks={initialBooks} />
+      </div>
     </section>
   );
 }
