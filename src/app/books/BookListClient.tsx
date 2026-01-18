@@ -12,7 +12,7 @@ export default function BookListClient({
   initialSort,
 }: BookListClientProps) {
   return (
-    <section className="px-3.5">
+    <section>
       <div className="mx-auto w-full max-w-[56rem]">
         <div className="my-4 mx-auto w-full max-w-[27rem] lg:max-w-none">
           <BookSortBar value={initialSort} />

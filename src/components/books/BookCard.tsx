@@ -15,7 +15,17 @@ export default function BookCard({ book }: BookCardProps) {
   const router = useRouter();
 
   return (
-    <Card as="article" className="flex flex-col gap-5 min-xs:w-[27rem] mx-auto">
+    <Card
+      as="article"
+      className="
+    flex flex-col gap-5
+    w-full
+    min-xs:max-w-[27rem]
+    mx-auto
+    lg:max-w-none
+    lg:mx-0
+  "
+    >
       <Link
         href={`/books/${book.id}`}
         className="flex gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-peach-yellow rounded-xl"
