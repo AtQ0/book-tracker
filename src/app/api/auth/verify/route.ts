@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
       return json(
         { message: formErrors[0] ?? "Invalid verification data" },
-        422
+        422,
       );
     }
 
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         return problem(
           422,
           "Unprocessable Entity",
-          "Verification code has expired. Please request a new one."
+          "Verification code has expired. Please request a new one.",
         );
 
       case "invalid":
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
         return problem(
           422,
           "Unprocessable Entity",
-          "Invalid verification code. Please double check and try again."
+          "Invalid verification code. Please double check and try again.",
         );
 
       case "already-verified":
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
         return problem(
           500,
           "Internal Server Error",
-          "Unhandled verify result."
+          "Unhandled verify result.",
         );
       }
     }
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
     return problem(
       500,
       "Internal Server Error",
-      "Could not verify your account. Please try again"
+      "Could not verify your email. Please try again",
     );
   }
 }

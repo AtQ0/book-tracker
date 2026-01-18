@@ -19,7 +19,7 @@ export default function VerifyCard() {
     <AuthCard
       className="gap-3"
       showBackButton={!fromEmail}
-      title="Verify your account"
+      title="Verify your email"
       subtitle={"Enter the 6-digit code\nsent to your email adresss."}
     >
       <AuthForm

@@ -140,7 +140,7 @@ describe("POST / api/auth/verify", () => {
       expect(res.status).toBe(422);
       const data = (await res.json()) as ProblemDetailBody;
       expect(String(data.detail).toLowerCase()).toContain(
-        "invalid verification code"
+        "invalid verification code",
       );
     });
 
@@ -152,7 +152,7 @@ describe("POST / api/auth/verify", () => {
       expect(res.status).toBe(422);
       const data = (await res.json()) as ProblemDetailBody;
       expect(String(data.detail).toLowerCase()).toContain(
-        "invalid verification code"
+        "invalid verification code",
       );
     });
 
@@ -186,13 +186,13 @@ describe("POST / api/auth/verify", () => {
 
       // Ensure the returned error message contains the expected text
       expect(String(data.detail).toLowerCase()).toContain(
-        "could not verify your account"
+        "could not verify your email",
       );
 
       // Ensure console.error logged the correct message and an Error object
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         "verify error",
-        expect.any(Error)
+        expect.any(Error),
       );
 
       // Restore the original console.error implementation
@@ -207,7 +207,7 @@ describe("POST / api/auth/verify", () => {
       const res = await makeRequest(validBody);
 
       expect(res.headers.get("content-type")).toMatch(
-        /application\/problem\+json/
+        /application\/problem\+json/,
       );
     });
   });
