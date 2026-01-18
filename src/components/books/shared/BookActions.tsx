@@ -16,12 +16,12 @@ export default function BookActions({
   return (
     <div className={twMerge("flex items-center gap-5", className)} {...rest}>
       <div className="min-w-0">
-        <p className="xs:text-lg md:text-xl font-light max-xs:hidden">
+        <p className="xs:text-lg  font-light max-xs:hidden">
           Sign in to add this book
           <span className="block">to your shelf or rate it</span>
         </p>
 
-        <p className="hidden text-[0.9rem] max-xs:block">
+        <p className="hidden text-[1rem] max-xs:block">
           Sign in to add this
           <span className="block">book to your shelf</span>
           or rate it
