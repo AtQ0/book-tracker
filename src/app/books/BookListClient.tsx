@@ -13,7 +13,7 @@ export default function BookListClient({
   return (
     <section>
       {/* render BookSortBar here */}
-      {/* we pass initialSort (UI sync prop) so BookSortBar knows the latest */}
+      {/* pass initialSort (UI sync prop) so BookSortBar knows the latest */}
       {/* <BookSortBar value={initialSort} /> */}
       <BookGrid initialBooks={initialBooks} />
     </section>

@@ -1,7 +1,6 @@
 import { getBookById } from "@/server/books";
-import BookCard from "@/components/books/BookCard";
 import { notFound } from "next/navigation";
-import BackButton from "@/components/BackButton";
+import BookDetailCard from "@/components/books/BookDetailCard";
 
 export default async function BookDetail({
   params,
@@ -10,14 +9,11 @@ export default async function BookDetail({
 }) {
   const book = await getBookById(params.id);
 
-  if (!book) {
-    notFound(); // Or return <p>Book not found</p>;
-  }
+  if (!book) notFound();
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <BackButton />
-      <BookCard book={book} />
+    <div className="min-h-screen px-6 py-6 sm:flex sm:items-center sm:justify-center">
+      <BookDetailCard book={book} className="max-w-3xl mx-auto" />
     </div>
   );
 }

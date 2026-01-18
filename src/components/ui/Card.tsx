@@ -1,12 +1,10 @@
 import { twMerge } from "tailwind-merge";
 import BackButton from "../BackButton";
 
-// Polymorphic props for any React.ElementType (div, article, section, etc.), minus ref and any existing `as`
 type AsProp<T extends React.ElementType> = {
   as?: T;
 } & Omit<React.ComponentPropsWithoutRef<T>, "as">;
 
-// Custom props that belong only to Card
 type CardOwnProps = {
   padding?: "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
   variant?: "default" | "secondary" | "elevated" | "outline";
@@ -14,7 +12,6 @@ type CardOwnProps = {
   children?: React.ReactNode;
 };
 
-// Combine polymorphic element props with Card’s own custom props
 export type CardProps<T extends React.ElementType = "div"> = AsProp<T> &
   CardOwnProps;
 
@@ -46,7 +43,6 @@ export default function Card<T extends React.ElementType = "div">({
   children,
   ...rest
 }: CardProps<T>) {
-  // Park as value or div in an uppercase variable as JSX reads them as variables
   const Tag = (as || "div") as React.ElementType;
 
   return (
@@ -55,12 +51,17 @@ export default function Card<T extends React.ElementType = "div">({
         "rounded-xl select-none relative",
         VAR[variant],
         PAD[padding],
-        className
+        showBackButton ? "pt-20" : "",
+        className,
       )}
       {...rest}
     >
-      {showBackButton && <BackButton />}
-      {}
+      {showBackButton && (
+        <div className="absolute left-4 top-4 z-10">
+          <BackButton />
+        </div>
+      )}
+
       {children}
     </Tag>
   );
