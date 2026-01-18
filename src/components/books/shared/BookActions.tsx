@@ -21,7 +21,7 @@ export default function BookActions({
           <span className="block">to your shelf or rate it</span>
         </p>
 
-        <p className="hidden text-[0.9rem] max-xs:block">
+        <p className="hidden text-[0.5rem] max-xs:block">
           Sign in to add this
           <span className="block">book to your shelf</span>
           or rate it
@@ -31,7 +31,7 @@ export default function BookActions({
       <div className="flex-1 shrink-0 flex justify-end">
         <Button
           type="button"
-          className="max-xs:text-lg w-full max-w-98"
+          className="text-base w-full max-w-98"
           onClick={onSignin}
         >
           Sign in
