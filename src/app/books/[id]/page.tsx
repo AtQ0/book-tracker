@@ -5,10 +5,11 @@ import BookDetailCard from "@/components/books/BookDetailCard";
 export default async function BookDetail({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const book = await getBookById(params.id);
+  const { id } = await params;
 
+  const book = await getBookById(id);
   if (!book) notFound();
 
   return (
