@@ -4,7 +4,7 @@ import type { Prisma } from "@prisma/client";
 import { sortFieldMap, type BookDTO } from "@/lib/validations/book";
 
 export async function getBooksFromDb(
-  sort?: keyof typeof sortFieldMap
+  sort?: keyof typeof sortFieldMap,
 ): Promise<BookDTO[]> {
   // Default order: if no valid ?sort= is provided in the query, order books by newest first
   let orderBy: Prisma.BookOrderByWithRelationInput[] = [{ createdAt: "desc" }];
@@ -35,4 +35,23 @@ export async function getBooksFromDb(
   });
 
   return rows;
+}
+
+export async function getBookById(id: string): Promise<BookDTO | null> {
+  const book = await prisma.book.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      genre: true,
+      coverUrl: true,
+      averageRating: true,
+      haveRead: true,
+      currentlyReading: true,
+      wantToRead: true,
+    },
+  });
+
+  return book;
 }
