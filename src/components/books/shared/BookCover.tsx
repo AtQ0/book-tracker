@@ -30,7 +30,7 @@ export default function BookCover({
         alt={alt}
         src={src}
         fill
-        sizes="(max-width: 475px) 100px, 120px"
+        sizes="(max-width: 640px) 100vw, 120px"
         className="object-cover"
         unoptimized
         placeholder="blur"

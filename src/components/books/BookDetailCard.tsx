@@ -32,19 +32,21 @@ export default function BookDetailCard({ book, className }: Props) {
 
       <div className="pt-4">
         <div className="flex flex-col gap-5">
-          {/* mobile-first layout that matches BookCard */}
-          <div className="flex gap-3 sm:gap-6">
-            <div className="shrink-0">
+          {/* <= sm: stacked, >= sm: side-by-side */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
+            {/* Mobile: full width. sm+: fixed column behavior */}
+            <div className="w-full sm:w-auto sm:shrink-0">
               <BookCover
                 src={book.coverUrl}
                 alt={book.name}
                 ratio="2:3"
-                className="w-30 max-xs:w-25 h-full lg:w-45"
+                className="w-full sm:w-30 h-full lg:w-45"
               />
             </div>
 
-            <div className="flex-1 min-w-0 pr-2 sm:pr-0 max-w-[25rem] sm:max-w-none">
-              <h1 className="max-xs:text-lg text-2xl sm:text-4xl font-semibold sm:font-extrabold leading-tight min-xs:truncate sm:line-clamp-none">
+            {/* Text container now matches image edge on mobile */}
+            <div className="flex-1 min-w-0 sm:pr-0 sm:max-w-none">
+              <h1 className="text-2xl sm:text-4xl font-semibold sm:font-extrabold leading-tight">
                 {book.name}
               </h1>
 
@@ -52,9 +54,7 @@ export default function BookDetailCard({ book, className }: Props) {
                 {book.genre}
               </BookGenrePill>
 
-              <p className="mt-3 sm:mt-4 leading-relaxed line-clamp-8 sm:line-clamp-10 md:line-clamp-none">
-                {book.description}
-              </p>
+              <p className="mt-3 sm:mt-4 leading-relaxed">{book.description}</p>
             </div>
           </div>
 
