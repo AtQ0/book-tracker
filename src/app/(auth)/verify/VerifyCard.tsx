@@ -22,7 +22,7 @@ export default function VerifyCard() {
       title="Verify your email"
       subtitle={"Enter the 6-digit code\nsent to your email adresss."}
     >
-      <AuthForm
+      <AuthForm<{ ok: true; setPasswordCodeId: string }>
         className="gap-9"
         fields={[
           {
@@ -41,12 +41,22 @@ export default function VerifyCard() {
         onSubmit={(values, signal) =>
           verifySignup({ ...values, verificationCodeId }, signal)
         }
-        onSuccess={() => {
+        onSuccess={(data) => {
           const params = new URLSearchParams();
-          params.set("verificationCodeId", verificationCodeId);
+
+          // IMPORTANT: use the new code id returned by /api/auth/verify
+          if (!data.setPasswordCodeId) {
+            // If this hits, the API response will NOT include setPasswordCodeId
+            console.error("[VerifyCard] Missing setPasswordCodeId in response");
+            return;
+          }
+
+          params.set("verificationCodeId", data.setPasswordCodeId);
+
           if (next && next.startsWith("/")) {
             params.set("next", next);
           }
+
           router.replace(`/set-password?${params.toString()}`);
         }}
         footer={

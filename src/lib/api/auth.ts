@@ -8,8 +8,11 @@ export const signup = (values: Record<string, string>, signal: AbortSignal) =>
     credentials: "same-origin",
   });
 
-export const signin = (values: Record<string, string>, signal: AbortSignal) =>
-  fetch("/api/auth/signin", {
+export const verifySignup = (
+  values: Record<string, string>,
+  signal: AbortSignal,
+) =>
+  fetch("/api/auth/verify", {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify(values),
@@ -18,11 +21,21 @@ export const signin = (values: Record<string, string>, signal: AbortSignal) =>
     credentials: "same-origin",
   });
 
-export const verifySignup = (
+export const setPassword = (
   values: Record<string, string>,
-  signal: AbortSignal
+  signal: AbortSignal,
 ) =>
-  fetch("/api/auth/verify", {
+  fetch("/api/auth/set-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(values),
+    signal,
+    cache: "no-store",
+    credentials: "same-origin",
+  });
+
+export const signin = (values: Record<string, string>, signal: AbortSignal) =>
+  fetch("/api/auth/signin", {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify(values),

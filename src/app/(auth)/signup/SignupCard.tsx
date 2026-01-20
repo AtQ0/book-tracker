@@ -1,13 +1,22 @@
 "use client";
+
 import { useRouter, useSearchParams } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { signup } from "@/lib/api/auth";
 
+function safeNext(next: string | null) {
+  if (!next) return null;
+  if (!next.startsWith("/")) return null;
+  if (next.startsWith("//")) return null;
+  return next;
+}
+
 export default function SignupCard() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next");
+  const safe = safeNext(next);
 
   return (
     <AuthCard
@@ -45,15 +54,13 @@ export default function SignupCard() {
         pendingLabel="Sending data..."
         onSubmit={signup}
         onSuccess={(data) => {
-          const verificationCodeId = data.verificationCodeId;
-
           const params = new URLSearchParams();
 
-          if (verificationCodeId) {
-            params.set("verificationCodeId", verificationCodeId);
+          if (data.verificationCodeId) {
+            params.set("verificationCodeId", data.verificationCodeId);
           }
-          if (next && next.startsWith("/")) {
-            params.set("next", next);
+          if (safe) {
+            params.set("next", safe);
           }
 
           const query = params.toString();
@@ -66,7 +73,7 @@ export default function SignupCard() {
               <a
                 className="font-semibold underline decoration-[0.0777rem] hover:opacity-70"
                 href={
-                  next ? `/signin?next=${encodeURIComponent(next)}` : "/signin"
+                  safe ? `/signin?next=${encodeURIComponent(safe)}` : "/signin"
                 }
               >
                 Sign in

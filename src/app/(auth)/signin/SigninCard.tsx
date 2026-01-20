@@ -1,13 +1,22 @@
 "use client";
+
 import { useRouter, useSearchParams } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { signin } from "@/lib/api/auth";
 
+function safeNext(next: string | null) {
+  if (!next) return null;
+  if (!next.startsWith("/")) return null;
+  if (next.startsWith("//")) return null;
+  return next;
+}
+
 export default function SigninCard() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next");
+  const safe = safeNext(next);
 
   return (
     <AuthCard
@@ -40,17 +49,12 @@ export default function SigninCard() {
         pendingLabel="Signing in..."
         onSubmit={signin}
         onSuccess={() => {
-          if (next && next.startsWith("/")) {
-            router.replace(next);
-          } else {
-            router.replace("/myshelf"); // get this link straight
-          }
+          router.replace(safe ?? "/myshelf");
         }}
         className="flex flex-col gap-8"
         footer={
           <div className="mt-5 flex flex-col gap-8 justify-center items-center">
             <p>
-              {" "}
               <a href="/forgot-password" className="underline hover:opacity-70">
                 Forgot password
               </a>
@@ -61,7 +65,7 @@ export default function SigninCard() {
               Do not have an account?{" "}
               <a
                 href={
-                  next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"
+                  safe ? `/signup?next=${encodeURIComponent(safe)}` : "/signup"
                 }
                 className="font-semibold underline decoration-[0.0777rem] hover:opacity-70"
               >
@@ -70,7 +74,7 @@ export default function SigninCard() {
             </p>
           </div>
         }
-      ></AuthForm>
+      />
     </AuthCard>
   );
 }

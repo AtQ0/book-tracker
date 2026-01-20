@@ -24,9 +24,8 @@ export type SignupResult =
 
 export async function runSignup(
   { email, name }: { email: string; name: string },
-  { ttlMs, cooldownMs, argon2Opts, sendMail }: SignupDeps
-): //Bind the return with the shape SignupResult
-Promise<SignupResult> {
+  { ttlMs, cooldownMs, argon2Opts, sendMail }: SignupDeps,
+): Promise<SignupResult> {
   // 1) reuse/unverified user or create
   const existing = await prisma.user.findUnique({
     where: { email },
@@ -51,7 +50,7 @@ Promise<SignupResult> {
       select: { id: true },
     }));
 
-  // Cooldown check (429 Too Many Requests), stop if a recent code was just created
+  // Cooldown check (429 Too Many Requests)
   if (cooldownMs && cooldownMs > 0) {
     const recent = await prisma.verificationCode.findFirst({
       where: {
@@ -66,19 +65,20 @@ Promise<SignupResult> {
     }
   }
 
-  // 2) Replace any old verification codes/verificationCodesId's with a fresh one (atomic)
+  // 2) Replace any old verification codes with a fresh one (atomic)
   const { verificationCode, expiresAt, verificationCodeId } =
     await prisma.$transaction(async (tx) => {
-      // Remove old verification code for a specific user
       await tx.verificationCode.deleteMany({
-        where: { userId: user.id, purpose: "SIGNUP_VERIFY_EMAIL" },
+        where: {
+          userId: user.id,
+          purpose: { in: ["SIGNUP_VERIFY_EMAIL", "SIGNUP_SET_PASSWORD"] },
+        },
       });
 
       const fresh = String(randomInt(0, 1_000_000)).padStart(6, "0");
       const hash = await argon2.hash(fresh, argon2Opts);
       const expires = new Date(Date.now() + ttlMs);
 
-      // Send request to create a verification code, ask to get its id in return
       const created = await tx.verificationCode.create({
         data: {
           userId: user.id,
@@ -96,14 +96,14 @@ Promise<SignupResult> {
       };
     });
 
-  //3 send mail: rollback on failure (502 Bad Gateway)
+  // 3) send mail: rollback on failure (502 Bad Gateway)
   try {
     await sendMail({
       to: email,
       recipientName: name,
-      verificationCode: verificationCode,
-      ttlMin: Math.floor(ttlMs / 60000), // convert ms to minutes
-      verificationCodeId: verificationCodeId, // pass through verificationCodeId so mail can build verify link
+      verificationCode,
+      ttlMin: Math.floor(ttlMs / 60000),
+      verificationCodeId,
     });
   } catch {
     await prisma.verificationCode
@@ -116,6 +116,6 @@ Promise<SignupResult> {
   return {
     kind: "ok" as const,
     expiresAt,
-    verificationCodeId: verificationCodeId,
+    verificationCodeId,
   };
 }

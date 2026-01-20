@@ -31,7 +31,10 @@ export async function POST(req: Request) {
 
     switch (result.kind) {
       case "ok":
-        return json({ ok: true }, 200);
+        return json(
+          { ok: true, setPasswordCodeId: result.setPasswordCodeId },
+          200,
+        );
 
       case "expired":
         return problem(

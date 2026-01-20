@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       const { fieldErrors, formErrors } = parsed.error.flatten();
       return json(
         { message: formErrors[0] ?? "Invalid data", fieldErrors }, //custom error message for formErrors and generic ("invalid data") for fieldErrors
-        422
+        422,
       );
     }
 
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         cooldownMs: RESEND_COOLDOWN_MS,
         argon2Opts: ARGON2_OPTS,
         sendMail: sendSignupEmail,
-      }
+      },
     );
 
     // Handle every possible signup outcome, based on the union type
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
         return problem(
           429,
           "Too Many Requests",
-          "Please wait a bit before requesting another code."
+          "Please wait a bit before requesting another code.",
         );
       case "mail-failed":
         return problem(502, "Bad Gateway", "Could not send email. Try again.");
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
             expiresAt: result.expiresAt.toISOString(),
             verificationCodeId: result.verificationCodeId,
           },
-          201
+          201,
         );
       default: {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
         return problem(
           500,
           "Internal Server Error",
-          "Unhandled signup result."
+          "Unhandled signup result.",
         );
       }
     }
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
     return problem(
       500,
       "Internal Server Error",
-      "Could not sign up. Please try again"
+      "Could not sign up. Please try again",
     );
   }
 }
