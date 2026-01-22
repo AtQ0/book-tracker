@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
-import { signup } from "@/lib/api/auth";
+import { signupJson } from "@/lib/api/auth";
 
 function safeNext(next: string | null) {
   if (!next) return null;
@@ -52,7 +52,13 @@ export default function SignupCard() {
         ]}
         submitLabel="Sign up"
         pendingLabel="Sending data..."
-        onSubmit={signup}
+        onSubmit={(values, signal) =>
+          signupJson<{
+            ok: true;
+            expiresAt: string;
+            verificationCodeId: string;
+          }>(values, signal)
+        }
         onSuccess={(data) => {
           const params = new URLSearchParams();
 
