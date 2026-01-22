@@ -4,7 +4,7 @@ import Section from "@/components/layout/Section";
 import { BookListQuerySchema, type BookDTO } from "@/lib/validations/book";
 import { getBooksFromDb } from "@/server/books";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth/options";
 
 // Mark page as being dynamic, meaning don't cache but always fetch fresh data
 export const revalidate = 0;

@@ -1,7 +1,7 @@
 import { getBookById } from "@/server/books";
 import { notFound } from "next/navigation";
 import BookDetailCard from "@/components/books/BookDetailCard";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth/options";
 import { getServerSession } from "next-auth";
 
 export default async function BookDetail({

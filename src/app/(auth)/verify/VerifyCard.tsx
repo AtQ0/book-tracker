@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import AuthForm from "@/components/auth/AuthForm";
 import AuthCard from "@/components/auth/AuthCard";
-import { verifySignup } from "@/lib/api/auth";
+import { verifySignupJson } from "@/lib/api/auth";
 
 export default function VerifyCard() {
   const router = useRouter();
@@ -39,14 +39,15 @@ export default function VerifyCard() {
         submitLabel="Verify"
         pendingLabel="Checking data..."
         onSubmit={(values, signal) =>
-          verifySignup({ ...values, verificationCodeId }, signal)
+          verifySignupJson<{ ok: true; setPasswordCodeId: string }>(
+            { ...values, verificationCodeId },
+            signal,
+          )
         }
         onSuccess={(data) => {
           const params = new URLSearchParams();
 
-          // IMPORTANT: use the new code id returned by /api/auth/verify
           if (!data.setPasswordCodeId) {
-            // If this hits, the API response will NOT include setPasswordCodeId
             console.error("[VerifyCard] Missing setPasswordCodeId in response");
             return;
           }
