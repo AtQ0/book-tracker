@@ -3,24 +3,18 @@ import Field from "../form/Field";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { twMerge } from "tailwind-merge";
-
 import {
-  parseJsonIfAny,
   timeoutSignal,
   normalizeEmail,
   normalizeName,
-  extractFieldError,
-  type ErrorPayload,
 } from "@/lib/auth-helpers";
 
-// Type for custom optional normalizer, params string, return value string
 type Normalizer = (v: string) => string;
 
-// Description of one field in auth form
 type FieldSpec = {
   id: string;
   label: string;
-  type: React.ComponentPropsWithoutRef<"input">["type"]; // reuse rich union type of inputs type property
+  type: React.ComponentPropsWithoutRef<"input">["type"];
   name: string;
   autoComplete?: string;
   placeholder?: string;
@@ -29,15 +23,22 @@ type FieldSpec = {
   normalize?: Normalizer;
 };
 
+type SubmitError = {
+  message: string;
+  field?: string;
+};
+
 type AuthFormProps<Data = unknown> = {
   fields: FieldSpec[];
   submitLabel: string;
   pendingLabel?: string;
+
   onSubmit: (
     values: Record<string, string>,
-    signal: AbortSignal
-  ) => Promise<Response>; // this is what a fetch always returns
-  onSuccess?: (data: Data, res: Response) => void;
+    signal: AbortSignal,
+  ) => Promise<Data>;
+
+  onSuccess?: (data: Data) => void;
   className?: string;
   footer?: React.ReactNode;
 };
@@ -51,152 +52,73 @@ export default function AuthForm<Data = unknown>({
   className,
   footer,
 }: AuthFormProps<Data>) {
-  // Syncronous/instant flag used for preventing double form submission
   const submittingRef = useRef(false);
-
   const [pending, setPending] = useState(false);
-  // Global form-level error message
   const [formError, setFormError] = useState("");
-
-  // Per-field errors
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
-  // If error for that field exists, copy error object and clear it (field: undefined)
   const clearError = (field: string) => () =>
     setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev));
 
-  // Focus helper, for focuing on e.g. a <input /> element
   const focusField = (form: HTMLFormElement, name?: string) => {
     if (!name) return;
     const el = form.elements.namedItem(name) as HTMLInputElement | null;
     if (!el) return;
-
-    // focus element
     el.focus();
-
-    //  Move cursor to end of value
     if (el.value) {
       const len = el.value.length;
-      el.setSelectionRange?.(len, len); // put cursor after last character
+      el.setSelectionRange?.(len, len);
     }
     el.scrollIntoView?.({ block: "center", inline: "nearest" });
   };
 
-  // OnSubmit logic
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const form = e.currentTarget;
 
-    // Create reference to the dom-element responsible for generating the event
-    const form = e.currentTarget; // gives us access to form.checkValidity() and form.reportValidity()
-
-    const showFormError = (msg: string) => {
-      setFormError(msg); // update for sighted users
-    };
-
-    const clearFormError = () => {
-      setFormError("");
-    };
-
-    // Prevent double submission
     if (submittingRef.current) return;
 
-    // Run HTML5 validation on inputted data
     if (!form.checkValidity()) {
-      //trigger native browser behavior (e.g. field gets focused, red outline etc.)
       form.reportValidity();
       return;
     }
 
-    // Reset errors, lock submission, and show pending state
-    clearFormError();
+    setFormError("");
     setErrors({});
     submittingRef.current = true;
     setPending(true);
 
-    // Extract current input values from the form into a structured FormData object
-    const fd = new FormData(e.currentTarget);
+    const fd = new FormData(form);
 
-    // central default normalizers by name
     const defaults: Partial<Record<string, Normalizer>> = {
       email: normalizeEmail,
       name: normalizeName,
     };
 
-    // Use normalizers on input
     const values: Record<string, string> = {};
     for (const spec of fields) {
-      // get input value from that specific field
       const raw = String(fd.get(spec.name) ?? "");
       const normalize = spec.normalize ?? defaults[spec.name];
-
-      // store normalized input data in the values object under a key matching the field name (spec.name)
       values[spec.name] = normalize ? normalize(raw) : raw;
     }
 
-    // create an AbortSignal and a timer that aborts the fetch after XX seconds
     const { signal, cancel } = timeoutSignal(12_000);
 
     try {
-      // Conduct a callback to signin function, passed down by SigninCard, via onSubmit prop
-      const res = await onSubmit(values, signal);
+      const data = await onSubmit(values, signal);
+      onSuccess?.(data);
+    } catch (err) {
+      const e = err as Partial<SubmitError>;
 
-      // If successful, parse JSON payload and call onSuccess with (data, res)
-      if (res.ok) {
-        const payload = await parseJsonIfAny(res);
-        onSuccess?.(payload as Data, res);
-        return;
+      if (e?.field) {
+        setErrors((prev) => ({
+          ...prev,
+          [e.field!]: e.message || "Invalid value",
+        }));
+        focusField(form, e.field);
+      } else {
+        setFormError(e?.message || "Something went wrong. Please try again.");
       }
-
-      // Parse response into error management payload
-      const payload = await parseJsonIfAny<ErrorPayload>(res);
-
-      //---- Conflicts management ------
-
-      // handle conflict (422): invalid or missing field input
-      if (res.status === 422) {
-        const { field, message } = extractFieldError(payload ?? null);
-        if (field) {
-          setErrors((prev) => ({
-            ...prev,
-            [field]: message || "Invalid value",
-          }));
-          focusField(form, field);
-        } else {
-          showFormError(message || "Invalid data.");
-        }
-        return;
-      }
-
-      // handle conflict (409): email already exists
-      if (res.status === 409) {
-        const msg =
-          payload?.message ||
-          "That email is already registered. Try signing in instead.";
-        setErrors((prev) => ({ ...prev, email: msg }));
-        focusField(form, "email");
-        return;
-      }
-
-      // Handle conflict (429): too  many requests
-      if (res.status === 429) {
-        const msg =
-          (payload && "detail" in payload && payload.detail) ||
-          (payload && "message" in payload && payload.message) ||
-          "Too many attempts. Please wait a little before trying again.";
-        showFormError(msg);
-        return;
-      }
-
-      // Handle generic server errors (e.g. 500/502/503/etc.)
-      const generic =
-        (payload && "detail" in payload && payload.detail) ||
-        (payload && "message" in payload && payload.message) ||
-        "Something went wrong. Please try again.";
-      showFormError(generic);
-    } catch {
-      showFormError(
-        "Network issue or timeout. Please check your connection and try again."
-      );
     } finally {
       cancel();
       submittingRef.current = false;
@@ -229,8 +151,8 @@ export default function AuthForm<Data = unknown>({
           />
         </Field>
       ))}
+
       <p
-        data-form-error
         role="alert"
         aria-live="assertive"
         aria-atomic="true"

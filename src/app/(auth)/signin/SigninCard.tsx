@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
-import { signin } from "@/lib/api/auth";
 
 function safeNext(next: string | null) {
   if (!next) return null;
@@ -47,7 +47,24 @@ export default function SigninCard() {
         ]}
         submitLabel="Sign in"
         pendingLabel="Signing in..."
-        onSubmit={signin}
+        onSubmit={async (values) => {
+          const result = await signIn("credentials", {
+            email: values.email,
+            password: values.password,
+            redirect: false,
+          });
+
+          if (!result) {
+            throw { message: "No response from sign-in." };
+          }
+
+          if (result.error) {
+            // Optional: attach field: "email" if you want to highlight the email field
+            throw { message: "Invalid email or password." };
+          }
+
+          return { ok: true };
+        }}
         onSuccess={() => {
           router.replace(safe ?? "/myshelf");
         }}

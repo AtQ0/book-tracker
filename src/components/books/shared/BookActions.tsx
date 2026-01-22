@@ -59,19 +59,28 @@ export default function BookActions({
         <p>Want to read: </p>
       </div>
 
-      <div className="w-full flex justify-between ">
+      <div
+        className="w-full flex justify-start
+  gap-3
+  lg:gap-2
+  max-[499px]:justify-between
+  max-[499px]:gap-0"
+      >
         <Button
-          className="max-[499px]:text-sm pl-3 pr-3"
+          className="text-lg max-[499px]:text-sm max-[499px]:pl-3 max-[499px]:pr-3"
           type="button"
           variant="secondary"
         >
           Want to read
         </Button>
-        <Button className="max-[499px]:text-sm pl-3 pr-3" type="button">
+        <Button
+          className="text-lg max-[499px]:text-sm max-[499px]:pl-3 max-[499px]:pr-3"
+          type="button"
+        >
           Reading
         </Button>
         <Button
-          className="max-[499px]:text-sm pl-3 pr-3"
+          className="text-lg max-[499px]:text-sm max-[499px]:pl-3 max-[499px]:pr-3"
           type="button"
           variant="secondary"
         >

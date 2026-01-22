@@ -1,9 +1,10 @@
 "use client";
 
+import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
-import { setPassword } from "@/lib/api/auth";
+import { setPasswordJson } from "@/lib/api/auth";
 import { signIn } from "next-auth/react";
 
 type SetPasswordCardProps = {
@@ -24,7 +25,7 @@ export default function SetPasswordCard({
   const router = useRouter();
   const safe = safeNext(next);
 
-  let lastPassword = "";
+  const lastPasswordRef = useRef("");
 
   return (
     <AuthCard
@@ -56,14 +57,14 @@ export default function SetPasswordCard({
         ]}
         submitLabel="Set password"
         pendingLabel="Setting password..."
-        onSubmit={(data, signal) => {
-          lastPassword = data.password;
+        onSubmit={(values, signal) => {
+          lastPasswordRef.current = values.password;
 
-          return setPassword(
+          return setPasswordJson<{ ok: true; email: string }>(
             {
               verificationCodeId,
-              password: data.password,
-              confirmPassword: data.confirmPassword,
+              password: values.password,
+              confirmPassword: values.confirmPassword,
             },
             signal,
           );
@@ -75,8 +76,7 @@ export default function SetPasswordCard({
           await signIn("credentials", {
             redirect: false,
             email: data.email,
-            password: lastPassword,
-            callbackUrl,
+            password: lastPasswordRef.current,
           });
 
           router.replace(callbackUrl);
