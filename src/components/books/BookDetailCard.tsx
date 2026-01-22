@@ -10,9 +10,9 @@ import BookCover from "./shared/BookCover";
 import BookGenrePill from "./shared/BookGenrePill";
 import BookActions from "./shared/BookActions";
 
-type Props = { book: BookDTO; className?: string };
+type Props = { book: BookDTO; className?: string; isAuthed: boolean };
 
-export default function BookDetailCard({ book, className }: Props) {
+export default function BookDetailCard({ book, className, isAuthed }: Props) {
   const router = useRouter();
 
   return (
@@ -58,8 +58,9 @@ export default function BookDetailCard({ book, className }: Props) {
             </div>
           </div>
 
-          <Card padding="md" variant="secondary" className="max-xs:p-3">
+          <Card padding="sm" variant="secondary" className="max-xs:p-3">
             <BookActions
+              isAuthed={isAuthed}
               onSignin={() => {
                 const next = `/books/${book.id}`;
                 router.push(`/signin?next=${encodeURIComponent(next)}`);

@@ -5,11 +5,13 @@ import { BookDTO } from "@/lib/validations/book";
 type BookListClientProps = {
   initialBooks: BookDTO[];
   initialSort: string | undefined;
+  isAuthed: boolean;
 };
 
 export default function BookListClient({
   initialBooks,
   initialSort,
+  isAuthed,
 }: BookListClientProps) {
   return (
     <section>
@@ -18,7 +20,7 @@ export default function BookListClient({
           <BookSortBar value={initialSort} />
         </div>
 
-        <BookGrid initialBooks={initialBooks} />
+        <BookGrid initialBooks={initialBooks} isAuthed={isAuthed} />
       </div>
     </section>
   );

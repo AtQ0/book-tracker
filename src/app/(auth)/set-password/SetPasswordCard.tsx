@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { setPassword } from "@/lib/api/auth";
+import { signIn } from "next-auth/react";
 
 type SetPasswordCardProps = {
   verificationCodeId: string;
@@ -23,6 +24,8 @@ export default function SetPasswordCard({
   const router = useRouter();
   const safe = safeNext(next);
 
+  let lastPassword = "";
+
   return (
     <AuthCard
       title="Set password"
@@ -30,7 +33,7 @@ export default function SetPasswordCard({
         "Your email is verified. Choose a password\n to finish creating your account."
       }
     >
-      <AuthForm
+      <AuthForm<{ ok: true; email: string }>
         fields={[
           {
             id: "password",
@@ -53,18 +56,30 @@ export default function SetPasswordCard({
         ]}
         submitLabel="Set password"
         pendingLabel="Setting password..."
-        onSubmit={(data, signal) =>
-          setPassword(
+        onSubmit={(data, signal) => {
+          lastPassword = data.password;
+
+          return setPassword(
             {
               verificationCodeId,
               password: data.password,
               confirmPassword: data.confirmPassword,
             },
             signal,
-          )
-        }
-        onSuccess={() => {
-          router.replace(safe ?? "/books");
+          );
+        }}
+        onSuccess={async (data) => {
+          const callbackUrl = safe ?? "/books";
+
+          // Credentials provider expects { email, password }.
+          await signIn("credentials", {
+            redirect: false,
+            email: data.email,
+            password: lastPassword,
+            callbackUrl,
+          });
+
+          router.replace(callbackUrl);
         }}
         className="flex flex-col gap-8"
         footer={

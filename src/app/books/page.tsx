@@ -3,6 +3,8 @@ import Container from "@/components/layout/Container";
 import Section from "@/components/layout/Section";
 import { BookListQuerySchema, type BookDTO } from "@/lib/validations/book";
 import { getBooksFromDb } from "@/server/books";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 // Mark page as being dynamic, meaning don't cache but always fetch fresh data
 export const revalidate = 0;
@@ -23,13 +25,21 @@ export default async function BooksPage({
   // if validation succeeds, use the parsed sort value; otherwise undefined
   const sort = parsed.success ? parsed.data.sort : undefined;
 
+  // session check (server side), pass down a boolean
+  const session = await getServerSession(authOptions);
+  const isAuthed = !!session?.user;
+
   // fetch books from the database using the selected or default sort order
   const initialBooks: BookDTO[] = await getBooksFromDb(sort);
 
   return (
     <Section>
       <Container>
-        <BookListClient initialBooks={initialBooks} initialSort={sort} />
+        <BookListClient
+          initialBooks={initialBooks}
+          initialSort={sort}
+          isAuthed={isAuthed}
+        />
       </Container>
     </Section>
   );

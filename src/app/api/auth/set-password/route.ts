@@ -31,7 +31,7 @@ export async function POST(req: Request) {
 
     switch (result.kind) {
       case "ok":
-        return json({ ok: true }, 200);
+        return json({ ok: true, email: result.email }, 200);
 
       case "not-found":
         return problem(404, "Not Found", "Verification code not found.");

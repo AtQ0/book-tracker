@@ -1,3 +1,4 @@
+// src/server/auth/setPassword.ts
 import { prisma } from "@/lib/db";
 import argon2 from "argon2";
 import { ARGON2_OPTS } from "@/server/auth/config";
@@ -8,7 +9,7 @@ type Params = {
 };
 
 export type SetPasswordResult =
-  | { kind: "ok" }
+  | { kind: "ok"; email: string }
   | { kind: "not-found" }
   | { kind: "wrong-purpose" }
   | { kind: "expired" }
@@ -40,6 +41,7 @@ export async function setPasswordFromVerifiedSignupCode(
     return { kind: "expired" };
   }
 
+  // This is your actual gate: only allow setting password after email is verified
   if (!code.user.emailVerified) {
     return { kind: "email-not-verified" };
   }
@@ -63,5 +65,5 @@ export async function setPasswordFromVerifiedSignupCode(
     }),
   ]);
 
-  return { kind: "ok" };
+  return { kind: "ok", email: code.user.email };
 }
