@@ -19,7 +19,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     type = "button",
     ...props
   },
-  ref
+  ref,
 ) {
   // Set styles for the button
   const base =

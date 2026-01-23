@@ -47,7 +47,7 @@ export default function BookActions({
   // Authenticated UI
   return (
     <div
-      className={twMerge("flex flex-col items-center gap-4", className)}
+      className={twMerge("flex flex-col items-center gap-8", className)}
       {...rest}
     >
       <div className="w-full min-w-0">
@@ -59,28 +59,25 @@ export default function BookActions({
         <p>Want to read: </p>
       </div>
 
-      <div
-        className="w-full flex justify-start
-  gap-3
-  lg:gap-2
-  max-[499px]:justify-between
-  max-[499px]:gap-0"
-      >
+      <div className="w-full flex gap-2 lg:gap-2">
         <Button
-          className="text-lg max-[499px]:text-sm max-[499px]:pl-3 max-[499px]:pr-3"
+          className="flex-1 text-lg max-[499px]:text-sm"
           type="button"
           variant="secondary"
         >
-          Want to read
+          To read
         </Button>
+
         <Button
-          className="text-lg max-[499px]:text-sm max-[499px]:pl-3 max-[499px]:pr-3"
+          className="flex-1 text-lg max-[499px]:text-sm "
           type="button"
+          variant="secondary"
         >
           Reading
         </Button>
+
         <Button
-          className="text-lg max-[499px]:text-sm max-[499px]:pl-3 max-[499px]:pr-3"
+          className="flex-1 text-lg max-[499px]:text-sm"
           type="button"
           variant="secondary"
         >
