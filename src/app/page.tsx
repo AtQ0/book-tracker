@@ -14,7 +14,7 @@ export default function Home() {
         Discover your <span className="block">great next read</span>
       </h1>
       <Button
-        className="font-merriweather"
+        className="font-merriweather py-3"
         onClick={() => router.push("/books")}
         variant="secondary"
       >

@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 // All standard HTML <button> props & additional, but without the built-in ref
 type ButtonProps = React.ComponentPropsWithoutRef<"button"> & {
   isLoading?: boolean;
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "outline";
 };
 
 // Forward a typed ref (HTMLButtonElement) along with the standard button props
@@ -27,10 +27,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   const states =
     "focus:outline-none focus:ring-2 focus:ring-russet disabled:opacity-50 disabled:cursor-not-allowed";
   const variants = {
-    primary: "bg-russet px-5 py-3 text-white text-xl hover:opacity-90",
+    primary: "bg-russet px-5 py-2.5 text-white text-xl hover:opacity-90",
     secondary:
-      "flex-1 bg-golden-brown text-white text-lg hover:opacity-90 py-2 max-[499px]:px-3 max-[499px]:py-2 max-[499px]:text-sm",
+      "bg-golden-brown text-white text-lg hover:opacity-90 py-2 max-[499px]:px-3 max-[499px]:text-sm",
     ghost: "bg-transparent text-licorice hover:bg-black/5",
+    outline:
+      "bg-baby-powder border-2 border-alabaster text-licorice text-lg py-1 " +
+      "max-[499px]:px-3 max-[499px]:text-sm",
   } as const; // Freeze keys and values as literal types
 
   return (
