@@ -28,7 +28,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     "focus:outline-none focus:ring-2 focus:ring-russet disabled:opacity-50 disabled:cursor-not-allowed";
   const variants = {
     primary: "bg-russet px-5 py-3 text-white text-xl hover:opacity-90",
-    secondary: "bg-golden-brown px-4 py-3 text-white text-xl hover:opacity-90",
+    secondary:
+      "flex-1 bg-golden-brown text-white text-lg hover:opacity-90 py-2 max-[499px]:px-3 max-[499px]:py-2 max-[499px]:text-sm",
     ghost: "bg-transparent text-licorice hover:bg-black/5",
   } as const; // Freeze keys and values as literal types
 

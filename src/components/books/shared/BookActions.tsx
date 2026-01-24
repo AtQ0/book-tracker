@@ -24,10 +24,10 @@ export default function BookActions({
             <span className="block">to your shelf or rate it</span>
           </p>
 
-          <p className="hidden text-[1rem] max-xs:block">
-            Sign in to add this
-            <span className="block">book to your shelf</span>
-            or rate it
+          <p className="hidden text-[0.9rem] max-xs:block">
+            Sign in to add
+            <span className="block"> this book to your</span>
+            shelf or rate it
           </p>
         </div>
 
@@ -60,27 +60,15 @@ export default function BookActions({
       </div>
 
       <div className="w-full flex gap-2 lg:gap-2">
-        <Button
-          className="flex-1 text-lg max-[499px]:text-sm"
-          type="button"
-          variant="secondary"
-        >
+        <Button type="button" variant="secondary">
           To read
         </Button>
 
-        <Button
-          className="flex-1 text-lg max-[499px]:text-sm "
-          type="button"
-          variant="secondary"
-        >
+        <Button type="button" variant="secondary">
           Reading
         </Button>
 
-        <Button
-          className="flex-1 text-lg max-[499px]:text-sm"
-          type="button"
-          variant="secondary"
-        >
+        <Button type="button" variant="secondary">
           Read
         </Button>
       </div>
