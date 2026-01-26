@@ -1,4 +1,4 @@
-import sgMail from "@sendgrid/mail";
+import { Resend } from "resend";
 import { getTransporter } from "./transporter";
 
 type SendSignupEmailArgs = {
@@ -9,15 +9,15 @@ type SendSignupEmailArgs = {
   verificationCodeId: string;
 };
 
-const provider = process.env.EMAIL_PROVIDER ?? "maildev";
-const sendgridApiKey = process.env.SENDGRID_API_KEY;
+const provider = (process.env.EMAIL_PROVIDER ?? "maildev").toLowerCase();
 
-if (provider === "sendgrid") {
-  if (!sendgridApiKey) {
-    throw new Error("EMAIL_PROVIDER=sendgrid but SENDGRID_API_KEY is not set");
+// Lazy init so we only require the key when used
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error("EMAIL_PROVIDER=resend but RESEND_API_KEY is not set");
   }
-
-  sgMail.setApiKey(sendgridApiKey);
+  return new Resend(apiKey);
 }
 
 export async function sendSignupEmail({
@@ -27,20 +27,16 @@ export async function sendSignupEmail({
   ttlMin,
   verificationCodeId,
 }: SendSignupEmailArgs) {
-  // Pick MAIL_FROM if it exists and has content after trimming, otherwise fall back to the default address
   const from =
     (process.env.MAIL_FROM ?? "no-reply@book-tracker.local").trim() ||
-    "no-reply@book-tracker.local"; // empty string is falsy after trim
+    "no-reply@book-tracker.local";
 
-  // Build verify link using the same verification code id that frontend will use
   const appUrl =
     process.env.APP_URL ||
     process.env.NEXT_PUBLIC_APP_URL ||
     "http://localhost:3000";
 
-  // create full url by applying /verify on the base
   const url = new URL("/verify", appUrl);
-  // amend full url by adding ?verificationCodeId=some-code and &source=email
   url.searchParams.set("verificationCodeId", verificationCodeId);
   url.searchParams.set("source", "email");
   const verifyUrl = url.toString();
@@ -79,19 +75,21 @@ export async function sendSignupEmail({
   <p>Regards,<br>Book Tracker</p>
 `;
 
-  if (provider === "sendgrid") {
-    // Send via SendGrid HTTP API
-    await sgMail.send({
-      to,
+  if (provider === "resend") {
+    const resend = getResend();
+
+    await resend.emails.send({
       from,
+      to,
       subject,
       text,
       html,
     });
+
     return;
   }
 
-  // Default: Maildev via Nodemailer SMTP
+  // Default: MailDev via Nodemailer SMTP
   const transporter = getTransporter();
   await transporter.sendMail({
     from,
