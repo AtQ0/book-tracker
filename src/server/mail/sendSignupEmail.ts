@@ -27,9 +27,14 @@ export async function sendSignupEmail({
   ttlMin,
   verificationCodeId,
 }: SendSignupEmailArgs) {
+  // Pick MAIL_FROM if set and non-empty; otherwise:
+  // - for resend: use a known-good, pre-verified sender
+  // - for maildev: keep local default
   const from =
-    (process.env.MAIL_FROM ?? "no-reply@book-tracker.local").trim() ||
-    "no-reply@book-tracker.local";
+    (process.env.MAIL_FROM ?? "").trim() ||
+    (provider === "resend"
+      ? "Book Tracker <onboarding@resend.dev>"
+      : "no-reply@book-tracker.local");
 
   const appUrl =
     process.env.APP_URL ||
@@ -75,16 +80,22 @@ export async function sendSignupEmail({
   <p>Regards,<br>Book Tracker</p>
 `;
 
+  // TEMP DEBUG (remove after you confirm it works on Render)
+  console.log("[mail] provider:", provider, "from:", from, "to:", to);
+
   if (provider === "resend") {
     const resend = getResend();
 
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from,
       to,
       subject,
       text,
       html,
     });
+
+    // TEMP DEBUG (remove after you confirm it works on Render)
+    console.log("[mail] resend result:", result);
 
     return;
   }
