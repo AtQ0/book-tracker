@@ -83,7 +83,7 @@ export async function sendSignupEmail({
   if (provider === "resend") {
     const resend = getResend();
 
-    const result = await resend.emails.send({
+    await resend.emails.send({
       from,
       to,
       subject,
