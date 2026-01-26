@@ -3,17 +3,24 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 import Button from "@/components/ui/Button";
+import { BookDTO } from "@/lib/validations/book";
+import RatingStars from "../RatingStars";
 
 type Shelf = "to-read" | "reading" | "read";
+type BookStats = Pick<
+  BookDTO,
+  "averageRating" | "haveRead" | "currentlyReading" | "wantToRead"
+>;
 
 export type BookActionsProps = React.ComponentPropsWithoutRef<"div"> & {
   isAuthed: boolean;
   onSignin: () => void;
+  bookStats: BookStats;
 };
-
 export default function BookActions({
   isAuthed,
   onSignin,
+  bookStats,
   className,
   ...rest
 }: BookActionsProps) {
@@ -45,16 +52,22 @@ export default function BookActions({
   // Authenticated UI
   return (
     <div
-      className={twMerge("flex flex-col items-center gap-8", className)}
+      className={twMerge("flex flex-col items-center gap-2", className)}
       {...rest}
     >
       <div className="w-full min-w-0">
-        <p>Avg Rating:</p>
-      </div>
+        <div className="w-full min-w-0 flex items-center gap-3">
+          <p className="shrink-0">Avg rating:</p>
 
-      <div className="flex w-full">
-        <p className="mr-10">Reads: </p>
-        <p>Want to read: </p>
+          <RatingStars value={bookStats.averageRating} />
+
+          <p className="shrink-0 font-semibold">
+            {bookStats.averageRating.toFixed(1)} / 5
+          </p>
+        </div>
+        <p>Have read: {bookStats.haveRead}</p>
+        <p>Currently reading: {bookStats.currentlyReading}</p>
+        <p>Want to read: {bookStats.wantToRead}</p>
       </div>
 
       <div className="w-full flex gap-2 lg:gap-2">

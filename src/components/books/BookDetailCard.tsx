@@ -60,6 +60,12 @@ export default function BookDetailCard({ book, className, isAuthed }: Props) {
 
           <Card padding="sm" variant="secondary" className="max-xs:p-3">
             <BookActions
+              bookStats={{
+                haveRead: book.haveRead,
+                currentlyReading: book.currentlyReading,
+                wantToRead: book.wantToRead,
+                averageRating: book.averageRating,
+              }}
               isAuthed={isAuthed}
               onSignin={() => {
                 const next = `/books/${book.id}`;
