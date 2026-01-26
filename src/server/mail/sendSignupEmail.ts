@@ -80,9 +80,6 @@ export async function sendSignupEmail({
   <p>Regards,<br>Book Tracker</p>
 `;
 
-  // TEMP DEBUG (remove after you confirm it works on Render)
-  console.log("[mail] provider:", provider, "from:", from, "to:", to);
-
   if (provider === "resend") {
     const resend = getResend();
 
@@ -93,9 +90,6 @@ export async function sendSignupEmail({
       text,
       html,
     });
-
-    // TEMP DEBUG (remove after you confirm it works on Render)
-    console.log("[mail] resend result:", result);
 
     return;
   }
