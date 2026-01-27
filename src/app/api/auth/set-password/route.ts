@@ -6,13 +6,10 @@ export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   try {
-    // Parse JSON request body into a JavaScript object
     const body = await req.json().catch(() => ({}));
 
-    // Validate the parsed request body using the Zod schema
     const parsed = SetPasswordSchema.safeParse(body);
 
-    // Return 422 if the request body fails validation
     if (!parsed.success) {
       const { fieldErrors, formErrors } = parsed.error.flatten();
 

@@ -1,7 +1,6 @@
 import React from "react";
 import Label from "../ui/Label";
 
-// Props that the child (e.g. <Input />) must support for accessibility injection
 type FieldChildProps = {
   id?: string;
   required?: boolean;
@@ -17,22 +16,17 @@ type FieldProps = {
   hint?: string;
   error?: string;
   required?: boolean;
-  children: React.ReactElement<FieldChildProps>; // Will typically have <Input /> as child
+  children: React.ReactElement<FieldChildProps>;
   className?: string;
 };
 
 // Helper for merging multiple aria-describedBy ID tokens
 const mergeDescribedBy = (...parts: (string | undefined)[]) =>
   Array.from(
-    new Set( //set removes duplicates
-      parts
-        .filter(Boolean) // remove undefined / empty strings
-        .join(" ") // combine into one string
-        .trim() // remove leading/trailing whitespace
-        .split(/\s+/) // split into individual tokens
-        .filter(Boolean) // remove any leftover empties
-    )
-  ).join(" ") || undefined; // rejoin index values into a string
+    new Set(
+      parts.filter(Boolean).join(" ").trim().split(/\s+/).filter(Boolean),
+    ),
+  ).join(" ") || undefined;
 
 export default function Field({
   id,
@@ -53,15 +47,15 @@ export default function Field({
   const describedBy = mergeDescribedBy(
     children.props["aria-describedby"],
     hintId,
-    errorId
+    errorId,
   );
 
   // Flag as invalid if error or child says so
   const ariaInvalid = error
     ? true
     : children.props["aria-invalid"]
-    ? true
-    : undefined;
+      ? true
+      : undefined;
 
   // Clone child input and inject merged accessibility + control props
   const child = React.cloneElement(children, {

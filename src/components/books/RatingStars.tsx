@@ -4,9 +4,9 @@ import React from "react";
 import { twMerge } from "tailwind-merge";
 
 type Props = {
-  value: number; // 0..max
-  max?: number; // default 5
-  size?: number; // px
+  value: number;
+  max?: number;
+  size?: number;
   className?: string;
 };
 

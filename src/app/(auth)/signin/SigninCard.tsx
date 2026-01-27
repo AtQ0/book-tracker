@@ -59,7 +59,6 @@ export default function SigninCard() {
           }
 
           if (result.error) {
-            // Optional: attach field: "email" if you want to highlight the email field
             throw { message: "Invalid email or password." };
           }
 

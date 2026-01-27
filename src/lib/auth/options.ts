@@ -17,13 +17,11 @@ export const authOptions: NextAuthOptions = {
       },
 
       async authorize(credentials) {
-        // Guard: missing creds
         const email = credentials?.email?.trim().toLowerCase();
         const password = credentials?.password;
 
         if (!email || !password) return null;
 
-        // Look up user by email
         const user = await prisma.user.findUnique({
           where: { email },
           select: {
@@ -35,15 +33,12 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        // Only allow login if password is set and email verified
         if (!user?.passwordHash) return null;
         if (!user.emailVerified) return null;
 
-        // Verify password
         const ok = await argon2.verify(user.passwordHash, password);
         if (!ok) return null;
 
-        // NextAuth expects an object with an id
         return {
           id: user.id,
           email: user.email,

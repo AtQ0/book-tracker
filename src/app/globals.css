@@ -44,14 +44,6 @@
   --font-size-small-sm: 0.75rem; /* 12px */
 }
 
-/* Optional: dark mode token overrides (empty for now) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* e.g. --kobicha: var(--licorice); --baby-powder: ...; */
-  }
-}
-
-/* Map CSS vars into Tailwind tokens (Tailwind v4) */
 @theme inline {
   --color-coyote: var(--coyote);
   --color-black-bean: var(--black-bean);
@@ -71,33 +63,33 @@
   --color-golden-brown: var(--golden-brown);
   --color-platinum: var(--platinum);
 
-  /* pull through next/font vars so Tailwind utilities can reference them if needed */
   --font-merriweather-sans: var(--font-merriweather-sans);
   --font-merriweather: var(--font-merriweather);
 
-  /* My phone breakpoint */
-  --breakpoint-xs: 31.1875rem; /* 499px */
+  --breakpoint-xs: 31.1875rem;
 }
 
 /* ============== Base element styles (no layout) ============== */
 
-/* Make Sans the default everywhere */
 html,
 body {
-  font-family: var(--font-merriweather-sans), system-ui, -apple-system, Segoe UI,
-    Roboto, sans-serif;
+  font-family:
+    var(--font-merriweather-sans),
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    sans-serif;
 }
 
-/* Keep your preferred default body size */
 body {
-  font-size: small; /* ~13px: paragraphs inherit this unless overridden */
+  font-size: small;
 }
 
 input {
   background-color: var(--color-platinum);
 }
 
-/* Headings & text – utilities can still override cleanly */
 @layer base {
   h1 {
     font-family: var(--font-merriweather), Georgia, "Times New Roman", serif;
@@ -125,7 +117,7 @@ input {
   }
 
   p {
-    font-size: inherit; /* follows body (small) unless overridden */
+    font-size: inherit;
     line-height: 1.6;
   }
 

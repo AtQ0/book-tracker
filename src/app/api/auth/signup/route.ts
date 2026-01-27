@@ -14,16 +14,14 @@ export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   try {
-    // Parse request body to JS object (fallback to {} if JSON is invalid)
     const body = await req.json().catch(() => ({}));
-    // Validate via Zod
-    const parsed = SignupSchema.safeParse(body); // safeParse returns errors instead of throwing
 
-    // If input fails signupSchema check, return a 422 response
+    const parsed = SignupSchema.safeParse(body);
+
     if (!parsed.success) {
       const { fieldErrors, formErrors } = parsed.error.flatten();
       return json(
-        { message: formErrors[0] ?? "Invalid data", fieldErrors }, //custom error message for formErrors and generic ("invalid data") for fieldErrors
+        { message: formErrors[0] ?? "Invalid data", fieldErrors },
         422,
       );
     }
@@ -42,7 +40,6 @@ export async function POST(req: Request) {
       },
     );
 
-    // Handle every possible signup outcome, based on the union type
     switch (result.kind) {
       case "conflict":
         return problem(409, "Conflict", result.verificationCodeId, {

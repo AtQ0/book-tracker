@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Create a tuple (fixed array) of allowed sort keys
 export const SORT_KEYS = [
   "read",
   "want",
