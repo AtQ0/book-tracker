@@ -18,12 +18,13 @@ jest.mock("next/image", () => {
 
 // Mock BookCard so we focus on the grid behavior, not card internals
 jest.mock("@/components/books/BookCard", () => {
-  return function MockBookCard({ book }: { book: BookDTO }) {
-    return <div data-testid="book-card">{book.name}</div>;
+  return function MockBookCard(props: { book: BookDTO; isAuthed: boolean }) {
+    void props.isAuthed;
+    return <div data-testid="book-card">{props.book.name}</div>;
   };
 });
 
-// ----- Fixture -----
+// ----- Fixture ----
 const makeBooks = (n: number): BookDTO[] =>
   Array.from({ length: n }).map((_, i) => ({
     id: `b-${i + 1}`,
@@ -40,12 +41,12 @@ const makeBooks = (n: number): BookDTO[] =>
 describe("<BookGrid />", () => {
   describe("happy path", () => {
     it("renders a <ul> list container", () => {
-      render(<BookGrid initialBooks={makeBooks(1)} />);
+      render(<BookGrid initialBooks={makeBooks(1)} isAuthed={false} />);
       expect(screen.getByRole("list")).toBeInTheDocument();
     });
 
     it("renders the correct number of items/cards", () => {
-      render(<BookGrid initialBooks={makeBooks(3)} />);
+      render(<BookGrid initialBooks={makeBooks(3)} isAuthed={false} />);
 
       const list = screen.getByRole("list");
       const items = within(list).getAllByRole("listitem");
@@ -56,17 +57,16 @@ describe("<BookGrid />", () => {
 
     it("passes each book to BookCard (smoke via names)", () => {
       const books = makeBooks(2);
-      render(<BookGrid initialBooks={books} />);
+      render(<BookGrid initialBooks={books} isAuthed={false} />);
       expect(screen.getByText("Book 1")).toBeInTheDocument();
       expect(screen.getByText("Book 2")).toBeInTheDocument();
     });
   });
 
   describe("required fields", () => {
-    // If the prop becomes optional, this test will fail at type-check time.
     it("requires 'initialBooks' prop at compile-time (TS)", () => {
       // @ts-expect-error missing required prop should be a TypeScript error
-      const el = <BookGrid />;
+      const el = <BookGrid isAuthed={false} />;
 
       expect(el).toBeTruthy();
     });
@@ -79,7 +79,7 @@ describe("<BookGrid />", () => {
         { ...makeBooks(1)[0], name: long, description: long },
       ];
 
-      render(<BookGrid initialBooks={books} />);
+      render(<BookGrid initialBooks={books} isAuthed={false} />);
 
       expect(screen.getByText(long)).toBeInTheDocument();
     });
@@ -87,20 +87,20 @@ describe("<BookGrid />", () => {
 
   describe("boundary validation", () => {
     it("renders an empty list gracefully", () => {
-      render(<BookGrid initialBooks={[]} />);
+      render(<BookGrid initialBooks={[]} isAuthed={false} />);
       expect(screen.getByRole("list")).toBeInTheDocument();
       expect(screen.queryAllByRole("listitem")).toHaveLength(0);
     });
 
     it("handles many items (e.g., 100) without truncation", () => {
-      render(<BookGrid initialBooks={makeBooks(100)} />);
+      render(<BookGrid initialBooks={makeBooks(100)} isAuthed={false} />);
       expect(screen.getAllByRole("listitem")).toHaveLength(100);
     });
   });
 
   describe("strictness", () => {
     it("wraps every card within a list item (li-element)", () => {
-      render(<BookGrid initialBooks={makeBooks(4)} />);
+      render(<BookGrid initialBooks={makeBooks(4)} isAuthed={false} />);
       const liElements = screen.getAllByRole("listitem");
       const cards = screen.getAllByTestId("book-card");
       expect(liElements).toHaveLength(cards.length);
@@ -115,7 +115,7 @@ describe("<BookGrid />", () => {
 
   describe("accessibility", () => {
     it("uses list semantics (role=list/listitem)", () => {
-      render(<BookGrid initialBooks={makeBooks(2)} />);
+      render(<BookGrid initialBooks={makeBooks(2)} isAuthed={false} />);
       expect(screen.getByRole("list")).toBeInTheDocument(); // <ul>
       expect(screen.getAllByRole("listitem")).toHaveLength(2); // <li>
     });

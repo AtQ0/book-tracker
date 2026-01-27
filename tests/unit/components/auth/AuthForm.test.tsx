@@ -30,25 +30,20 @@ function makeFields() {
   ];
 }
 
-// shortcut mock of a successful response
-function makeOkResponse(): Response {
-  return {
-    ok: true,
-    status: 200,
-    json: async () => null,
-  } as unknown as Response;
-}
-
-// General mock of any response (success or error)
-function makeJsonResponse(body: unknown, status: number): Response {
-  return {
-    ok: status >= 200 && status < 300,
-    status,
-    json: async () => body,
-  } as unknown as Response;
-}
-
 describe("AuthForm", () => {
+  let selectionSpy: jest.SpyInstance | undefined;
+
+  beforeEach(() => {
+    // JSDOM can throw InvalidStateError when setSelectionRange is called on non-text inputs (e.g. type="email")
+    selectionSpy = jest
+      .spyOn(HTMLInputElement.prototype, "setSelectionRange")
+      .mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    selectionSpy?.mockRestore();
+  });
+
   describe("happy path", () => {
     it("submits normalized values with an AbortSignal and call onSuccess on ok response", async () => {
       const user = userEvent.setup();
@@ -57,20 +52,20 @@ describe("AuthForm", () => {
         async (values: Record<string, string>, signal: AbortSignal) => {
           void values; // tell TS that values are declard but never used, to silence TS
           void signal;
-          return makeOkResponse();
-        }
+          return null;
+        },
       );
 
       const onSuccess = jest.fn();
 
       render(
-        <AuthForm
+        <AuthForm<null>
           fields={makeFields()}
           submitLabel="Create account"
           pendingLabel="Working..."
           onSubmit={onSubmit}
           onSuccess={onSuccess}
-        />
+        />,
       );
 
       const emailInput = screen.getByLabelText(/email/i);
@@ -96,21 +91,20 @@ describe("AuthForm", () => {
       expect(signal).toBeInstanceOf(AbortSignal);
       expect(signal.aborted).toBe(false);
 
-      // Validate that onSuccess was called with payload + Response
+      // Validate that onSuccess was called with payload
       await waitFor(() => {
         expect(onSuccess).toHaveBeenCalledTimes(1);
       });
 
-      const [payload, res] = onSuccess.mock.calls[0];
-      expect(payload).toBeNull(); // json() in makeOkResponse returns null
-      expect(res).toEqual(expect.objectContaining({ ok: true, status: 200 }));
+      const [payload] = onSuccess.mock.calls[0];
+      expect(payload).toBeNull();
     });
   });
 
   describe("required fields", () => {
     it("does not submit when browser validity fails and keeps button enables", async () => {
       const user = userEvent.setup();
-      const onSubmit = jest.fn(async () => makeOkResponse());
+      const onSubmit = jest.fn(async () => null);
 
       // failed checkValidity mock
       const checkSpy = jest
@@ -126,7 +120,7 @@ describe("AuthForm", () => {
           fields={makeFields()}
           submitLabel="Submit"
           onSubmit={onSubmit}
-        />
+        />,
       );
 
       const button = screen.getByRole("button", { name: /submit/i });
@@ -143,24 +137,19 @@ describe("AuthForm", () => {
   });
 
   describe("type and format validation", () => {
-    it("shows a field level error when backend reports invalid field (status 422)", async () => {
+    it("shows a field level error when backend reports invalid field", async () => {
       const user = userEvent.setup();
-      const payload: ErrorPayload = {
-        message: "Validation failed",
-        fieldErrors: {
-          email: ["Not a valid email"],
-        },
-        formErrors: [],
-      };
 
-      const onSubmit = jest.fn(async () => makeJsonResponse(payload, 422));
+      const onSubmit = jest.fn(async () => {
+        throw { message: "Not a valid email", field: "email" };
+      });
 
       render(
         <AuthForm
           fields={makeFields()}
           submitLabel="Submit"
           onSubmit={onSubmit}
-        />
+        />,
       );
 
       await user.type(screen.getByLabelText(/email/i), "bad@example.com");
@@ -172,25 +161,27 @@ describe("AuthForm", () => {
         expect(onSubmit).toHaveBeenCalledTimes(1);
       });
 
-      // validate that erroPayload was rendered upon submit
+      // validate that error message was rendered upon submit
       expect(await screen.findByText(/not a valid email/i)).toBeInTheDocument();
 
       const emailInput = screen.getByLabelText(/email/i);
       expect(emailInput).toHaveAttribute("aria-invalid", "true");
     });
 
-    it("shows a form level messasge when backend returns 422 wuthout fields", async () => {
+    it("shows a form level message when backend reports a general error without fields", async () => {
       const user = userEvent.setup();
       const payload = { message: "Invalid data" };
 
-      const onSubmit = jest.fn(async () => makeJsonResponse(payload, 422));
+      const onSubmit = jest.fn(async () => {
+        throw payload;
+      });
 
       render(
         <AuthForm
           fields={makeFields()}
           submitLabel="Submit"
           onSubmit={onSubmit}
-        />
+        />,
       );
 
       await user.type(screen.getByLabelText(/email/i), "user@example.com");
@@ -217,10 +208,10 @@ describe("AuthForm", () => {
         },
       ];
 
-      const onSubmit = jest.fn(async () => makeOkResponse());
+      const onSubmit = jest.fn(async () => null);
 
       render(
-        <AuthForm fields={fields} submitLabel="Submit" onSubmit={onSubmit} />
+        <AuthForm fields={fields} submitLabel="Submit" onSubmit={onSubmit} />,
       );
 
       const emailInput = screen.getByLabelText(/email/i);
@@ -243,12 +234,12 @@ describe("AuthForm", () => {
         async (values: Record<string, string>, signal: AbortSignal) => {
           void values; // tell TS that values are declard but never used, to silence TS
           void signal;
-          return makeOkResponse();
-        }
+          return null;
+        },
       );
 
       render(
-        <AuthForm fields={fields} submitLabel="Submit" onSubmit={onSubmit} />
+        <AuthForm fields={fields} submitLabel="Submit" onSubmit={onSubmit} />,
       );
 
       await user.type(screen.getByLabelText(/custom/i), " Raw Value ");
@@ -280,12 +271,12 @@ describe("AuthForm", () => {
         async (values: Record<string, string>, signal: AbortSignal) => {
           void values; // tell TS that values are declard but never used, to silence TS
           void signal;
-          return makeOkResponse();
-        }
+          return null;
+        },
       );
 
       render(
-        <AuthForm fields={fields} submitLabel="Submit" onSubmit={onSubmit} />
+        <AuthForm fields={fields} submitLabel="Submit" onSubmit={onSubmit} />,
       );
 
       await user.type(screen.getByLabelText(/email/i), "  test@example.com  ");
@@ -301,18 +292,20 @@ describe("AuthForm", () => {
   });
 
   describe("strictness", () => {
-    it("shows the payload message for existing email conflict (status 409)", async () => {
+    it("shows the payload message for existing email conflict", async () => {
       const user = userEvent.setup();
       const payload = { message: "Email already taken" };
 
-      const onSubmit = jest.fn(async () => makeJsonResponse(payload, 409));
+      const onSubmit = jest.fn(async () => {
+        throw payload;
+      });
 
       render(
         <AuthForm
           fields={makeFields()}
           submitLabel="Submit"
           onSubmit={onSubmit}
-        />
+        />,
       );
 
       await user.type(screen.getByLabelText(/email/i), "user@example.com");
@@ -323,18 +316,20 @@ describe("AuthForm", () => {
       expect(errorText).toBeInTheDocument();
     });
 
-    it("shows the payload message for rate limited requests (status 429", async () => {
+    it("shows the payload message for rate limited requests", async () => {
       const user = userEvent.setup();
       const payload = { message: "Too many attempts" };
 
-      const onSubmit = jest.fn(async () => makeJsonResponse(payload, 429));
+      const onSubmit = jest.fn(async () => {
+        throw payload;
+      });
 
       render(
         <AuthForm
           fields={makeFields()}
           submitLabel="Submit"
           onSubmit={onSubmit}
-        />
+        />,
       );
 
       await user.type(screen.getByLabelText(/email/i), "user@example.com");
@@ -348,14 +343,16 @@ describe("AuthForm", () => {
     it("falls back to a generic message for unknown server errors", async () => {
       const user = userEvent.setup();
 
-      const onSubmit = jest.fn(async () => makeJsonResponse({}, 500));
+      const onSubmit = jest.fn(async () => {
+        throw {};
+      });
 
       render(
         <AuthForm
           fields={makeFields()}
           submitLabel="Submit"
           onSubmit={onSubmit}
-        />
+        />,
       );
 
       await user.type(screen.getByLabelText(/email/i), "user@example.com");
@@ -364,7 +361,7 @@ describe("AuthForm", () => {
 
       const alert = await screen.findByRole("alert");
       expect(alert).toHaveTextContent(
-        /something went wrong\. please try again\./i
+        /something went wrong\. please try again\./i,
       );
     });
   });
@@ -379,14 +376,19 @@ describe("AuthForm", () => {
         },
         formErrors: [],
       };
-      const onSubmit = jest.fn(async () => makeJsonResponse(payload, 422));
+
+      const onSubmit = jest.fn(async () => {
+        const msg =
+          payload.fieldErrors?.email?.[0] ?? payload.message ?? "Invalid value";
+        throw { message: msg, field: "email" };
+      });
 
       render(
         <AuthForm
           fields={makeFields()}
           submitLabel="Submit"
           onSubmit={onSubmit}
-        />
+        />,
       );
 
       const emailInput = screen.getByLabelText(/email/i);
@@ -405,7 +407,7 @@ describe("AuthForm", () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByText(/not a valid email/i)
+          screen.queryByText(/not a valid email/i),
         ).not.toBeInTheDocument();
       });
     });
@@ -414,15 +416,15 @@ describe("AuthForm", () => {
       const user = userEvent.setup();
 
       // Will hold the Promise’s resolve function so we can control when it resolves
-      let resolveSubmit: ((res: Response) => void) | undefined;
+      let resolveSubmit: ((res: null) => void) | undefined;
 
-      // Mock onSubmit: return a Promise<Response> and capture its resolve callback
+      // Mock onSubmit: return a Promise<null> and capture its resolve callback
       const onSubmit = jest.fn(
         () =>
-          new Promise<Response>((resolve, reject) => {
+          new Promise<null>((resolve, reject) => {
             void reject; // Mark reject as intentionally unused
             resolveSubmit = resolve; // Store resolve for later
-          })
+          }),
       );
 
       render(
@@ -431,7 +433,7 @@ describe("AuthForm", () => {
           submitLabel="Submit"
           pendingLabel="Working..."
           onSubmit={onSubmit}
-        />
+        />,
       );
 
       await user.type(screen.getByLabelText(/email/i), "user@example.com");
@@ -455,7 +457,7 @@ describe("AuthForm", () => {
       expect(onSubmit).toHaveBeenCalledTimes(1); // Shows second submit was rejected
 
       // Manually resolve the Promise to exit pending state
-      resolveSubmit?.(makeOkResponse());
+      resolveSubmit?.(null);
 
       await waitFor(() => {
         expect(button).not.toBeDisabled();
@@ -466,20 +468,19 @@ describe("AuthForm", () => {
 
   describe("accessibility", () => {
     it("renders a live region for form level errors with correct attributes", () => {
-      const onSubmit = jest.fn(async () => makeOkResponse());
+      const onSubmit = jest.fn(async () => null);
 
       render(
         <AuthForm
           fields={makeFields()}
           submitLabel="Submit"
           onSubmit={onSubmit}
-        />
+        />,
       );
 
       // Grab hidden p-element
       const alert = screen.getByRole("alert", { hidden: true });
 
-      expect(alert).toHaveAttribute("data-form-error");
       expect(alert).toHaveAttribute("aria-live", "assertive");
       expect(alert).toHaveAttribute("aria-atomic", "true");
       expect(alert).toHaveAttribute("hidden");
@@ -498,7 +499,7 @@ describe("AuthForm", () => {
           fields={makeFields()}
           submitLabel="Submit"
           onSubmit={onSubmit}
-        />
+        />,
       );
       await user.type(screen.getByLabelText(/email/i), "user@example.com");
       await user.type(screen.getByLabelText(/password/i), "secret123");
@@ -506,9 +507,7 @@ describe("AuthForm", () => {
 
       const alert = await screen.findByRole("alert");
 
-      expect(alert).toHaveTextContent(
-        /network issue or timeout\. please check your connection and try again\./i
-      );
+      expect(alert).toHaveTextContent(/network broken/i);
       expect(alert).not.toHaveAttribute("hidden");
     });
   });

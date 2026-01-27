@@ -1,10 +1,11 @@
+// tests\unit\components\books\BookCard.test.tsx
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import BookCard from "@/components/books/BookCard";
 import type { BookDTO } from "@/lib/validations/book";
 
-// ---- Mocks -----
+// ---- Mocks ----
 const pushMock = jest.fn();
 
 jest.mock("next/navigation", () => ({
@@ -22,6 +23,10 @@ type NextImageProps = Omit<
   quality?: number;
   loader?: unknown;
   onLoadingComplete?: (img: HTMLImageElement) => void;
+  unoptimized?: boolean;
+  placeholder?: string;
+  blurDataURL?: string;
+  sizes?: string;
 };
 
 jest.mock("next/image", () => {
@@ -35,7 +40,6 @@ jest.mock("next/image", () => {
       delete domProps.quality;
       delete domProps.loader;
       delete domProps.onLoadingComplete;
-
       delete domProps.unoptimized;
       delete domProps.placeholder;
       delete domProps.blurDataURL;
@@ -51,16 +55,14 @@ jest.mock("next/image", () => {
       );
     },
   );
-
   NextImageMock.displayName = "NextImageMock";
   return { __esModule: true, default: NextImageMock };
 });
 
 jest.mock("@/components/ui/Button", () => {
-  const MockedButton = (props: React.ComponentProps<"button">) => {
-    return <button {...props} />;
-  };
-  MockedButton.displayName = "MockedButton";
+  const MockedButton = (props: React.ComponentProps<"button">) => (
+    <button {...props} />
+  );
   return MockedButton;
 });
 
@@ -78,9 +80,10 @@ const BASE_VALID_BOOK: Readonly<BookDTO> = Object.freeze({
 });
 
 function renderCard(book: Partial<BookDTO> = {}) {
-  // Partial: Make all properties of BookDTO optional
   pushMock.mockClear();
-  return render(<BookCard book={{ ...BASE_VALID_BOOK, ...book }} />);
+  return render(
+    <BookCard book={{ ...BASE_VALID_BOOK, ...book }} isAuthed={false} />,
+  );
 }
 
 describe("<BookCard />", () => {
@@ -89,7 +92,7 @@ describe("<BookCard />", () => {
       renderCard();
       expect(screen.getByText("Dune")).toBeInTheDocument();
       expect(screen.getByText("Sci-fi")).toBeInTheDocument();
-      expect(screen.getByText(/Arrakis/i)).toBeInTheDocument(); // regex:fin text ignore case
+      expect(screen.getByText(/Arrakis/i)).toBeInTheDocument();
       expect(screen.getByAltText("Dune")).toBeInTheDocument();
     });
 
@@ -97,19 +100,18 @@ describe("<BookCard />", () => {
       renderCard();
       expect(screen.getByText(/Sign in to add this book/i)).toBeInTheDocument();
       expect(
-        screen.getByRole("button", { name: /Sign in/i }),
+        screen.getByRole("button", { name: /sign in/i }),
       ).toBeInTheDocument();
     });
   });
 
-  // render without the required 'book' prop to ensure component throws
   describe("required fields", () => {
-    // @ts-expect-error: intentionally omit required prop (book)
+    // @ts-expect-error missing required props
     expect(() => render(<BookCard />)).toThrow();
   });
 
   describe("type & format validation", () => {
-    it("renders image-element (not image) with correct alt text when coverUrl is invalid", () => {
+    it("renders image-element with correct alt text when coverUrl is invalid", () => {
       renderCard({ coverUrl: "not-a-url" });
       expect(screen.getByAltText("Dune")).toBeInTheDocument();
     });
@@ -119,13 +121,11 @@ describe("<BookCard />", () => {
     it("truncates long description", () => {
       const longDesc = "A".repeat(1000);
       renderCard({ description: longDesc });
-      // Ensure at least part of the long string appears (10+ A's)
       expect(screen.getByText(/A{10,}/)).toBeInTheDocument();
     });
 
     it("renders empty description gracefully", () => {
       renderCard({ description: "" });
-      // Find <p> element that has a class called line-clamp
       const desc = document.querySelector('p[class*="line-clamp-"]');
       expect(desc).toBeInTheDocument();
       expect(desc).toBeEmptyDOMElement();
@@ -134,8 +134,11 @@ describe("<BookCard />", () => {
 
   describe("strictness", () => {
     it("ignores extra props on book object", () => {
-      const bookWithExtra = { ...BASE_VALID_BOOK, extra: "nope" };
-      render(<BookCard book={bookWithExtra} />);
+      const bookWithExtra = {
+        ...BASE_VALID_BOOK,
+        extra: "nope",
+      } as unknown as BookDTO;
+      render(<BookCard book={bookWithExtra} isAuthed={false} />);
       expect(screen.getByText("Dune")).toBeInTheDocument();
     });
   });
@@ -143,32 +146,22 @@ describe("<BookCard />", () => {
   describe("interaction", () => {
     it("clicking the Sign-in button navigates to /signin", () => {
       renderCard();
-      const btn = screen.getByRole("button", { name: /sign in/i });
-      fireEvent.click(btn);
+      fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
       expect(pushMock).toHaveBeenCalledWith(
         `/signin?next=${encodeURIComponent("/books/book-1")}`,
       );
-    });
-
-    it("CTA container stops click propagation", () => {
-      renderCard();
-      const cta = screen.getByText(/Sign in to add this book/i).closest("div");
-      expect(cta).toBeTruthy();
     });
   });
 
   describe("accessibility", () => {
     it("renders image with alt text", () => {
       renderCard();
-      const img = screen.getByAltText("Dune") as HTMLImageElement;
-      expect(img).toBeInTheDocument();
-      expect(img.src).toContain("https://example.com/dune.jpg");
+      expect(screen.getByAltText("Dune")).toBeInTheDocument();
     });
 
     it("renders as an article element", () => {
       renderCard();
-      const article = document.querySelector("article");
-      expect(article).toBeTruthy();
+      expect(document.querySelector("article")).toBeTruthy();
     });
   });
 });

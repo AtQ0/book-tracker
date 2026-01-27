@@ -81,12 +81,15 @@ describe("<Button />", () => {
       render(
         <Button className="px-8" variant="primary">
           Merge
-        </Button>
+        </Button>,
       );
       const el = byName("Merge");
       expect(el).toHaveClass("px-8");
       expect(el).not.toHaveClass("px-5");
-      expect(el).toHaveClass("py-3");
+
+      // primary variant sets py-2.5, so that's what should win over base py-3
+      expect(el).toHaveClass("py-2.5");
+      expect(el).not.toHaveClass("py-3");
     });
 
     it("preserves non-conflicting custom classes", () => {
@@ -130,7 +133,7 @@ describe("<Button />", () => {
       render(
         <Button disabled onClick={onClick}>
           Disabled
-        </Button>
+        </Button>,
       );
 
       await user.click(byName("Disabled"));
@@ -143,7 +146,7 @@ describe("<Button />", () => {
       render(
         <Button isLoading onClick={onClick}>
           Save
-        </Button>
+        </Button>,
       );
 
       await user.click(byName(/loading/i));

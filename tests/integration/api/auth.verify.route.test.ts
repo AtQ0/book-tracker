@@ -44,7 +44,10 @@ describe("POST / api/auth/verify", () => {
   describe("happy path", () => {
     it("returns 200 and ok true when verification succeeds", async () => {
       // Mock a successful backend reply
-      mockedVerify.mockResolvedValueOnce({ kind: "ok" });
+      mockedVerify.mockResolvedValueOnce({
+        kind: "ok",
+        setPasswordCodeId: "spc-123",
+      });
 
       // Call post handler with valid payload
       const res = await makeRequest(validBody);
@@ -52,10 +55,13 @@ describe("POST / api/auth/verify", () => {
       expect(res.status).toBe(200); // assert the response has status 200
 
       // parse JSON string in response body into a JS object
-      const data = (await res.json()) as { ok: boolean };
+      const data = (await res.json()) as {
+        ok: true;
+        setPasswordCodeId: string;
+      };
 
       // assert the response payload matches the expected success shape
-      expect(data).toEqual({ ok: true });
+      expect(data).toEqual({ ok: true, setPasswordCodeId: "spc-123" });
 
       // assert backend logic was called with validated input
       expect(mockedVerify).toHaveBeenCalledWith(validBody);
@@ -106,7 +112,10 @@ describe("POST / api/auth/verify", () => {
 
   describe("strictness", () => {
     it("ignores unknown extra properties and still validates core fields", async () => {
-      mockedVerify.mockResolvedValueOnce({ kind: "ok" });
+      mockedVerify.mockResolvedValueOnce({
+        kind: "ok",
+        setPasswordCodeId: "spc-123",
+      });
 
       const res = await makeRequest({
         ...validBody,
@@ -114,8 +123,11 @@ describe("POST / api/auth/verify", () => {
       });
 
       expect(res.status).toBe(200);
-      const data = (await res.json()) as { ok: boolean };
-      expect(data).toEqual({ ok: true });
+      const data = (await res.json()) as {
+        ok: true;
+        setPasswordCodeId: string;
+      };
+      expect(data).toEqual({ ok: true, setPasswordCodeId: "spc-123" });
 
       expect(mockedVerify).toHaveBeenCalledWith(validBody);
     });

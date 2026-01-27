@@ -1,3 +1,4 @@
+// tests\integration\server\verifySignup.test.ts
 import { verifySignupCode } from "@/server/auth/verifySignup";
 import { prisma } from "@/lib/db";
 import argon2 from "argon2";
@@ -5,7 +6,11 @@ import argon2 from "argon2";
 // Shape of the fake transaction client passed into prisma.$transaction
 type MockTx = {
   user: { update: jest.Mock };
-  verificationCode: { update: jest.Mock };
+  verificationCode: {
+    update: jest.Mock;
+    deleteMany: jest.Mock;
+    create: jest.Mock;
+  };
 };
 
 // Type of the callback that prisma.$transaction receives
@@ -22,7 +27,11 @@ jest.mock("@/lib/db", () => ({
     $transaction: jest.fn().mockImplementation((cb: TransactionCallback) => {
       const tx: MockTx = {
         user: { update: jest.fn() },
-        verificationCode: { update: jest.fn() },
+        verificationCode: {
+          update: jest.fn(),
+          deleteMany: jest.fn(),
+          create: jest.fn().mockResolvedValue({ id: "set-password-code-id" }),
+        },
       };
       return cb(tx);
     }),
@@ -32,6 +41,7 @@ jest.mock("@/lib/db", () => ({
 // Mock argon2.verify (PIN validation)
 jest.mock("argon2", () => ({
   verify: jest.fn(),
+  hash: jest.fn(),
 }));
 
 // TS cast: tell TypeScript that the mocked prisma object has jest.Mock methods
@@ -43,6 +53,7 @@ const mockedPrisma = prisma as unknown as {
 // TS-only cast so argon2.verify is typed as jest.Mock
 const mockedArgon2 = argon2 as unknown as {
   verify: jest.Mock;
+  hash: jest.Mock;
 };
 
 describe("verifySignupCode", () => {
@@ -74,17 +85,23 @@ describe("verifySignupCode", () => {
       // Mock argon2.verify to return true (code matches stored hash)
       mockedArgon2.verify.mockResolvedValueOnce(true);
 
+      // Mock argon2.hash to return a hash for dummy set-password code
+      mockedArgon2.hash.mockResolvedValueOnce("dummy-hash");
+
       // Call verifySignupCode with valid data to trigger the happy path
       const result = await verifySignupCode({
         verificationCodeId: "code-id",
         verificationCode: "123456",
       });
 
-      expect(result).toEqual({ kind: "ok" });
+      expect(result).toEqual({
+        kind: "ok",
+        setPasswordCodeId: "set-password-code-id",
+      });
       expect(mockedArgon2.verify).toHaveBeenCalledTimes(1);
       expect(mockedArgon2.verify).toHaveBeenCalledWith(
         baseRecord.codeHash,
-        "123456"
+        "123456",
       );
     });
   });
@@ -120,7 +137,7 @@ describe("verifySignupCode", () => {
 
       expect(mockedArgon2.verify).toHaveBeenCalledWith(
         baseRecord.codeHash,
-        "999999"
+        "999999",
       );
       expect(result).toEqual({ kind: "invalid" });
       expect(mockedPrisma.$transaction).not.toHaveBeenCalled();
@@ -205,6 +222,7 @@ describe("verifySignupCode", () => {
         ...baseRecord,
       });
       mockedArgon2.verify.mockResolvedValueOnce(true);
+      mockedArgon2.hash.mockResolvedValueOnce("dummy-hash");
 
       const result = await verifySignupCode({
         verificationCodeId: "code-id",
@@ -213,7 +231,10 @@ describe("verifySignupCode", () => {
         extra: "ignored",
       });
 
-      expect(result).toEqual({ kind: "ok" });
+      expect(result).toEqual({
+        kind: "ok",
+        setPasswordCodeId: "set-password-code-id",
+      });
     });
   });
 
@@ -223,6 +244,7 @@ describe("verifySignupCode", () => {
         ...baseRecord,
       });
       mockedArgon2.verify.mockResolvedValueOnce(true);
+      mockedArgon2.hash.mockResolvedValueOnce("dummy-hash");
 
       let capturedTx: MockTx | null = null;
 
@@ -231,11 +253,17 @@ describe("verifySignupCode", () => {
         async (cb: TransactionCallback) => {
           const tx: MockTx = {
             user: { update: jest.fn() },
-            verificationCode: { update: jest.fn() },
+            verificationCode: {
+              update: jest.fn(),
+              deleteMany: jest.fn(),
+              create: jest
+                .fn()
+                .mockResolvedValue({ id: "set-password-code-id" }),
+            },
           };
           capturedTx = tx;
           return cb(tx);
-        }
+        },
       );
 
       const result = await verifySignupCode({
@@ -243,7 +271,10 @@ describe("verifySignupCode", () => {
         verificationCode: "123456",
       });
 
-      expect(result).toEqual({ kind: "ok" });
+      expect(result).toEqual({
+        kind: "ok",
+        setPasswordCodeId: "set-password-code-id",
+      });
       expect(mockedPrisma.$transaction).toHaveBeenCalledTimes(1);
       expect(capturedTx).not.toBeNull();
 
