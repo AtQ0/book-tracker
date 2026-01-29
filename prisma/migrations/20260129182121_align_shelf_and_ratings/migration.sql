@@ -1,9 +1,6 @@
 -- CreateEnum
 CREATE TYPE "ShelfStatus" AS ENUM ('haveRead', 'currentlyReading', 'wantToRead');
 
--- AlterEnum
-ALTER TYPE "VerificationPurpose" ADD VALUE 'SIGNUP_SET_PASSWORD';
-
 -- AlterTable
 ALTER TABLE "Book" ADD COLUMN     "ratingCount" INTEGER NOT NULL DEFAULT 0;
 
