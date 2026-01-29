@@ -7,25 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Book {
-  id               String   @id @default(uuid())
-  name             String
-  genre            String
-  coverUrl         String
-  description      String
-
-  averageRating    Float    @default(0)
-  ratingCount      Int      @default(0)
-
-  haveRead         Int      @default(0)
-  currentlyReading Int      @default(0)
-  wantToRead       Int      @default(0)
-
-  createdAt        DateTime @default(now())
-
-  userBooks        UserBook[]
-}
-
 model User {
   id                String   @id @default(cuid())
   email             String   @unique
@@ -41,6 +22,27 @@ model User {
   // shelf + rating
   userBooks         UserBook[]
 }
+
+enum VerificationPurpose {
+  SIGNUP_VERIFY_EMAIL
+  SIGNUP_SET_PASSWORD
+  RESET_PASSWORD
+}
+
+model VerificationCode {
+  id         String                @id @default(cuid())
+  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  codeHash   String
+  purpose    VerificationPurpose
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime              @default(now())
+
+  @@index([userId, purpose, consumedAt, expiresAt, createdAt])
+  @@index([expiresAt])
+}
+
 
 enum ShelfStatus {
   haveRead
@@ -65,22 +67,21 @@ model UserBook {
   @@index([bookId, status])
 }
 
-enum VerificationPurpose {
-  SIGNUP_VERIFY_EMAIL
-  SIGNUP_SET_PASSWORD
-  RESET_PASSWORD
-}
+model Book {
+  id               String   @id @default(uuid())
+  name             String
+  genre            String
+  coverUrl         String
+  description      String
 
-model VerificationCode {
-  id         String                @id @default(cuid())
-  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  codeHash   String
-  purpose    VerificationPurpose
-  expiresAt  DateTime
-  consumedAt DateTime?
-  createdAt  DateTime              @default(now())
+  averageRating    Float    @default(0)
+  ratingCount      Int      @default(0)
 
-  @@index([userId, purpose, consumedAt, expiresAt, createdAt])
-  @@index([expiresAt])
+  haveRead         Int      @default(0)
+  currentlyReading Int      @default(0)
+  wantToRead       Int      @default(0)
+
+  createdAt        DateTime @default(now())
+
+  userBooks        UserBook[]
 }
