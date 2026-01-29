@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
-import { RateBookDTOSchema } from "@/lib/validations/rating";
-import { getBookById, rateBookForUser } from "@/server/books";
+import { SetShelfSchema } from "@/lib/validations/shelf";
+import { getBookById, setShelfStatusForUser } from "@/server/books";
 
 export async function POST(
   req: Request,
@@ -18,13 +18,13 @@ export async function POST(
   const { id: bookId } = await ctx.params;
 
   const body = await req.json().catch(() => ({}));
-  const parsed = RateBookDTOSchema.safeParse(body);
+  const parsed = SetShelfSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid rating" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
 
-  await rateBookForUser({ userId, bookId, rating: parsed.data.rating });
+  await setShelfStatusForUser({ userId, bookId, status: parsed.data.status });
 
   const updated = await getBookById(bookId, userId);
   return NextResponse.json(updated);

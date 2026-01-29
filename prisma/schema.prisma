@@ -10,26 +10,59 @@ datasource db {
 model Book {
   id               String   @id @default(uuid())
   name             String
-  description      String
   genre            String
   coverUrl         String
+  description      String
+
   averageRating    Float    @default(0)
+  ratingCount      Int      @default(0)
+
   haveRead         Int      @default(0)
   currentlyReading Int      @default(0)
   wantToRead       Int      @default(0)
+
   createdAt        DateTime @default(now())
+
+  userBooks        UserBook[]
 }
 
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  name          String?
-  passwordHash  String?
-  emailVerified DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                String   @id @default(cuid())
+  email             String   @unique
+  name              String?
+  passwordHash      String?
+  emailVerified     DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
+  // keep auth as-is
   verificationCodes VerificationCode[]
+
+  // shelf + rating
+  userBooks         UserBook[]
+}
+
+enum ShelfStatus {
+  haveRead
+  currentlyReading
+  wantToRead
+}
+
+model UserBook {
+  id        String      @id @default(cuid())
+  userId    String
+  bookId    String
+  status    ShelfStatus
+  rating    Int?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@index([userId, status])
+  @@index([bookId, status])
 }
 
 enum VerificationPurpose {
@@ -48,9 +81,6 @@ model VerificationCode {
   consumedAt DateTime?
   createdAt  DateTime              @default(now())
 
-  // For fast lookups of the newest active code per user/purpose
   @@index([userId, purpose, consumedAt, expiresAt, createdAt])
-
-  // For efficient TTL cleanup jobs
   @@index([expiresAt])
 }

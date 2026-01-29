@@ -8,36 +8,48 @@ export const SORT_KEYS = [
   "name_desc",
 ] as const;
 
-// Build a Zod enum directly from the tuple for runtime validation
 export const SortKeyEnum = z.enum(SORT_KEYS);
-
-// Derive a TypeScript union type ("read" | "want" | ...) from the tuple
 export type SortKey = (typeof SORT_KEYS)[number];
 
-// URL query schema where `sort` is optional, if existing its value must match one of allowed sort keys
 export const BookListQuerySchema = z.object({
-  sort: SortKeyEnum.optional(), // optional allows undefined
+  sort: SortKeyEnum.optional(),
 });
 
-// Validates in RUNTIME that each book sent to the client matches this shape
+// ✅ AddBookDTO from your spec
+export const AddBookDTOSchema = z
+  .object({
+    name: z.string().trim().min(1),
+    genre: z.string().trim().min(1),
+    coverUrl: z.string().url(),
+    description: z.string().trim().min(1),
+  })
+  .strict();
+
+export type AddBookDTO = z.infer<typeof AddBookDTOSchema>;
+
+// ✅ BookDTO from your spec (now includes userRating)
 export const BookDTOSchema = z
   .object({
     id: z.string().trim().min(1),
     name: z.string().trim().min(1),
-    description: z.string().trim().min(1),
     genre: z.string().trim().min(1),
     coverUrl: z.string().url(),
+    description: z.string().trim().min(1),
+
     averageRating: z.number().min(0).max(5),
+
     haveRead: z.number().int().nonnegative(),
     currentlyReading: z.number().int().nonnegative(),
     wantToRead: z.number().int().nonnegative(),
+
+    // If unauthenticated, this will be null
+    userRating: z.number().int().min(1).max(5).nullable(),
   })
   .strict();
 
-// Infer TS type from the DTO schema, used in compiletime/dev-time
 export type BookDTO = z.infer<typeof BookDTOSchema>;
 
-// Runtime Lookup table (object) converting validated sort keys into Prisma orderBy instructions
+// Runtime lookup table for sorting
 export const sortFieldMap: Record<
   z.infer<typeof SortKeyEnum>,
   { field: keyof BookDTO | "createdAt"; direction: "asc" | "desc" }
