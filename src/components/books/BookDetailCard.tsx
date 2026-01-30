@@ -10,15 +10,26 @@ import BookCover from "./shared/BookCover";
 import BookGenrePill from "./shared/BookGenrePill";
 import BookActions from "./shared/BookActions";
 
-type Props = { book: BookDTO; className?: string; isAuthed: boolean };
+type Props = {
+  book: BookDTO;
+  className?: string;
+  isAuthed: boolean;
+  backHref: string;
+};
 
-export default function BookDetailCard({ book, className, isAuthed }: Props) {
+export default function BookDetailCard({
+  book,
+  className,
+  isAuthed,
+  backHref,
+}: Props) {
   const router = useRouter();
 
   return (
     <Card as="article" className={twMerge(className)}>
       <div>
         <BackButton
+          href={backHref}
           label={
             <span className="text-sm flex items-center min-w-0">
               <span className="opacity-70 shrink-0">Books</span>
@@ -67,7 +78,9 @@ export default function BookDetailCard({ book, className, isAuthed }: Props) {
               }}
               isAuthed={isAuthed}
               onSignin={() => {
-                const next = `/books/${book.id}`;
+                const next = `/books/${book.id}?next=${encodeURIComponent(
+                  backHref,
+                )}`;
                 router.push(`/signin?next=${encodeURIComponent(next)}`);
               }}
             />

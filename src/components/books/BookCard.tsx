@@ -1,7 +1,7 @@
 "use client";
 
 import { BookDTO } from "@/lib/validations/book";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Card from "../ui/Card";
 import Link from "next/link";
 
@@ -13,6 +13,10 @@ type BookCardProps = { book: BookDTO; isAuthed: boolean };
 
 export default function BookCard({ book, isAuthed }: BookCardProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const qs = searchParams?.toString();
+  const next = qs ? `/books?${qs}` : "/books";
 
   return (
     <Card
@@ -27,7 +31,7 @@ export default function BookCard({ book, isAuthed }: BookCardProps) {
   "
     >
       <Link
-        href={`/books/${book.id}`}
+        href={`/books/${book.id}?next=${encodeURIComponent(next)}`}
         className="flex gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-peach-yellow rounded-xl"
       >
         <div>
@@ -63,8 +67,8 @@ export default function BookCard({ book, isAuthed }: BookCardProps) {
           }}
           isAuthed={isAuthed}
           onSignin={() => {
-            const next = `/books/${book.id}`;
-            router.push(`/signin?next=${encodeURIComponent(next)}`);
+            const nextUrl = `/books/${book.id}?next=${encodeURIComponent(next)}`;
+            router.push(`/signin?next=${encodeURIComponent(nextUrl)}`);
           }}
         />
       </Card>
