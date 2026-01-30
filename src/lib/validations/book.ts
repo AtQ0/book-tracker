@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ShelfStatusSchema } from "./shelf";
 
 export const SORT_KEYS = [
   "read",
@@ -15,7 +16,6 @@ export const BookListQuerySchema = z.object({
   sort: SortKeyEnum.optional(),
 });
 
-// ✅ AddBookDTO from your spec
 export const AddBookDTOSchema = z
   .object({
     name: z.string().trim().min(1),
@@ -27,7 +27,6 @@ export const AddBookDTOSchema = z
 
 export type AddBookDTO = z.infer<typeof AddBookDTOSchema>;
 
-// ✅ BookDTO from your spec (now includes userRating)
 export const BookDTOSchema = z
   .object({
     id: z.string().trim().min(1),
@@ -44,12 +43,14 @@ export const BookDTOSchema = z
 
     // If unauthenticated, this will be null
     userRating: z.number().int().min(1).max(5).nullable(),
+
+    // If unauthenticated, this will be null
+    userShelfStatus: ShelfStatusSchema.nullable(),
   })
   .strict();
 
 export type BookDTO = z.infer<typeof BookDTOSchema>;
 
-// Runtime lookup table for sorting
 export const sortFieldMap: Record<
   z.infer<typeof SortKeyEnum>,
   { field: keyof BookDTO | "createdAt"; direction: "asc" | "desc" }

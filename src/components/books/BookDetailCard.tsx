@@ -17,7 +17,6 @@ export default function BookDetailCard({ book, className, isAuthed }: Props) {
 
   return (
     <Card as="article" className={twMerge(className)}>
-      {/* breadcrumb-ish header */}
       <div>
         <BackButton
           label={
@@ -32,9 +31,7 @@ export default function BookDetailCard({ book, className, isAuthed }: Props) {
 
       <div className="pt-4">
         <div className="flex flex-col gap-5">
-          {/* <= sm: stacked, >= sm: side-by-side */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
-            {/* Mobile: full width. sm+: fixed column behavior */}
             <div className="w-full sm:w-auto sm:shrink-0">
               <BookCover
                 src={book.coverUrl}
@@ -44,7 +41,6 @@ export default function BookDetailCard({ book, className, isAuthed }: Props) {
               />
             </div>
 
-            {/* Text container now matches image edge on mobile */}
             <div className="flex-1 min-w-0 sm:pr-0 sm:max-w-none">
               <h1 className="text-2xl sm:text-4xl font-semibold sm:font-extrabold leading-tight">
                 {book.name}
@@ -60,11 +56,14 @@ export default function BookDetailCard({ book, className, isAuthed }: Props) {
 
           <Card padding="sm" variant="secondary" className="max-xs:p-3">
             <BookActions
-              bookStats={{
+              bookId={book.id}
+              initial={{
+                averageRating: book.averageRating,
                 haveRead: book.haveRead,
                 currentlyReading: book.currentlyReading,
                 wantToRead: book.wantToRead,
-                averageRating: book.averageRating,
+                userRating: book.userRating,
+                userShelfStatus: book.userShelfStatus,
               }}
               isAuthed={isAuthed}
               onSignin={() => {

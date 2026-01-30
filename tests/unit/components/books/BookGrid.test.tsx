@@ -37,6 +37,7 @@ const makeBooks = (n: number): BookDTO[] =>
     currentlyReading: 0,
     wantToRead: 0,
     userRating: null,
+    userShelfStatus: null,
   }));
 
 describe("<BookGrid />", () => {

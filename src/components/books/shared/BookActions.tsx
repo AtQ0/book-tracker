@@ -4,28 +4,140 @@ import React from "react";
 import { twMerge } from "tailwind-merge";
 import Button from "@/components/ui/Button";
 import { BookDTO } from "@/lib/validations/book";
+import { ShelfStatus } from "@/lib/validations/shelf";
 import RatingStars from "../RatingStars";
 
-type Shelf = "to-read" | "reading" | "read";
-type BookStats = Pick<
+type ShelfUi = "to-read" | "reading" | "read" | null;
+
+function uiToDb(ui: Exclude<ShelfUi, null>): ShelfStatus {
+  if (ui === "reading") return "currentlyReading";
+  if (ui === "read") return "haveRead";
+  return "wantToRead";
+}
+
+function dbToUi(db: ShelfStatus | null): ShelfUi {
+  if (db === "currentlyReading") return "reading";
+  if (db === "haveRead") return "read";
+  if (db === "wantToRead") return "to-read";
+  return null;
+}
+
+type BookActionsState = Pick<
   BookDTO,
-  "averageRating" | "haveRead" | "currentlyReading" | "wantToRead"
+  | "averageRating"
+  | "haveRead"
+  | "currentlyReading"
+  | "wantToRead"
+  | "userRating"
+  | "userShelfStatus"
 >;
 
 export type BookActionsProps = React.ComponentPropsWithoutRef<"div"> & {
   isAuthed: boolean;
   onSignin: () => void;
-  bookStats: BookStats;
+  bookId: string;
+  initial: BookActionsState;
 };
+
 export default function BookActions({
   isAuthed,
   onSignin,
-  bookStats,
+  bookId,
+  initial,
   className,
   ...rest
 }: BookActionsProps) {
-  const [shelf, setShelf] = React.useState<Shelf>("to-read");
+  const [state, setState] = React.useState<BookActionsState>(initial);
+  const [shelf, setShelf] = React.useState<ShelfUi>(
+    dbToUi(initial.userShelfStatus),
+  );
+  const [pendingShelf, setPendingShelf] = React.useState(false);
+  const [pendingRating, setPendingRating] = React.useState(false);
+
   const selectedClasses = "bg-russet text-white border-russet";
+
+  async function postJson<T>(url: string, body: unknown): Promise<T> {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    if (res.status === 401) {
+      onSignin();
+      throw new Error("Unauthorized");
+    }
+
+    if (!res.ok) {
+      throw new Error("Request failed");
+    }
+
+    return (await res.json()) as T;
+  }
+
+  async function handleShelf(next: Exclude<ShelfUi, null>) {
+    if (!isAuthed) {
+      onSignin();
+      return;
+    }
+    if (pendingShelf || pendingRating) return;
+
+    setPendingShelf(true);
+
+    const prevShelf = shelf;
+    setShelf(next);
+
+    try {
+      const updated = await postJson<BookDTO>(`/api/books/${bookId}/shelf`, {
+        status: uiToDb(next),
+      });
+
+      // Immediate local UI update
+      setState({
+        averageRating: updated.averageRating,
+        haveRead: updated.haveRead,
+        currentlyReading: updated.currentlyReading,
+        wantToRead: updated.wantToRead,
+        userRating: updated.userRating,
+        userShelfStatus: updated.userShelfStatus,
+      });
+
+      setShelf(dbToUi(updated.userShelfStatus));
+    } catch {
+      setShelf(prevShelf);
+    } finally {
+      setPendingShelf(false);
+    }
+  }
+
+  async function handleRate(nextRating: number) {
+    if (!isAuthed) {
+      onSignin();
+      return;
+    }
+    if (pendingShelf || pendingRating) return;
+
+    setPendingRating(true);
+
+    try {
+      const updated = await postJson<BookDTO>(`/api/books/${bookId}/rate`, {
+        rating: nextRating,
+      });
+
+      setState({
+        averageRating: updated.averageRating,
+        haveRead: updated.haveRead,
+        currentlyReading: updated.currentlyReading,
+        wantToRead: updated.wantToRead,
+        userRating: updated.userRating,
+        userShelfStatus: updated.userShelfStatus,
+      });
+
+      setShelf(dbToUi(updated.userShelfStatus));
+    } finally {
+      setPendingRating(false);
+    }
+  }
 
   if (!isAuthed) {
     return (
@@ -49,7 +161,8 @@ export default function BookActions({
     );
   }
 
-  // Authenticated UI
+  const shownRating = state.userRating ?? state.averageRating;
+
   return (
     <div
       className={twMerge("flex flex-col items-center gap-2", className)}
@@ -57,17 +170,23 @@ export default function BookActions({
     >
       <div className="w-full min-w-0">
         <div className="w-full min-w-0 flex items-center gap-3">
-          <p className="shrink-0">Avg rating:</p>
+          <p className="shrink-0">Rating:</p>
 
-          <RatingStars value={bookStats.averageRating} />
+          <RatingStars
+            value={shownRating}
+            onChange={handleRate}
+            disabled={pendingRating}
+            ariaLabel="Rate this book"
+          />
 
           <p className="shrink-0 font-semibold">
-            {bookStats.averageRating.toFixed(1)} / 5
+            Avg {state.averageRating.toFixed(1)} / 5
           </p>
         </div>
-        <p>Have read: {bookStats.haveRead}</p>
-        <p>Currently reading: {bookStats.currentlyReading}</p>
-        <p>Want to read: {bookStats.wantToRead}</p>
+
+        <p className="mt-2">Have read: {state.haveRead}</p>
+        <p>Currently reading: {state.currentlyReading}</p>
+        <p>Want to read: {state.wantToRead}</p>
       </div>
 
       <div className="w-full flex gap-2 lg:gap-2">
@@ -75,7 +194,8 @@ export default function BookActions({
           className={twMerge("flex-1", shelf === "to-read" && selectedClasses)}
           type="button"
           variant="outline"
-          onClick={() => setShelf("to-read")}
+          disabled={pendingShelf}
+          onClick={() => handleShelf("to-read")}
         >
           To read
         </Button>
@@ -84,7 +204,8 @@ export default function BookActions({
           className={twMerge("flex-1", shelf === "reading" && selectedClasses)}
           type="button"
           variant="outline"
-          onClick={() => setShelf("reading")}
+          disabled={pendingShelf}
+          onClick={() => handleShelf("reading")}
         >
           Reading
         </Button>
@@ -93,7 +214,8 @@ export default function BookActions({
           className={twMerge("flex-1", shelf === "read" && selectedClasses)}
           type="button"
           variant="outline"
-          onClick={() => setShelf("read")}
+          disabled={pendingShelf}
+          onClick={() => handleShelf("read")}
         >
           Read
         </Button>

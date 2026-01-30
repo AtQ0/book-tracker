@@ -12,6 +12,7 @@ const BASE_VALID_BOOK: Readonly<BookDTO> = Object.freeze({
   currentlyReading: 2,
   wantToRead: 5,
   userRating: null,
+  userShelfStatus: null,
 });
 
 const requiredKeys = [
@@ -25,6 +26,7 @@ const requiredKeys = [
   "currentlyReading",
   "wantToRead",
   "userRating",
+  "userShelfStatus",
 ] as const;
 
 describe("BookDTOSchema", () => {

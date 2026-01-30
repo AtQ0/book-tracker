@@ -52,11 +52,14 @@ export default function BookCard({ book, isAuthed }: BookCardProps) {
 
       <Card padding="sm" variant="secondary" className="max-xs:p-3">
         <BookActions
-          bookStats={{
+          bookId={book.id}
+          initial={{
             averageRating: book.averageRating,
             haveRead: book.haveRead,
             currentlyReading: book.currentlyReading,
             wantToRead: book.wantToRead,
+            userRating: book.userRating,
+            userShelfStatus: book.userShelfStatus,
           }}
           isAuthed={isAuthed}
           onSignin={() => {

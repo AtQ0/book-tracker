@@ -72,8 +72,8 @@ export async function verifySignupCode(params: {
       where: { userId: record.user.id, purpose: "SIGNUP_SET_PASSWORD" },
     });
 
-    // Create a set-password code (we don't need to ever show this "code" to the user,
-    // we only need a short-lived id to authorize setting the password).
+    // Create a set-password code (Don't need to ever show this "code" to the user,
+    // only need a short-lived id to authorize setting the password).
     const dummy = String(randomInt(0, 1_000_000)).padStart(6, "0");
     const hash = await argon2.hash(dummy, ARGON2_OPTS);
 

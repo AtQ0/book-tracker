@@ -1,11 +1,18 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { getServerSession } from "next-auth";
+
 import { authOptions } from "@/lib/auth/options";
-import { RateBookDTOSchema } from "@/lib/validations/rating";
 import { getBookById, rateBookForUser } from "@/server/books";
 
+const BodySchema = z
+  .object({
+    rating: z.number().int().min(1).max(5),
+  })
+  .strict();
+
 export async function POST(
-  req: Request,
+  _req: Request,
   ctx: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession(authOptions);
@@ -17,15 +24,32 @@ export async function POST(
 
   const { id: bookId } = await ctx.params;
 
-  const body = await req.json().catch(() => ({}));
-  const parsed = RateBookDTOSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid rating" }, { status: 400 });
+  let body: unknown;
+  try {
+    body = await _req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  await rateBookForUser({ userId, bookId, rating: parsed.data.rating });
+  const parsed = BodySchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid body", issues: parsed.error.issues },
+      { status: 400 },
+    );
+  }
 
+  await rateBookForUser({
+    userId,
+    bookId,
+    rating: parsed.data.rating,
+  });
+
+  // Return fresh BookDTO for this user so UI updates immediately
   const updated = await getBookById(bookId, userId);
-  return NextResponse.json(updated);
+  if (!updated) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(updated, { status: 200 });
 }
