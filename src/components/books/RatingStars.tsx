@@ -102,7 +102,7 @@ export default function RatingStars({
             onFocus={() => setHover(rating)}
             onBlur={() => setHover(null)}
             onClick={() => onChange(rating)}
-            className="leading-none disabled:opacity-50"
+            className="leading-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           >
             <StarIcon
               size={size}
