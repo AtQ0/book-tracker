@@ -2,6 +2,7 @@
 
 import React from "react";
 import { twMerge } from "tailwind-merge";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { BookDTO } from "@/lib/validations/book";
 import { ShelfStatus } from "@/lib/validations/shelf";
@@ -47,6 +48,8 @@ export default function BookActions({
   className,
   ...rest
 }: BookActionsProps) {
+  const router = useRouter();
+
   const [state, setState] = React.useState<BookActionsState>(initial);
   const [shelf, setShelf] = React.useState<ShelfUi>(
     dbToUi(initial.userShelfStatus),
@@ -103,6 +106,9 @@ export default function BookActions({
       });
 
       setShelf(dbToUi(updated.userShelfStatus));
+
+      // Make server components re-fetch fresh data so highlight survives remounts
+      router.refresh();
     } catch {
       setShelf(prevShelf);
     } finally {
@@ -134,6 +140,9 @@ export default function BookActions({
       });
 
       setShelf(dbToUi(updated.userShelfStatus));
+
+      // Keep rating display consistent across remounts too
+      router.refresh();
     } finally {
       setPendingRating(false);
     }
