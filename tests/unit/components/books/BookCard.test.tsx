@@ -77,6 +77,7 @@ const BASE_VALID_BOOK: Readonly<BookDTO> = Object.freeze({
   haveRead: 10,
   currentlyReading: 2,
   wantToRead: 5,
+  userRating: null,
 });
 
 function renderCard(book: Partial<BookDTO> = {}) {

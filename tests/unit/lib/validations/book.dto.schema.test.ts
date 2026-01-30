@@ -11,6 +11,7 @@ const BASE_VALID_BOOK: Readonly<BookDTO> = Object.freeze({
   haveRead: 10,
   currentlyReading: 2,
   wantToRead: 5,
+  userRating: null,
 });
 
 const requiredKeys = [
@@ -23,6 +24,7 @@ const requiredKeys = [
   "haveRead",
   "currentlyReading",
   "wantToRead",
+  "userRating",
 ] as const;
 
 describe("BookDTOSchema", () => {
@@ -43,13 +45,13 @@ describe("BookDTOSchema", () => {
   describe("type & format validation", () => {
     it("rejects invalid coverUrl", () => {
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, coverUrl: "not-a-url" })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, coverUrl: "not-a-url" }),
       ).toThrow();
     });
 
     it("rejects wrong types (e.g., averageRating as string)", () => {
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, averageRating: "5" })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, averageRating: "5" }),
       ).toThrow();
     });
 
@@ -76,26 +78,26 @@ describe("BookDTOSchema", () => {
       "accepts valid averageRating boundary value %d",
       (rating) => {
         expect(() =>
-          BookDTOSchema.parse({ ...BASE_VALID_BOOK, averageRating: rating })
+          BookDTOSchema.parse({ ...BASE_VALID_BOOK, averageRating: rating }),
         ).not.toThrow();
-      }
+      },
     );
 
     it.each([-0.1, 5.01])("rejects out-of-range averageRating %d", (rating) => {
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, averageRating: rating })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, averageRating: rating }),
       ).toThrow();
     });
 
     it("accepts in-range fractional averageRating", () => {
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, averageRating: 4.5 })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, averageRating: 4.5 }),
       ).not.toThrow();
     });
 
     it("rejects NaN averageRating", () => {
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, averageRating: Number.NaN })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, averageRating: Number.NaN }),
       ).toThrow();
     });
 
@@ -103,19 +105,19 @@ describe("BookDTOSchema", () => {
 
     it.each(counterKeys)("enforces integer ≥ 0 for '%s'", (key) => {
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, [key]: 0 })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, [key]: 0 }),
       ).not.toThrow();
 
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, [key]: 5 })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, [key]: 5 }),
       ).not.toThrow();
 
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, [key]: -1 })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, [key]: -1 }),
       ).toThrow();
 
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, [key]: 1.5 })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, [key]: 1.5 }),
       ).toThrow();
     });
   });
@@ -123,23 +125,23 @@ describe("BookDTOSchema", () => {
   describe("strictness", () => {
     it("rejects unknown keys when schema is strict()", () => {
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, extra: 1 })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, extra: 1 }),
       ).toThrow();
     });
 
     it("rejects empty or whitespace-only 'name'", () => {
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, name: "" })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, name: "" }),
       ).toThrow();
 
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, name: "   " })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, name: "   " }),
       ).toThrow();
     });
 
     it("accepts name with leading/trailing spaces after trim", () => {
       expect(() =>
-        BookDTOSchema.parse({ ...BASE_VALID_BOOK, name: "  Dune  " })
+        BookDTOSchema.parse({ ...BASE_VALID_BOOK, name: "  Dune  " }),
       ).not.toThrow();
     });
   });
